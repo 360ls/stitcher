@@ -29,7 +29,6 @@ def initialize(left_index, right_index):
     return leftStream, rightStream
 
 def stream(leftStream, rightStream):
-    time.sleep(2.0)
     stitcher = Stitcher()
 
     # loop over frames from the video streams
@@ -61,7 +60,7 @@ def stream(leftStream, rightStream):
 
         # if the `q` key was pressed, break from the loop
         if key == ord("q"):
-                break
+            break
 
     # do a bit of cleanup
     print("[INFO] cleaning up...")
