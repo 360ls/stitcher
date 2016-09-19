@@ -29,7 +29,7 @@ def initialize(left_index, right_index):
 
     return leftStream, rightStream
 
-def stitch(leftStream, rightStream):
+def stitch_streams(leftStream, rightStream):
     stitcher = Stitcher()
 
     # loop over frames from the video streams
@@ -73,7 +73,7 @@ def stitch(leftStream, rightStream):
 def main():
     left_index, right_index = setup()
     left_stream, right_stream = initialize(left_index, right_index)
-    stitch(left_stream, right_stream)
+    stitch_streams(left_stream, right_stream)
 
 if __name__ == "__main__":
     main()
