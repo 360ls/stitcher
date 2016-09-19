@@ -3,6 +3,7 @@
 ## Pre-requisites
 - Python 2.7
 - OpenCV 2.4
+- At least 2 cameras
 
 Install dependencies:
 ```bash
@@ -20,4 +21,6 @@ python configure.py
 ```bash
 python run.py
 ```
-This will bring up the two streams and the combined stream.
+This will bring up two streams coming from the cameras and the combined stream.
+To stop the program, make sure one of the stream windows is selected
+and press `q`.
