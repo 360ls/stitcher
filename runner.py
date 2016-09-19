@@ -1,7 +1,3 @@
-# USAGE
-# python realtime_stitching.py
-
-# import the necessary packages
 from __future__ import print_function
 from core.panorama import Stitcher
 from imutils.video import VideoStream
