@@ -22,13 +22,14 @@ def setup():
 
 def initialize(left_index, right_index):
     # initialize the video streams and allow them to warmup
+    time.sleep(0.5)
     print("[INFO] starting cameras...")
     leftStream = VideoStream(src=left_index).start()
     rightStream = VideoStream(src=right_index).start()
 
     return leftStream, rightStream
 
-def stream(leftStream, rightStream):
+def stitch(leftStream, rightStream):
     stitcher = Stitcher()
 
     # loop over frames from the video streams
@@ -72,7 +73,7 @@ def stream(leftStream, rightStream):
 def main():
     left_index, right_index = setup()
     left_stream, right_stream = initialize(left_index, right_index)
-    stream(left_stream, right_stream)
+    stitch(left_stream, right_stream)
 
 if __name__ == "__main__":
     main()
