@@ -1,9 +1,23 @@
 ## Realtime 360 Stitcher
 
 ## Pre-requisites
-Make sure that `OpenCV` is installed. Tested on `OpenCV 2.4`.
+- Python 2.7
+- OpenCV 2.4
+
+Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+Generate the setup profile:
+
+```bash
+python configure.py
+``` 
 
 ## Running
-First generate the setup profile by runing `python configure.py`. 
-Then run `python run.py`. This will bring up the two streams and
-the combined stream.
+
+```bash
+python run.py
+```
+This will bring up the two streams and the combined stream.
