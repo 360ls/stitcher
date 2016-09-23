@@ -2,6 +2,7 @@ from __future__ import print_function
 from core.panorama import Stitcher
 from imutils.video import VideoStream
 from core.multistitch import *
+from utils.configuration import Configuration
 import numpy as np
 import datetime
 import imutils
@@ -78,12 +79,14 @@ def stitch_streams(leftStream, rightStream):
     rightStream.stop()
 
 def stitch_local():
-    # get user input
-    dir_name = raw_input('Enter images directory: ')
-    output_dir = raw_input('Enter output directory: ')
-    key_frame = raw_input('Enter key frame (full path): ')
-    width = raw_input('Enter image width (resize): ')
-    img_type = raw_input('Enter image type: ')
+    config = Configuration()
+
+    # get configuration
+    dir_name = config.source_dir
+    output_dir = config.dest_dir
+    key_frame = config.keyframe
+    width = config.width
+    img_type = config.format
 
     start_time = time.time()
     # Key frame
