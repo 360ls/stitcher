@@ -1,6 +1,7 @@
 from __future__ import print_function
 from core.panorama import Stitcher
 from imutils.video import VideoStream
+from core.multistitch import *
 import numpy as np
 import datetime
 import imutils
@@ -8,8 +9,15 @@ import time
 import cv2
 import yaml
 import os.path
+import argparse
+import time
 
 config_file = "config/profile.yml"
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-l", action="store_true")
+    return parser.parse_args()
 
 def setup():
     if not os.path.isfile(config_file):
@@ -69,11 +77,46 @@ def stitch_streams(leftStream, rightStream):
     leftStream.stop()
     rightStream.stop()
 
+def stitch_local():
+    # get user input
+    dir_name = raw_input('Enter images directory: ')
+    output_dir = raw_input('Enter output directory: ')
+    key_frame = raw_input('Enter key frame (full path): ')
+    width = raw_input('Enter image width (resize): ')
+    img_type = raw_input('Enter image type: ')
+
+    start_time = time.time()
+    # Key frame
+    key_frame_file = key_frame.split('/')[-1]
+
+    # Open the directory given in the arguments
+    dir_list = []
+    try:
+        dir_list = os.listdir(dir_name)
+        dir_list = filter(lambda x: x.find(img_type) > -1, dir_list)
+
+    except:
+        print >> sys.stderr, ("Unable to open directory: %s" % dir_name)
+        sys.exit(-1)
+
+    dir_list = map(lambda x: dir_name + "/" + x, dir_list)
+    resizeImages(dir_list, dir_name, width)
+    dir_list = filter(lambda x: x != key_frame, dir_list)
+
+    base_img_rgb = cv2.imread(key_frame)
+
+    final_img = stitchImages(key_frame_file, base_img_rgb, dir_list, output_dir, 0, img_type)
+    print("Finished")
+    print("Runtime: %s" % (time.time() - start_time))
 
 def main():
-    left_index, right_index = setup()
-    left_stream, right_stream = initialize(left_index, right_index)
-    stitch_streams(left_stream, right_stream)
+    args = parse_args()
+    if (args.l):
+        stitch_local()
+    else:
+        left_index, right_index = setup()
+        left_stream, right_stream = initialize(left_index, right_index)
+        stitch_streams(left_stream, right_stream)
 
 if __name__ == "__main__":
     main()
