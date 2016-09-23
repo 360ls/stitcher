@@ -20,16 +20,10 @@ def parse_args():
     parser.add_argument("-l", action="store_true")
     return parser.parse_args()
 
-def setup():
-    if not os.path.isfile(config_file):
-        raise ValueError('Configuration file does not exist.')
-    with open(config_file, 'r') as file:
-        doc = yaml.load(file)
-        left_index = doc["left-index"]
-        right_index = doc["right-index"]
-    return left_index, right_index
-
-def initialize(left_index, right_index):
+def initialize():
+    config = Configuration()
+    left_index = config.left_index
+    right_index = config.right_index
     # initialize the video streams and allow them to warmup
     time.sleep(0.5)
     print("[INFO] starting cameras...")
@@ -113,12 +107,13 @@ def stitch_local():
     print("Runtime: %s" % (time.time() - start_time))
 
 def main():
+    if not os.path.isfile(config_file):
+        raise ValueError('Configuration file does not exist.')
     args = parse_args()
     if (args.l):
         stitch_local()
     else:
-        left_index, right_index = setup()
-        left_stream, right_stream = initialize(left_index, right_index)
+        left_stream, right_stream = initialize()
         stitch_streams(left_stream, right_stream)
 
 if __name__ == "__main__":
