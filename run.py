@@ -13,8 +13,6 @@ import os.path
 import argparse
 import time
 
-config_file = "config/profile.yml"
-
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", action="store_true")
@@ -107,8 +105,6 @@ def stitch_local():
     print("Runtime: %s" % (time.time() - start_time))
 
 def main():
-    if not os.path.isfile(config_file):
-        raise ValueError('Configuration file does not exist.')
     args = parse_args()
     if (args.l):
         stitch_local()
