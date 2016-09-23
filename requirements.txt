@@ -1,3 +1,4 @@
 pyyaml>=3.12
 numpy>=1.11.1
 imutils>=0.3.6
+image
