@@ -12,6 +12,7 @@ from numpy import linalg
 class Multistitcher:
     def __init__(self, src_dir):
         self.src_dir = src_dir
+        self.cached_homographies = []
 
     def filter_matches(self, matches, ratio = 0.75):
         filtered_matches = []
@@ -72,22 +73,25 @@ class Multistitcher:
             return base_img_rgb
 
         base_img = cv2.GaussianBlur(cv2.cvtColor(base_img_rgb,cv2.COLOR_BGR2GRAY), (5,5), 0)
+        if (round < len(self.cached_homographies)):
+            closestImage = self.cached_homographies[round]
+        else:
 
-        # Use the SURF feature detector
-        detector = cv2.SURF()
+            # Use the SURF feature detector
+            detector = cv2.SURF()
 
-        # Find key points in base image for motion estimation
-        base_features, base_descs = detector.detectAndCompute(base_img, None)
+            # Find key points in base image for motion estimation
+            base_features, base_descs = detector.detectAndCompute(base_img, None)
 
-        # Parameters for nearest-neighbor matching
-        FLANN_INDEX_KDTREE = 1  # bug: flann enums are missing
-        flann_params = dict(algorithm = FLANN_INDEX_KDTREE, 
-            trees = 5)
-        matcher = cv2.FlannBasedMatcher(flann_params, {})
+            # Parameters for nearest-neighbor matching
+            FLANN_INDEX_KDTREE = 1  # bug: flann enums are missing
+            flann_params = dict(algorithm = FLANN_INDEX_KDTREE, 
+                trees = 5)
+            matcher = cv2.FlannBasedMatcher(flann_params, {})
 
-        print "Iterating through next images..."
+            print "Iterating through next images..."
 
-        closestImage = self.getNextImage(detector, matcher, base_descs, base_features, round, img_type)
+            closestImage = self.getNextImage(detector, matcher, base_descs, base_features, round, img_type)
         new_dir_list = filter(lambda x: x != closestImage['path'], dir_list)
 
         H = closestImage['h']
@@ -248,6 +252,9 @@ class Multistitcher:
             closestImage['feat'] = next_features
             closestImage['desc'] = next_descs
             closestImage['match'] = matches_subset
+
+            if len(self.cached_homographies) <= round:
+                self.cached_homographies.append(closestImage)
 
             print "Closest Image: ", closestImage['path']
             print "Closest Image Ratio: ", closestImage['inliers']

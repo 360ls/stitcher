@@ -71,6 +71,7 @@ def stitch_streams(leftStream, rightStream):
     rightStream.stop()
 
 def stitch_local():
+    iterations = 10
     config = Configuration()
 
     # get configuration
@@ -82,7 +83,6 @@ def stitch_local():
 
     stitcher = Multistitcher(dir_name)
 
-    start_time = time.time()
     # Key frame
     key_frame_file = key_frame.split('/')[-1]
 
@@ -102,9 +102,12 @@ def stitch_local():
 
     base_img_rgb = cv2.imread(key_frame)
 
-    final_img = stitcher.stitchImages(key_frame_file, base_img_rgb, dir_list, output_dir, 0, img_type)
-    print("Finished")
-    print("Runtime: %s" % (time.time() - start_time))
+    for i in xrange(iterations):
+        print("Starting Iteration #%d" % i)
+        start_time = time.time()
+        final_img = stitcher.stitchImages(key_frame_file, base_img_rgb, dir_list, output_dir, 0, img_type)
+        print("Finished Iteration #%d" % i)
+        print("Runtime: %s" % (time.time() - start_time))
 
 def main():
     args = parse_args()
