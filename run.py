@@ -17,6 +17,7 @@ import time
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", action="store_true")
+    parser.add_argument("-v", action="store_true")
     return parser.parse_args()
 
 def initialize():
@@ -52,8 +53,8 @@ def stitch_streams(leftStream, rightStream):
 
         # no homograpy could be computed
         if result is None:
-                print("[INFO] homography could not be computed")
-                break
+            print("[INFO] homography could not be computed")
+            break
 
         # show the output images
         cv2.imshow("Result", result)
@@ -118,10 +119,44 @@ def stitch_local():
         print(msg)
     print("Average runtime: %f" % (sum(iter_times)/iterations))
 
+def stitch_videos():
+    config = Configuration()
+    stitcher = Stitcher()
+    left_stream = cv2.VideoCapture(config.left_video)
+    right_stream = cv2.VideoCapture(config.right_video)
+
+    while (left_stream.isOpened()):
+        left_ret, left_frame = left_stream.read()
+        right_ret, right_frame = right_stream.read()
+
+        # resize the frames
+        left = imutils.resize(left_frame, width=400)
+        right = imutils.resize(right_frame, width=400)
+
+        result = stitcher.stitch([left, right])
+
+        # no homograpy could be computed
+        if result is None:
+            print("[INFO] homography could not be computed")
+            break
+
+        # show the output images
+        cv2.imshow("Result", result)
+        cv2.imshow("Left Frame", left)
+        cv2.imshow("Right Frame", right)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    left_stream.release()
+    right_stream.release()
+    cv2.destroyAllWindows()
+
 def main():
     args = parse_args()
     if (args.l):
         stitch_local()
+    elif (args.v):
+        stitch_videos()
     else:
         left_stream, right_stream = initialize()
         stitch_streams(left_stream, right_stream)
