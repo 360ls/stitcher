@@ -113,6 +113,9 @@ def stitch_local():
         iter_times.append(runtime)
         print("Runtime: %s" % (runtime))
 
+    for i in xrange(iterations):
+        msg = "Runtime for Iteration #{0}: {1}s".format(i, iter_times[i])
+        print(msg)
     print("Average runtime: %f" % (sum(iter_times)/iterations))
 
 def main():

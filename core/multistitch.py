@@ -263,6 +263,7 @@ class Multistitcher:
     def resizeImages(self, dir_list, dir_name, width):
         width = int(width)
         for i in range(len(dir_list)):
+            print "Resizing image: ", dir_list[i]
             imTemp = Image.open(dir_list[i])
             wPercent = (width/float(imTemp.size[0]))
             height = int((float(imTemp.size[1]) * float(wPercent)))
