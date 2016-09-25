@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import division
 from core.panorama import Stitcher
 from imutils.video import VideoStream
 from core.multistitch import Multistitcher
@@ -72,6 +73,7 @@ def stitch_streams(leftStream, rightStream):
 
 def stitch_local():
     iterations = 10
+    iter_times = []
     config = Configuration()
 
     # get configuration
@@ -107,7 +109,11 @@ def stitch_local():
         start_time = time.time()
         final_img = stitcher.stitchImages(key_frame_file, base_img_rgb, dir_list, output_dir, 0, img_type)
         print("Finished Iteration #%d" % i)
-        print("Runtime: %s" % (time.time() - start_time))
+        runtime = time.time() - start_time
+        iter_times.append(runtime)
+        print("Runtime: %s" % (runtime))
+
+    print("Average runtime: %f" % (sum(iter_times)/iterations))
 
 def main():
     args = parse_args()
