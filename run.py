@@ -1,7 +1,7 @@
 from __future__ import print_function
 from core.panorama import Stitcher
 from imutils.video import VideoStream
-from core.multistitch import *
+from core.multistitch import Multistitcher
 from utils.configuration import Configuration
 import numpy as np
 import datetime
@@ -80,6 +80,8 @@ def stitch_local():
     width = config.width
     img_type = config.format
 
+    stitcher = Multistitcher(dir_name)
+
     start_time = time.time()
     # Key frame
     key_frame_file = key_frame.split('/')[-1]
@@ -95,12 +97,12 @@ def stitch_local():
         sys.exit(-1)
 
     dir_list = map(lambda x: dir_name + "/" + x, dir_list)
-    resizeImages(dir_list, dir_name, width)
+    stitcher.resizeImages(dir_list, dir_name, width)
     dir_list = filter(lambda x: x != key_frame, dir_list)
 
     base_img_rgb = cv2.imread(key_frame)
 
-    final_img = stitchImages(key_frame_file, base_img_rgb, dir_list, output_dir, 0, img_type)
+    final_img = stitcher.stitchImages(key_frame_file, base_img_rgb, dir_list, output_dir, 0, img_type)
     print("Finished")
     print("Runtime: %s" % (time.time() - start_time))
 
