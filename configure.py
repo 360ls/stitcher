@@ -1,4 +1,5 @@
 import yaml
+import utils.scanner as scanner
 from utils.sorted_dict import UnsortableOrderedDict
 
 config_dir = "config"
@@ -7,15 +8,8 @@ def main():
     parse()
 
 def parse():
-    try:
-        left_index = int(raw_input('Enter index of left camera: '))
-    except ValueError:
-        print "Please enter a number."
-
-    try:
-        right_index = int(raw_input('Enter index of right camer: '))
-    except ValueError:
-        print "Please enter a number."
+    left_index = scanner.read_int('Enter index of left camera: ')
+    right_index = scanner.read_int('Enter index of right camer: ')
 
     source_dir = raw_input('Enter full path to image source directory: ')
     dest_dir = raw_input('Enter full path to image output directory: ')

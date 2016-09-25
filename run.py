@@ -14,6 +14,7 @@ import os.path
 import argparse
 import time
 import sys
+import utils.scanner as scanner
 
 def initialize():
     config = Configuration()
@@ -155,10 +156,7 @@ def main():
     print("3) Stitch from videos")
     print("4) Quit")
 
-    try:
-        opt = int(raw_input('Enter option number: '))
-    except ValueError:
-        print("Please enter a number.") 
+    opt = scanner.read_int('Enter option number: ')
 
     if opt == 1:
         stitch_local()
@@ -178,11 +176,9 @@ def configure_videos():
     print("Choose Option:")
     print("1) Use preconfigured left/right video streams")
     print("2) Configure streams")
+    print("3) Return to main options")
 
-    try:
-        opt = int(raw_input('Enter option number: '))
-    except ValueError:
-        print("Please enter a number.") 
+    opt = scanner.read_int('Enter option number: ')
 
     if opt == 1:
         config = Configuration()
@@ -192,20 +188,20 @@ def configure_videos():
         files = os.listdir(config.video_dir)
         video_files = [f for f in files if f.endswith(".mp4")]
         video_files.sort()
+
         print("List of video files found:")
+
         for i in xrange(len(video_files)):
             print(i, video_files[i], sep=') ', end='\n')
-        try:
-            left = int(raw_input('Choose left video: '))
-        except ValueError:
-            print("Please enter a number.") 
-        try:
-            right = int(raw_input('Choose right video: '))
-        except ValueError:
-            print("Please enter a number.") 
+
+        left = scanner.read_int('Choose left video: ')
+        right = scanner.read_int('Choose right video: ')
+
         left_video = os.path.join(config.video_dir, video_files[left])
         right_video = os.path.join(config.video_dir, video_files[right])
         return left_video, right_video
+    elif opt == 3:
+        main()
     else:
         sys.exit(0)
 
