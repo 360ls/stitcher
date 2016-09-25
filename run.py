@@ -1,7 +1,8 @@
 from __future__ import print_function
+from __future__ import division
 from core.panorama import Stitcher
 from imutils.video import VideoStream
-from core.multistitch import *
+from core.multistitch import Multistitcher
 from utils.configuration import Configuration
 import numpy as np
 import datetime
@@ -16,6 +17,7 @@ import time
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", action="store_true")
+    parser.add_argument("-v", action="store_true")
     return parser.parse_args()
 
 def initialize():
@@ -51,8 +53,8 @@ def stitch_streams(leftStream, rightStream):
 
         # no homograpy could be computed
         if result is None:
-                print("[INFO] homography could not be computed")
-                break
+            print("[INFO] homography could not be computed")
+            break
 
         # show the output images
         cv2.imshow("Result", result)
@@ -71,6 +73,8 @@ def stitch_streams(leftStream, rightStream):
     rightStream.stop()
 
 def stitch_local():
+    iterations = 10
+    iter_times = []
     config = Configuration()
 
     # get configuration
@@ -80,7 +84,8 @@ def stitch_local():
     width = config.width
     img_type = config.format
 
-    start_time = time.time()
+    stitcher = Multistitcher(dir_name)
+
     # Key frame
     key_frame_file = key_frame.split('/')[-1]
 
@@ -95,19 +100,63 @@ def stitch_local():
         sys.exit(-1)
 
     dir_list = map(lambda x: dir_name + "/" + x, dir_list)
-    resizeImages(dir_list, dir_name, width)
+    stitcher.resizeImages(dir_list, dir_name, width)
     dir_list = filter(lambda x: x != key_frame, dir_list)
 
     base_img_rgb = cv2.imread(key_frame)
 
-    final_img = stitchImages(key_frame_file, base_img_rgb, dir_list, output_dir, 0, img_type)
-    print("Finished")
-    print("Runtime: %s" % (time.time() - start_time))
+    for i in xrange(iterations):
+        print("Starting Iteration #%d" % i)
+        start_time = time.time()
+        final_img = stitcher.stitchImages(key_frame_file, base_img_rgb, dir_list, output_dir, 0, img_type)
+        print("Finished Iteration #%d" % i)
+        runtime = time.time() - start_time
+        iter_times.append(runtime)
+        print("Runtime: %s" % (runtime))
+
+    for i in xrange(iterations):
+        msg = "Runtime for Iteration #{0}: {1}s".format(i, iter_times[i])
+        print(msg)
+    print("Average runtime: %f" % (sum(iter_times)/iterations))
+
+def stitch_videos():
+    config = Configuration()
+    stitcher = Stitcher()
+    left_stream = cv2.VideoCapture(config.left_video)
+    right_stream = cv2.VideoCapture(config.right_video)
+
+    while (left_stream.isOpened()):
+        left_ret, left_frame = left_stream.read()
+        right_ret, right_frame = right_stream.read()
+
+        # resize the frames
+        left = imutils.resize(left_frame, width=400)
+        right = imutils.resize(right_frame, width=400)
+
+        result = stitcher.stitch([left, right])
+
+        # no homograpy could be computed
+        if result is None:
+            print("[INFO] homography could not be computed")
+            break
+
+        # show the output images
+        cv2.imshow("Result", result)
+        cv2.imshow("Left Frame", left)
+        cv2.imshow("Right Frame", right)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    left_stream.release()
+    right_stream.release()
+    cv2.destroyAllWindows()
 
 def main():
     args = parse_args()
     if (args.l):
         stitch_local()
+    elif (args.v):
+        stitch_videos()
     else:
         left_stream, right_stream = initialize()
         stitch_streams(left_stream, right_stream)

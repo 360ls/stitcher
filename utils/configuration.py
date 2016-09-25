@@ -21,3 +21,5 @@ class Configuration:
             self.keyframe = doc["key-frame"]
             self.width = doc["width"]
             self.format = doc["format"]
+            self.left_video = doc["left-video"]
+            self.right_video = doc["right-video"]
