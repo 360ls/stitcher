@@ -6,6 +6,8 @@ __pycache__/
 # generated profile
 profile.yml
 
+data/*
+
 # Vim
 *.swp
 

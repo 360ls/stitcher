@@ -16,7 +16,7 @@ Generate the setup profile:
 python configure.py
 ``` 
 
-## Running
+## Stitching Video from Cameras
 
 ```bash
 python run.py
@@ -24,3 +24,14 @@ python run.py
 This will bring up two streams coming from the cameras and the combined stream.
 To stop the program, make sure one of the stream windows is selected
 and press `q`.
+
+## Stitching Local Images
+Make sure that the images are in the directory specified in the `source_dir` 
+field in `profile.yml`. Then run the following command:
+
+```bash
+python run.py -l
+```
+
+The resulting stitched image will be stored in the directory specified in the
+`dest_dir` field in `profile.yml`.
