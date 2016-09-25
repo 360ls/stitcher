@@ -23,3 +23,4 @@ class Configuration:
             self.format = doc["format"]
             self.left_video = doc["left-video"]
             self.right_video = doc["right-video"]
+            self.video_dir = doc["video-dir"]

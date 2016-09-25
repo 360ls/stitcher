@@ -150,7 +150,7 @@ def stitch_videos():
     cv2.destroyAllWindows()
 
 def main():
-    print("Choose Option: ")
+    print("Choose Option:")
     print("1) Stitch local images")
     print("2) Stitch from cameras")
     print("3) Stitch from videos")
@@ -167,12 +167,46 @@ def main():
         left_stream, right_stream = initialize()
         stitch_streams(left_stream, right_stream)
     elif opt == 3:
+        configure_videos()
         stitch_videos()
     elif opt == 4:
         sys.exit(0)
     else:
         print("Invalid option")
         main()
+
+def configure_videos():
+    print("Choose Option:")
+    print("1) Use preconfigured left/right video streams")
+    print("2) Configure streams")
+
+    try:
+        opt = int(raw_input('Enter option number: '))
+    except ValueError:
+        print("Please enter a number.") 
+
+    if opt == 1:
+        config = Configuration()
+        return config.left_video, config.right_video
+    elif opt == 2:
+        config = Configuration()
+        files = os.listdir(config.video_dir)
+        video_files = [f for f in files if f.endswith(".mp4")]
+        video_files.sort()
+        print("List of video files found:")
+        for i in xrange(len(video_files)):
+            print(i, video_files[i], sep=') ', end='\n')
+        try:
+            left = int(raw_input('Choose left video: '))
+        except ValueError:
+            print("Please enter a number.") 
+        try:
+            right = int(raw_input('Choose right video: '))
+        except ValueError:
+            print("Please enter a number.") 
+        left_video = os.path.join(config.video_dir, video_files[left])
+        right_video = os.path.join(config.video_dir, video_files[right])
+        return left_video, right_video
 
 if __name__ == "__main__":
     main()
