@@ -114,11 +114,10 @@ def stitch_local():
         print(msg)
     print("Average runtime: %f" % (sum(iter_times)/iterations))
 
-def stitch_videos():
-    config = Configuration()
+def stitch_videos(left_video, right_video):
     stitcher = Stitcher()
-    left_stream = cv2.VideoCapture(config.left_video)
-    right_stream = cv2.VideoCapture(config.right_video)
+    left_stream = cv2.VideoCapture(left_video)
+    right_stream = cv2.VideoCapture(right_video)
 
     while (left_stream.isOpened()):
         left_ret, left_frame = left_stream.read()
@@ -167,8 +166,8 @@ def main():
         left_stream, right_stream = initialize()
         stitch_streams(left_stream, right_stream)
     elif opt == 3:
-        configure_videos()
-        stitch_videos()
+        left, right = configure_videos()
+        stitch_videos(left, right)
     elif opt == 4:
         sys.exit(0)
     else:
@@ -207,6 +206,8 @@ def configure_videos():
         left_video = os.path.join(config.video_dir, video_files[left])
         right_video = os.path.join(config.video_dir, video_files[right])
         return left_video, right_video
+    else:
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()
