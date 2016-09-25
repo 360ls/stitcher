@@ -35,3 +35,10 @@ python run.py -l
 
 The resulting stitched image will be stored in the directory specified in the
 `dest_dir` field in `profile.yml`.
+
+## Stitching from Local Videos
+Make sure that the video paths are specified in the `left-video` and `right-video` fields in `profile.yml`. Then run the following command:
+
+```bash
+python run.py -v
+```
