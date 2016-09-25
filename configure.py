@@ -1,4 +1,5 @@
 import yaml
+from utils.sorted_dict import UnsortableOrderedDict
 
 config_dir = "config"
 
@@ -29,17 +30,29 @@ def parse():
 
     format = raw_input('Enter image format: ')
 
-    settings = {
-        'left-index': left_index,
-        'right-index': right_index,
-        'source-dir': source_dir,
-        'dest-dir': dest_dir,
-        'key-frame': key_frame,
-        'width': width,
-        'format': format,
-        'left-video': left_video,
-        'right-video': right_video
-    }
+
+    settings = UnsortableOrderedDict([
+        ('left-index', left_index),
+        ('right-index', right_index),
+        ('source-dir', source_dir),
+        ('dest-dir', dest_dir),
+        ('key-frame', key_frame),
+        ('width', width),
+        ('format', format),
+        ('left-video', left_video),
+        ('right-video', right_video)
+    ])
+    # settings = {
+    #     'left-index': left_index,
+    #     'right-index': right_index,
+    #     'source-dir': source_dir,
+    #     'dest-dir': dest_dir,
+    #     'key-frame': key_frame,
+    #     'width': width,
+    #     'format': format,
+    #     'left-video': left_video,
+    #     'right-video': right_video
+    # }
 
     with open(config_dir + '/profile.yml', 'w') as file:
         yaml.dump(settings, file, default_flow_style=False)
