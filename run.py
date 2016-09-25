@@ -13,12 +13,7 @@ import yaml
 import os.path
 import argparse
 import time
-
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-l", action="store_true")
-    parser.add_argument("-v", action="store_true")
-    return parser.parse_args()
+import sys
 
 def initialize():
     config = Configuration()
@@ -145,21 +140,39 @@ def stitch_videos():
         cv2.imshow("Left Frame", left)
         cv2.imshow("Right Frame", right)
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+            left_stream.release()
+            right_stream.release()
+            cv2.destroyAllWindows()
+            main()
 
     left_stream.release()
     right_stream.release()
     cv2.destroyAllWindows()
 
 def main():
-    args = parse_args()
-    if (args.l):
+    print("Choose Option: ")
+    print("1) Stitch local images")
+    print("2) Stitch from cameras")
+    print("3) Stitch from videos")
+    print("4) Quit")
+
+    try:
+        opt = int(raw_input('Enter option number: '))
+    except ValueError:
+        print("Please enter a number.") 
+
+    if opt == 1:
         stitch_local()
-    elif (args.v):
-        stitch_videos()
-    else:
+    elif opt == 2:
         left_stream, right_stream = initialize()
         stitch_streams(left_stream, right_stream)
+    elif opt == 3:
+        stitch_videos()
+    elif opt == 4:
+        sys.exit(0)
+    else:
+        print("Invalid option")
+        main()
 
 if __name__ == "__main__":
     main()
