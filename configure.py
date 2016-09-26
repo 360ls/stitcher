@@ -14,6 +14,7 @@ def parse():
     source_dir = raw_input('Enter full path to image source directory: ')
     dest_dir = raw_input('Enter full path to image output directory: ')
     key_frame = raw_input('Enter full path to key frame image: ')
+    video_dir = raw_input('Enter path to video source directory: ')
     left_video = raw_input('Enter path to left video: ')
     right_video = raw_input('Enter path to right video: ')
 
@@ -32,6 +33,7 @@ def parse():
         ('key-frame', key_frame),
         ('width', width),
         ('format', format),
+        ('video-dir', video_dir),
         ('left-video', left_video),
         ('right-video', right_video)
     ])
