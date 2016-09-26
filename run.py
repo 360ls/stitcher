@@ -186,20 +186,24 @@ def configure_videos():
     elif opt == 2:
         config = Configuration()
         files = os.listdir(config.video_dir)
-        video_files = [f for f in files if f.endswith(".mp4")]
-        video_files.sort()
+        video_files = [f for f in files if f.endswith(".mp4") or f.endswith(".MP4")]
+        if len(video_files) > 0:
+		video_files.sort()
 
-        print("List of video files found:")
+        	print("List of video files found:")
 
-        for i in xrange(len(video_files)):
-            print(i, video_files[i], sep=') ', end='\n')
+        	for i in xrange(len(video_files)):
+            		print(i, video_files[i], sep=') ', end='\n')
 
-        left = scanner.read_int('Choose left video: ')
-        right = scanner.read_int('Choose right video: ')
+        	left = scanner.read_int('Choose left video: ')
+        	right = scanner.read_int('Choose right video: ')
 
-        left_video = os.path.join(config.video_dir, video_files[left])
-        right_video = os.path.join(config.video_dir, video_files[right])
-        return left_video, right_video
+        	left_video = os.path.join(config.video_dir, video_files[left])
+        	right_video = os.path.join(config.video_dir, video_files[right])
+        	return left_video, right_video
+	else:
+		print("Sorry, no valid files found for configuration. Please try again.")
+		sys.exit(0)
     elif opt == 3:
         main()
     else:
