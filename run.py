@@ -186,7 +186,7 @@ def configure_videos():
     elif opt == 2:
         config = Configuration()
         files = os.listdir(config.video_dir)
-        video_files = [f for f in files if f.endswith(".mp4")]
+        video_files = [f for f in files if f.endswith(".mp4") or f.endswith(".MP4")]
         video_files.sort()
 
         print("List of video files found:")
