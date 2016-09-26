@@ -13,12 +13,8 @@ import yaml
 import os.path
 import argparse
 import time
-
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-l", action="store_true")
-    parser.add_argument("-v", action="store_true")
-    return parser.parse_args()
+import sys
+import utils.scanner as scanner
 
 def initialize():
     config = Configuration()
@@ -119,11 +115,10 @@ def stitch_local():
         print(msg)
     print("Average runtime: %f" % (sum(iter_times)/iterations))
 
-def stitch_videos():
-    config = Configuration()
+def stitch_videos(left_video, right_video):
     stitcher = Stitcher()
-    left_stream = cv2.VideoCapture(config.left_video)
-    right_stream = cv2.VideoCapture(config.right_video)
+    left_stream = cv2.VideoCapture(left_video)
+    right_stream = cv2.VideoCapture(right_video)
 
     while (left_stream.isOpened()):
         left_ret, left_frame = left_stream.read()
@@ -145,21 +140,70 @@ def stitch_videos():
         cv2.imshow("Left Frame", left)
         cv2.imshow("Right Frame", right)
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+            left_stream.release()
+            right_stream.release()
+            cv2.destroyAllWindows()
+            main()
 
     left_stream.release()
     right_stream.release()
     cv2.destroyAllWindows()
 
 def main():
-    args = parse_args()
-    if (args.l):
+    print("Choose Option:")
+    print("1) Stitch local images")
+    print("2) Stitch from cameras")
+    print("3) Stitch from videos")
+    print("4) Quit")
+
+    opt = scanner.read_int('Enter option number: ')
+
+    if opt == 1:
         stitch_local()
-    elif (args.v):
-        stitch_videos()
-    else:
+    elif opt == 2:
         left_stream, right_stream = initialize()
         stitch_streams(left_stream, right_stream)
+    elif opt == 3:
+        left, right = configure_videos()
+        stitch_videos(left, right)
+    elif opt == 4:
+        sys.exit(0)
+    else:
+        print("Invalid option")
+        main()
+
+def configure_videos():
+    print("Choose Option:")
+    print("1) Use preconfigured left/right video streams")
+    print("2) Configure streams")
+    print("3) Return to main options")
+
+    opt = scanner.read_int('Enter option number: ')
+
+    if opt == 1:
+        config = Configuration()
+        return config.left_video, config.right_video
+    elif opt == 2:
+        config = Configuration()
+        files = os.listdir(config.video_dir)
+        video_files = [f for f in files if f.endswith(".mp4")]
+        video_files.sort()
+
+        print("List of video files found:")
+
+        for i in xrange(len(video_files)):
+            print(i, video_files[i], sep=') ', end='\n')
+
+        left = scanner.read_int('Choose left video: ')
+        right = scanner.read_int('Choose right video: ')
+
+        left_video = os.path.join(config.video_dir, video_files[left])
+        right_video = os.path.join(config.video_dir, video_files[right])
+        return left_video, right_video
+    elif opt == 3:
+        main()
+    else:
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()
