@@ -16,6 +16,79 @@ import time
 import sys
 import utils.scanner as scanner
 
+def main():
+    print("Choose Option:")
+    print("0) Quit")
+    print("1) Stitch local images")
+    print("2) Stitch from cameras")
+    print("3) Stitch from 2 videos")
+    print("4) Stitch from 4 videos")
+
+    opt = scanner.read_int('Enter option number: ')
+
+    if opt == 1:
+        stitch_local()
+    elif opt == 2:
+        left_stream, right_stream = initialize()
+        stitch_streams(left_stream, right_stream)
+    elif opt == 3:
+        left, right = configure_videos()
+        stitch_videos(left, right)
+    elif opt == 4:
+        stitch_all_videos()
+    elif opt == 0:
+        sys.exit(0)
+    else:
+        print("Invalid option")
+        main()
+
+def stitch_local():
+    iterations = 10
+    iter_times = []
+    config = Configuration()
+
+    # get configuration
+    dir_name = config.source_dir
+    output_dir = config.dest_dir
+    key_frame = config.keyframe
+    width = config.width
+    img_type = config.format
+
+    stitcher = Multistitcher(dir_name)
+
+    # Key frame
+    key_frame_file = key_frame.split('/')[-1]
+
+    # Open the directory given in the arguments
+    dir_list = []
+    try:
+        dir_list = os.listdir(dir_name)
+        dir_list = filter(lambda x: x.find(img_type) > -1, dir_list)
+
+    except:
+        print >> sys.stderr, ("Unable to open directory: %s" % dir_name)
+        sys.exit(-1)
+
+    dir_list = map(lambda x: dir_name + "/" + x, dir_list)
+    stitcher.resizeImages(dir_list, dir_name, width)
+    dir_list = filter(lambda x: x != key_frame, dir_list)
+
+    base_img_rgb = cv2.imread(key_frame)
+
+    for i in xrange(iterations):
+        print("Starting Iteration #%d" % i)
+        start_time = time.time()
+        final_img = stitcher.stitchImages(key_frame_file, base_img_rgb, dir_list, output_dir, 0, img_type)
+        print("Finished Iteration #%d" % i)
+        runtime = time.time() - start_time
+        iter_times.append(runtime)
+        print("Runtime: %s" % (runtime))
+
+    for i in xrange(iterations):
+        msg = "Runtime for Iteration #{0}: {1}s".format(i, iter_times[i])
+        print(msg)
+    print("Average runtime: %f" % (sum(iter_times)/iterations))
+
 def initialize():
     config = Configuration()
     left_index = config.left_index
@@ -68,110 +141,6 @@ def stitch_streams(leftStream, rightStream):
     leftStream.stop()
     rightStream.stop()
 
-def stitch_local():
-    iterations = 10
-    iter_times = []
-    config = Configuration()
-
-    # get configuration
-    dir_name = config.source_dir
-    output_dir = config.dest_dir
-    key_frame = config.keyframe
-    width = config.width
-    img_type = config.format
-
-    stitcher = Multistitcher(dir_name)
-
-    # Key frame
-    key_frame_file = key_frame.split('/')[-1]
-
-    # Open the directory given in the arguments
-    dir_list = []
-    try:
-        dir_list = os.listdir(dir_name)
-        dir_list = filter(lambda x: x.find(img_type) > -1, dir_list)
-
-    except:
-        print >> sys.stderr, ("Unable to open directory: %s" % dir_name)
-        sys.exit(-1)
-
-    dir_list = map(lambda x: dir_name + "/" + x, dir_list)
-    stitcher.resizeImages(dir_list, dir_name, width)
-    dir_list = filter(lambda x: x != key_frame, dir_list)
-
-    base_img_rgb = cv2.imread(key_frame)
-
-    for i in xrange(iterations):
-        print("Starting Iteration #%d" % i)
-        start_time = time.time()
-        final_img = stitcher.stitchImages(key_frame_file, base_img_rgb, dir_list, output_dir, 0, img_type)
-        print("Finished Iteration #%d" % i)
-        runtime = time.time() - start_time
-        iter_times.append(runtime)
-        print("Runtime: %s" % (runtime))
-
-    for i in xrange(iterations):
-        msg = "Runtime for Iteration #{0}: {1}s".format(i, iter_times[i])
-        print(msg)
-    print("Average runtime: %f" % (sum(iter_times)/iterations))
-
-def stitch_videos(left_video, right_video):
-    stitcher = Stitcher()
-    left_stream = cv2.VideoCapture(left_video)
-    right_stream = cv2.VideoCapture(right_video)
-
-    while (left_stream.isOpened()):
-        left_ret, left_frame = left_stream.read()
-        right_ret, right_frame = right_stream.read()
-
-        # resize the frames
-        left = imutils.resize(left_frame, width=400)
-        right = imutils.resize(right_frame, width=400)
-
-        result = stitcher.stitch([left, right])
-
-        # no homograpy could be computed
-        if result is None:
-            print("[INFO] homography could not be computed")
-            break
-
-        # show the output images
-        cv2.imshow("Result", result)
-        cv2.imshow("Left Frame", left)
-        cv2.imshow("Right Frame", right)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            left_stream.release()
-            right_stream.release()
-            cv2.destroyAllWindows()
-            main()
-
-    left_stream.release()
-    right_stream.release()
-    cv2.destroyAllWindows()
-
-def main():
-    print("Choose Option:")
-    print("1) Stitch local images")
-    print("2) Stitch from cameras")
-    print("3) Stitch from videos")
-    print("4) Quit")
-
-    opt = scanner.read_int('Enter option number: ')
-
-    if opt == 1:
-        stitch_local()
-    elif opt == 2:
-        left_stream, right_stream = initialize()
-        stitch_streams(left_stream, right_stream)
-    elif opt == 3:
-        left, right = configure_videos()
-        stitch_videos(left, right)
-    elif opt == 4:
-        sys.exit(0)
-    else:
-        print("Invalid option")
-        main()
-
 def configure_videos():
     print("Choose Option:")
     print("1) Use preconfigured left/right video streams")
@@ -208,6 +177,80 @@ def configure_videos():
         main()
     else:
         sys.exit(0)
+
+def stitch_videos(left_video, right_video):
+    stitcher = Stitcher()
+    left_stream = cv2.VideoCapture(left_video)
+    right_stream = cv2.VideoCapture(right_video)
+
+    while (left_stream.isOpened()):
+        left_ret, left_frame = left_stream.read()
+        right_ret, right_frame = right_stream.read()
+
+        # resize the frames
+        left = imutils.resize(left_frame, width=400)
+        right = imutils.resize(right_frame, width=400)
+
+        result = stitcher.stitch([left, right])
+
+        # no homograpy could be computed
+        if result is None:
+            print("[INFO] homography could not be computed")
+            break
+
+        # show the output images
+        cv2.imshow("Result", result)
+        cv2.imshow("Left Frame", left)
+        cv2.imshow("Right Frame", right)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            left_stream.release()
+            right_stream.release()
+            cv2.destroyAllWindows()
+            main()
+
+    left_stream.release()
+    right_stream.release()
+    cv2.destroyAllWindows()
+
+def stitch_all_videos():
+    stitcher = Stitcher()
+    fst_stitcher = Stitcher()
+    snd_stitcher = Stitcher()
+    config = Configuration()
+    video_dir = config.video_dir
+    video_files = get_video_files(video_dir)
+    video_streams = [cv2.VideoCapture(path) for path in video_files]
+
+    while (video_streams[0].isOpened() and
+           video_streams[1].isOpened() and
+           video_streams[2].isOpened() and
+           video_streams[3].isOpened()
+           ):
+        video_frames = [stream.read()[1] for stream in video_streams]
+        resized_frames = [imutils.resize(frame, width=400) for frame in video_frames]
+
+        left_result = fst_stitcher.stitch([video_frames[0], video_frames[1]])
+        right_result = snd_stitcher.stitch([video_frames[2], video_frames[3]])
+        result = stitcher.stitch([left_result, right_result])
+
+        # no homograpy could be computed
+        if left_result is None or right_result is None:
+            print("[INFO] homography could not be computed")
+            break
+
+        cv2.imshow("Result", result)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            for stream in video_streams:
+                stream.release()
+            cv2.destroyAllWindows()
+            main()
+
+def get_video_files(src_dir):
+    files = os.listdir(src_dir)
+    video_files = [f for f in files if f.endswith(".mp4") or f.endswith(".MP4")]
+    video_files.sort()
+    video_paths = [os.path.join(src_dir, path) for path in video_files]
+    return video_paths
 
 if __name__ == "__main__":
     main()
