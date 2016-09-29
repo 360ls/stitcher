@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from __future__ import print_function
 from __future__ import division
 from core.panorama import Stitcher
@@ -15,6 +17,10 @@ import argparse
 import time
 import sys
 import utils.scanner as scanner
+import socket
+import sys
+import pickle
+import struct
 
 def main():
     print("Choose Option:")
@@ -23,6 +29,7 @@ def main():
     print("2) Stitch from cameras")
     print("3) Stitch from 2 videos")
     print("4) Stitch from 4 videos")
+    print("5) Stream stitched video")
 
     opt = scanner.read_int('Enter option number: ')
 
@@ -36,6 +43,9 @@ def main():
         stitch_videos(left, right)
     elif opt == 4:
         stitch_all_videos()
+    elif opt == 5:
+        left, right = configure_videos()
+        stream_video(left, right)
     elif opt == 0:
         sys.exit(0)
     else:
@@ -244,6 +254,42 @@ def stitch_all_videos():
                 stream.release()
             cv2.destroyAllWindows()
             main()
+
+def stream_video(left_video, right_video):
+    stitcher = Stitcher()
+
+    left_stream = cv2.VideoCapture(left_video)
+    right_stream = cv2.VideoCapture(right_video)
+
+    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    clientsocket.connect(('localhost',8089))
+
+    while (left_stream.isOpened()):
+        left_ret, left_frame = left_stream.read()
+        right_ret, right_frame = right_stream.read()
+
+        # resize the frames
+        left = imutils.resize(left_frame, width=400)
+        right = imutils.resize(right_frame, width=400)
+
+        result = stitcher.stitch([left, right])
+
+        # no homograpy could be computed
+        if result is None:
+            print("[INFO] homography could not be computed")
+            break
+
+        data = pickle.dumps(result)
+        clientsocket.sendall(struct.pack("L", len(data))+data)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            left_stream.release()
+            right_stream.release()
+            cv2.destroyAllWindows()
+            main()
+
+    left_stream.release()
+    right_stream.release()
+    cv2.destroyAllWindows()
 
 def get_video_files(src_dir):
     files = os.listdir(src_dir)
