@@ -1,3 +1,7 @@
+"""
+This module is responsible for taking in user input from the terminal and turning it into a configuration profile.
+"""
+
 import yaml
 import utils.scanner as scanner
 from utils.sorted_dict import UnsortableOrderedDict
@@ -5,9 +9,11 @@ from utils.sorted_dict import UnsortableOrderedDict
 config_dir = "config"
 
 def main():
+    """ Calls the main parse method. """
     parse()
 
 def parse():
+    """ Parses user input to pass to the configuration profile. """
     left_index = scanner.read_int('Enter index of left camera: ')
     right_index = scanner.read_int('Enter index of right camer: ')
 
@@ -45,4 +51,5 @@ def parse():
         yaml.dump(settings, file, default_flow_style=False)
 
 if __name__ == "__main__":
+    """ Ensures that script only runs when called explicitly. """
     main()
