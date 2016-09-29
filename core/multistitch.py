@@ -78,6 +78,7 @@ class Multistitcher:
         return (min_x, min_y, max_x, max_y)
 
     def stitchImages(self, key_frame_file, base_img_rgb, dir_list, output, round, img_type):
+        """ Primary method for stitching the images together. """
         if ( len(dir_list) < 1 ):
             return base_img_rgb
 
@@ -208,6 +209,8 @@ class Multistitcher:
             return self.stitchImages(key_frame_file, base_img_rgb, new_dir_list, output, round+1, img_type)
 
     def getNextImage(self, detector, matcher, base_descs, base_features,  round, format):
+            """ Pulls in the next image for processing. """
+
             next_img_path = "{2}/{0}.{1}".format(round+1, format, self.src_dir)
             print "Reading %s..." % next_img_path
 
@@ -270,6 +273,8 @@ class Multistitcher:
             return closestImage
 
     def resizeImages(self, dir_list, dir_name, width):
+        """ Resizes images to cut down on computation time. """
+        
         width = int(width)
         for i in range(len(dir_list)):
             print "Resizing image: ", dir_list[i]
