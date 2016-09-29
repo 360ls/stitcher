@@ -35,17 +35,17 @@ def main():
     opt = scanner.read_int('Enter option number: ')
 
     if opt == 1:
-        stitch_local()
+        stitch_local(config)
     elif opt == 2:
-        left_stream, right_stream = initialize()
+        left_stream, right_stream = initialize(config)
         stitch_streams(left_stream, right_stream)
     elif opt == 3:
-        left, right = configure_videos()
+        left, right = configure_videos(config)
         stitch_videos(left, right)
     elif opt == 4:
-        stitch_all_videos()
+        stitch_all_videos(config)
     elif opt == 5:
-        left, right = configure_videos()
+        left, right = configure_videos(config)
         port = config.port
         stream_video(left, right, port)
     elif opt == 0:
@@ -54,10 +54,9 @@ def main():
         print("Invalid option")
         main()
 
-def stitch_local():
+def stitch_local(config):
     iterations = 10
     iter_times = []
-    config = Configuration()
 
     # get configuration
     dir_name = config.source_dir
@@ -101,8 +100,7 @@ def stitch_local():
         print(msg)
     print("Average runtime: %f" % (sum(iter_times)/iterations))
 
-def initialize():
-    config = Configuration()
+def initialize(config):
     left_index = config.left_index
     right_index = config.right_index
     # initialize the video streams and allow them to warmup
@@ -153,7 +151,7 @@ def stitch_streams(leftStream, rightStream):
     leftStream.stop()
     rightStream.stop()
 
-def configure_videos():
+def configure_videos(config):
     print("Choose Option:")
     print("1) Use preconfigured left/right video streams")
     print("2) Configure streams")
@@ -162,10 +160,8 @@ def configure_videos():
     opt = scanner.read_int('Enter option number: ')
 
     if opt == 1:
-        config = Configuration()
         return config.left_video, config.right_video
     elif opt == 2:
-        config = Configuration()
         files = os.listdir(config.video_dir)
         video_files = [f for f in files if f.endswith(".mp4") or f.endswith(".MP4")]
         if len(video_files) > 0:
@@ -224,11 +220,10 @@ def stitch_videos(left_video, right_video):
     right_stream.release()
     cv2.destroyAllWindows()
 
-def stitch_all_videos():
+def stitch_all_videos(config):
     stitcher = Stitcher()
     fst_stitcher = Stitcher()
     snd_stitcher = Stitcher()
-    config = Configuration()
     video_dir = config.video_dir
     video_files = get_video_files(video_dir)
     video_streams = [cv2.VideoCapture(path) for path in video_files]
