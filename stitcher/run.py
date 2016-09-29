@@ -1,6 +1,6 @@
-""" The main module for running and testing the stitching algorithm. """
-
 #!/usr/bin/env python
+
+""" The main module for running and testing the stitching algorithm. """
 
 from __future__ import print_function
 from __future__ import division

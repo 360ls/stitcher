@@ -1,8 +1,8 @@
+#!/usr/bin/env python
+
 """
 This module is responsible for setting up the client-socket pairing for streaming of video output. It is simply a script and does not contain any classes or function declarations.
 """
-
-#!/usr/bin/env python
 
 import socket
 import sys
