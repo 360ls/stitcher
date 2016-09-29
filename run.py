@@ -193,7 +193,7 @@ def stitch_videos(left_video, right_video):
     left_stream = cv2.VideoCapture(left_video)
     right_stream = cv2.VideoCapture(right_video)
 
-    while (left_stream.isOpened()):
+    while (left_stream.isOpened() and right_stream.isOpened()):
         left_ret, left_frame = left_stream.read()
         right_ret, right_frame = right_stream.read()
 
@@ -262,9 +262,9 @@ def stream_video(left_video, right_video):
     right_stream = cv2.VideoCapture(right_video)
 
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    clientsocket.connect(('localhost',8089))
+    clientsocket.connect(('localhost', 8089))
 
-    while (left_stream.isOpened()):
+    while (left_stream.isOpened() and right_stream.isOpened()):
         left_ret, left_frame = left_stream.read()
         right_ret, right_frame = right_stream.read()
 
@@ -281,11 +281,6 @@ def stream_video(left_video, right_video):
 
         data = pickle.dumps(result)
         clientsocket.sendall(struct.pack("L", len(data))+data)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            left_stream.release()
-            right_stream.release()
-            cv2.destroyAllWindows()
-            main()
 
     left_stream.release()
     right_stream.release()
