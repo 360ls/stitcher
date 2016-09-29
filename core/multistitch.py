@@ -1,3 +1,7 @@
+
+"""
+This module encapsulates the Multistitcher class to enable stitching of multiple images/frames.
+"""
 #!/usr/bin/python
 
 import os
@@ -10,11 +14,14 @@ from PIL import Image
 from numpy import linalg
 
 class Multistitcher:
+    """ The Multistitcher class enables stitching of multiple images/frames. """
     def __init__(self, src_dir):
+        """ The constructor for the Multistitcher class. """
         self.src_dir = src_dir
         self.cached_homographies = []
 
     def filter_matches(self, matches, ratio = 0.75):
+        """ Filters nearest neighbor matches for computing stitch. """
         filtered_matches = []
         for m in matches:
             if len(m) == 2 and m[0].distance < m[1].distance * ratio:
@@ -22,12 +29,14 @@ class Multistitcher:
         return filtered_matches
 
     def imageDistance(self, matches):
+        """ Computes sum of distances between nearest neighbor matches. """
         sumDistance = 0.0
         for match in matches:
             sumDistance += match.distance
         return sumDistance
 
     def findDimensions(self, image, homography):
+        """ Gets the dimensions of the image based on the calculated homography. """
         base_p1 = np.ones(3, np.float32)
         base_p2 = np.ones(3, np.float32)
         base_p3 = np.ones(3, np.float32)
