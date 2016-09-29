@@ -30,3 +30,15 @@ This will start the CLI with the following options.
 1. Stitching Videos from Cameras
 2. Stitching Local Images
 3. Stitching from Local Videos
+
+## Streaming
+Make sure that the port number is configured in `profile.yml`.
+
+Run the following command to start the client program that waits
+for the frames over the socket in the background.
+
+```bash
+python client.py &
+```
+
+Then start the CLI and choose the streaming option.

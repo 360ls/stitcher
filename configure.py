@@ -18,6 +18,8 @@ def parse():
     left_video = raw_input('Enter path to left video: ')
     right_video = raw_input('Enter path to right video: ')
 
+    port = scanner.read_int('Enter socket port number')
+
     try:
         width = int(raw_input('Enter image width: '))
     except ValueError:
@@ -35,7 +37,8 @@ def parse():
         ('format', format),
         ('video-dir', video_dir),
         ('left-video', left_video),
-        ('right-video', right_video)
+        ('right-video', right_video),
+        ('port', port)
     ])
 
     with open(config_dir + '/profile.yml', 'w') as file:

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from __future__ import print_function
 from __future__ import division
 from core.panorama import Stitcher
@@ -15,37 +17,46 @@ import argparse
 import time
 import sys
 import utils.scanner as scanner
+import socket
+import sys
+import pickle
+import struct
 
 def main():
+    config = Configuration()
     print("Choose Option:")
     print("0) Quit")
     print("1) Stitch local images")
     print("2) Stitch from cameras")
     print("3) Stitch from 2 videos")
     print("4) Stitch from 4 videos")
+    print("5) Stream stitched video")
 
     opt = scanner.read_int('Enter option number: ')
 
     if opt == 1:
-        stitch_local()
+        stitch_local(config)
     elif opt == 2:
-        left_stream, right_stream = initialize()
+        left_stream, right_stream = initialize(config)
         stitch_streams(left_stream, right_stream)
     elif opt == 3:
-        left, right = configure_videos()
+        left, right = configure_videos(config)
         stitch_videos(left, right)
     elif opt == 4:
-        stitch_all_videos()
+        stitch_all_videos(config)
+    elif opt == 5:
+        left, right = configure_videos(config)
+        port = config.port
+        stream_video(left, right, port)
     elif opt == 0:
         sys.exit(0)
     else:
         print("Invalid option")
         main()
 
-def stitch_local():
+def stitch_local(config):
     iterations = 10
     iter_times = []
-    config = Configuration()
 
     # get configuration
     dir_name = config.source_dir
@@ -89,8 +100,7 @@ def stitch_local():
         print(msg)
     print("Average runtime: %f" % (sum(iter_times)/iterations))
 
-def initialize():
-    config = Configuration()
+def initialize(config):
     left_index = config.left_index
     right_index = config.right_index
     # initialize the video streams and allow them to warmup
@@ -141,7 +151,7 @@ def stitch_streams(leftStream, rightStream):
     leftStream.stop()
     rightStream.stop()
 
-def configure_videos():
+def configure_videos(config):
     print("Choose Option:")
     print("1) Use preconfigured left/right video streams")
     print("2) Configure streams")
@@ -150,10 +160,8 @@ def configure_videos():
     opt = scanner.read_int('Enter option number: ')
 
     if opt == 1:
-        config = Configuration()
         return config.left_video, config.right_video
     elif opt == 2:
-        config = Configuration()
         files = os.listdir(config.video_dir)
         video_files = [f for f in files if f.endswith(".mp4") or f.endswith(".MP4")]
         if len(video_files) > 0:
@@ -183,7 +191,7 @@ def stitch_videos(left_video, right_video):
     left_stream = cv2.VideoCapture(left_video)
     right_stream = cv2.VideoCapture(right_video)
 
-    while (left_stream.isOpened()):
+    while (left_stream.isOpened() and right_stream.isOpened()):
         left_ret, left_frame = left_stream.read()
         right_ret, right_frame = right_stream.read()
 
@@ -212,11 +220,10 @@ def stitch_videos(left_video, right_video):
     right_stream.release()
     cv2.destroyAllWindows()
 
-def stitch_all_videos():
+def stitch_all_videos(config):
     stitcher = Stitcher()
     fst_stitcher = Stitcher()
     snd_stitcher = Stitcher()
-    config = Configuration()
     video_dir = config.video_dir
     video_files = get_video_files(video_dir)
     video_streams = [cv2.VideoCapture(path) for path in video_files]
@@ -244,6 +251,37 @@ def stitch_all_videos():
                 stream.release()
             cv2.destroyAllWindows()
             main()
+
+def stream_video(left_video, right_video, port):
+    stitcher = Stitcher()
+
+    left_stream = cv2.VideoCapture(left_video)
+    right_stream = cv2.VideoCapture(right_video)
+
+    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    clientsocket.connect(('localhost', port))
+
+    while (left_stream.isOpened() and right_stream.isOpened()):
+        left_ret, left_frame = left_stream.read()
+        right_ret, right_frame = right_stream.read()
+
+        # resize the frames
+        left = imutils.resize(left_frame, width=400)
+        right = imutils.resize(right_frame, width=400)
+
+        result = stitcher.stitch([left, right])
+
+        # no homograpy could be computed
+        if result is None:
+            print("[INFO] homography could not be computed")
+            break
+
+        data = pickle.dumps(result)
+        clientsocket.sendall(struct.pack("L", len(data))+data)
+
+    left_stream.release()
+    right_stream.release()
+    cv2.destroyAllWindows()
 
 def get_video_files(src_dir):
     files = os.listdir(src_dir)

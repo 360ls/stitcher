@@ -25,6 +25,7 @@ class Configuration:
             self.left_video = self.get_field("left-video", doc)
             self.right_video = self.get_field("right-video", doc)
             self.video_dir = self.get_field("video-dir", doc)
+            self.port = self.get_field("port", doc)
 
     def get_field(self, key, doc):
         if key in doc:
