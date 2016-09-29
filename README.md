@@ -7,14 +7,14 @@
 
 Install dependencies:
 ```bash
-pip install -r requirements.txt
+make install
 ```
 
 ## Setup
 Generate the setup profile:
 
 ```bash
-python configure.py
+make configure
 ``` 
 
 Make sure images are in the `data/sources` directory and the videos are in the `data/videos` directory
@@ -22,7 +22,7 @@ Make sure images are in the `data/sources` directory and the videos are in the `
 ## Running
 
 ```bash
-python run.py
+make run
 ```
 
 This will start the CLI with the following options.
@@ -38,7 +38,7 @@ Run the following command to start the client program that waits
 for the frames over the socket in the background.
 
 ```bash
-python client.py &
+make client
 ```
 
 Then start the CLI and choose the streaming option.
