@@ -5,7 +5,9 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
-BUILDDIR      = build
+BUILDDIR      = ../../360ls-stitcher-docs
+PDFBUILDER		= /tmp
+PDF						= ../manual.pdf
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -138,8 +140,9 @@ latex:
 latexpdf:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo "Running LaTeX files through pdflatex..."
-	$(MAKE) -C $(BUILDDIR)/latex all-pdf
-	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
+	$(MAKE) -C $(PDFBUILDER)/latex all-pdf
+	cp $(PDFBUILDER)/latex/*.pdf $(PDF)
+	@echo "pdflatex finished; the PDF files are in $(PDF)"
 
 .PHONY: latexpdfja
 latexpdfja:

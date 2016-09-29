@@ -1,4 +1,5 @@
 PACKAGE_DIR=stitcher
+DOC_DIR=docs
 all: run
 
 install:
@@ -13,3 +14,6 @@ run:
 
 client:
 	python $(PACKAGE_DIR)/client.py &
+
+html:
+	$(MAKE) -C $(DOC_DIR) html
