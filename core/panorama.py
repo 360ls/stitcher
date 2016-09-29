@@ -1,3 +1,7 @@
+"""
+This module encapsulates the Stitcerh class to enable stitching of images/frames.
+"""
+
 # import the necessary packages
 import numpy as np
 import imutils
@@ -5,12 +9,16 @@ import cv2
 
 class Stitcher:
     def __init__(self):
+        """ Constructor for the Stitcher class. Initializes cached homography matrix and checks version of OpenCV. """
+
         # determine if we are using OpenCV v3.X and initialize the
         # cached homography matrix
         self.isv3 = imutils.is_cv3()
         self.cachedH = None
 
     def stitch(self, images, ratio=0.75, reprojThresh=4.0):
+        """ Primary method for stitching images together within the Stitcher class. """
+        
         # unpack the images
         (imageB, imageA) = images
 
@@ -43,6 +51,8 @@ class Stitcher:
         return result
 
     def detectAndDescribe(self, image):
+        """ Detects keypoints in the image and extracts features from the image based on those keypoints. """
+
         # convert the image to grayscale
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -71,6 +81,8 @@ class Stitcher:
 
     def matchKeypoints(self, kpsA, kpsB, featuresA, featuresB,
         ratio, reprojThresh):
+        """ Computes keypoint matches and homography matrix based on those matches. """
+
         # compute the raw matches and initialize the list of actual
         # matches
         matcher = cv2.DescriptorMatcher_create("BruteForce")
