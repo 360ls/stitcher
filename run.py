@@ -1,3 +1,5 @@
+""" The main module for running and testing the stitching algorithm. """
+
 #!/usr/bin/env python
 
 from __future__ import print_function
@@ -23,6 +25,7 @@ import pickle
 import struct
 
 def main():
+    """ The main script for instantiating a CLI to navigate stitching. """
     config = Configuration()
     print("Choose Option:")
     print("0) Quit")
@@ -55,6 +58,7 @@ def main():
         main()
 
 def stitch_local(config):
+    """ Function for stitching from local images. """
     iterations = 10
     iter_times = []
 
@@ -101,6 +105,7 @@ def stitch_local(config):
     print("Average runtime: %f" % (sum(iter_times)/iterations))
 
 def initialize(config):
+    """ Initializes stream from cameras. """
     left_index = config.left_index
     right_index = config.right_index
     # initialize the video streams and allow them to warmup
@@ -112,6 +117,7 @@ def initialize(config):
     return leftStream, rightStream
 
 def stitch_streams(leftStream, rightStream):
+    """ Stitches left and right streams. """
     stitcher = Stitcher()
 
     # loop over frames from the video streams
@@ -152,6 +158,7 @@ def stitch_streams(leftStream, rightStream):
     rightStream.stop()
 
 def configure_videos(config):
+    """ Instantiates a CLI for configuration of videos. """
     print("Choose Option:")
     print("1) Use preconfigured left/right video streams")
     print("2) Configure streams")
@@ -187,6 +194,7 @@ def configure_videos(config):
         sys.exit(0)
 
 def stitch_videos(left_video, right_video):
+    """ Stitches local videos. """
     stitcher = Stitcher()
     left_stream = cv2.VideoCapture(left_video)
     right_stream = cv2.VideoCapture(right_video)
@@ -221,6 +229,7 @@ def stitch_videos(left_video, right_video):
     cv2.destroyAllWindows()
 
 def stitch_all_videos(config):
+    """ Stitches four local videos. """
     stitcher = Stitcher()
     fst_stitcher = Stitcher()
     snd_stitcher = Stitcher()
@@ -253,6 +262,7 @@ def stitch_all_videos(config):
             main()
 
 def stream_video(left_video, right_video, port):
+    """ Streams video to socket. """
     stitcher = Stitcher()
 
     left_stream = cv2.VideoCapture(left_video)
@@ -284,6 +294,7 @@ def stream_video(left_video, right_video, port):
     cv2.destroyAllWindows()
 
 def get_video_files(src_dir):
+    """ Gets list of video files for inclusion in video configuration CLI. """
     files = os.listdir(src_dir)
     video_files = [f for f in files if f.endswith(".mp4") or f.endswith(".MP4")]
     video_files.sort()
@@ -291,4 +302,5 @@ def get_video_files(src_dir):
     return video_paths
 
 if __name__ == "__main__":
+    """ Ensures that script only runs when call explicitly. """
     main()
