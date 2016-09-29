@@ -1,5 +1,5 @@
 """
-This module encapsulates the Stitcerh class to enable stitching of images/frames.
+This module encapsulates the Stitcher class to enable stitching of images/frames.
 """
 
 # import the necessary packages

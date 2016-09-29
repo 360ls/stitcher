@@ -1,6 +1,7 @@
 """
 This module enapsulates the UnsortableList and UnsortableOrderedDict classes
-to enable instantiation of unsorted dictionaries for use in configuration.
+to enable instantiation of unsorted ordered dictionaries, which are used 
+to write key-value pairs in a desired order into a yaml format.
 """
 
 import yaml

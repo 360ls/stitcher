@@ -302,5 +302,5 @@ def get_video_files(src_dir):
     return video_paths
 
 if __name__ == "__main__":
-    """ Ensures that script only runs when call explicitly. """
+    """ Ensures that script only runs when called explicitly. """
     main()
