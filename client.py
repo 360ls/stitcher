@@ -6,9 +6,12 @@ import cv2
 import pickle
 import numpy as np
 import struct
+from utils.configuration import Configuration
+
+config = Configuration()
 
 HOST = ''
-PORT = 8089
+PORT = config.port
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print 'Socket created'

@@ -23,6 +23,7 @@ import pickle
 import struct
 
 def main():
+    config = Configuration()
     print("Choose Option:")
     print("0) Quit")
     print("1) Stitch local images")
@@ -45,7 +46,8 @@ def main():
         stitch_all_videos()
     elif opt == 5:
         left, right = configure_videos()
-        stream_video(left, right)
+        port = config.port
+        stream_video(left, right, port)
     elif opt == 0:
         sys.exit(0)
     else:
@@ -255,14 +257,14 @@ def stitch_all_videos():
             cv2.destroyAllWindows()
             main()
 
-def stream_video(left_video, right_video):
+def stream_video(left_video, right_video, port):
     stitcher = Stitcher()
 
     left_stream = cv2.VideoCapture(left_video)
     right_stream = cv2.VideoCapture(right_video)
 
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    clientsocket.connect(('localhost', 8089))
+    clientsocket.connect(('localhost', port))
 
     while (left_stream.isOpened() and right_stream.isOpened()):
         left_ret, left_frame = left_stream.read()
