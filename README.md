@@ -48,3 +48,8 @@ Then start the CLI and choose the streaming option.
 make html
 ```
 The generated documentation should be in the `docs/build` directory.
+
+## Linting
+```bash
+make lint
+```
