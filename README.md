@@ -6,6 +6,7 @@
 - 2+ USB Cameras
 
 Install dependencies:
+
 ```bash
 make install
 ```
@@ -44,12 +45,20 @@ make client
 Then start the CLI and choose the streaming option.
 
 ## Generate Documentation
+
 ```bash
 make html
 ```
 The generated documentation should be in the `docs/build` directory.
 
 ## Linting
+
 ```bash
 make lint
+```
+
+## Testing
+
+```bash
+make test
 ```
