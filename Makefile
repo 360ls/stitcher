@@ -18,7 +18,7 @@ html:
 	$(MAKE) -C $(DOC_DIR) html
 
 lint:
-	pylint stitcher --rcfile=config/pylintrc --msg-template='{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}'
+	pylint stitcher --rcfile=config/pylintrc
 
 test: lint
 	echo "Running tests"

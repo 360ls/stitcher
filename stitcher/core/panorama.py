@@ -44,7 +44,7 @@ class Stitcher:
         # apply a perspective transform to stitch the images together
         # using the cached homography matrix
         result = cv2.warpPerspective(imageA, self.cachedH,
-                (imageA.shape[1] + imageB.shape[1], imageA.shape[0]))
+                                     (imageA.shape[1] + imageB.shape[1], imageA.shape[0]))
         result[0:imageB.shape[0], 0:imageB.shape[1]] = imageB
 
         # return the stitched image
@@ -79,8 +79,8 @@ class Stitcher:
         # return a tuple of keypoints and features
         return (kps, features)
 
-    def matchKeypoints(self, kpsA, kpsB, featuresA, featuresB,
-        ratio, reprojThresh):
+    def matchKeypoints(self, kpsA, kpsB, featuresA, featuresB, 
+                       ratio, reprojThresh):
         """ Computes keypoint matches and homography matrix based on those matches. """
 
         # compute the raw matches and initialize the list of actual
@@ -104,7 +104,7 @@ class Stitcher:
 
             # compute the homography between the two sets of points
             (H, status) = cv2.findHomography(ptsA, ptsB, cv2.RANSAC,
-                    reprojThresh)
+                                             reprojThresh)
 
             # return the matches along with the homograpy matrix
             # and status of each matched point

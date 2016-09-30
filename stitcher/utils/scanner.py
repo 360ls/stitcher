@@ -4,8 +4,8 @@ This function scans from user input, guaranteeing that a number is entered into 
 
 def read_int(prompt):
     try:
-        input = int(raw_input(prompt))
+        num_input = int(raw_input(prompt))
         print ""
-        return input
+        return num_input
     except ValueError:
         print "Please enter a number."

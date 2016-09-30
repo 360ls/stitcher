@@ -4,25 +4,19 @@
 
 from __future__ import print_function
 from __future__ import division
-from core.panorama import Stitcher
-from imutils.video import VideoStream
-from core.multistitch import Multistitcher
-from utils.configuration import Configuration
-import numpy as np
-import datetime
-import imutils
 import time
-import cv2
-import yaml
 import os.path
-import argparse
-import time
 import sys
-import utils.scanner as scanner
 import socket
-import sys
 import pickle
 import struct
+import cv2
+import imutils
+from imutils.video import VideoStream
+from core.multistitch import Multistitcher
+from core.panorama import Stitcher
+from utils.configuration import Configuration
+import utils.scanner as scanner
 
 def main():
     """ The main script for instantiating a CLI to navigate stitching. """
@@ -93,7 +87,9 @@ def stitch_local(config):
     for i in xrange(iterations):
         print("Starting Iteration #%d" % i)
         start_time = time.time()
-        final_img = stitcher.stitchImages(key_frame_file, base_img_rgb, dir_list, output_dir, 0, img_type)
+        stitcher.stitchImages(
+            key_frame_file, base_img_rgb,
+            dir_list, output_dir, 0, img_type)
         print("Finished Iteration #%d" % i)
         runtime = time.time() - start_time
         iter_times.append(runtime)
@@ -172,22 +168,22 @@ def configure_videos(config):
         files = os.listdir(config.video_dir)
         video_files = [f for f in files if f.endswith(".mp4") or f.endswith(".MP4")]
         if len(video_files) > 0:
-		video_files.sort()
+            video_files.sort()
 
-        	print("List of video files found:")
+            print("List of video files found:")
 
-        	for i in xrange(len(video_files)):
-            		print(i, video_files[i], sep=') ', end='\n')
+            for i in xrange(len(video_files)):
+                print(i, video_files[i], sep=') ', end='\n')
 
-        	left = scanner.read_int('Choose left video: ')
-        	right = scanner.read_int('Choose right video: ')
+            left = scanner.read_int('Choose left video: ')
+            right = scanner.read_int('Choose right video: ')
 
-        	left_video = os.path.join(config.video_dir, video_files[left])
-        	right_video = os.path.join(config.video_dir, video_files[right])
-        	return left_video, right_video
-	else:
-		print("Sorry, no valid files found for configuration. Please try again.")
-		sys.exit(0)
+            left_video = os.path.join(config.video_dir, video_files[left])
+            right_video = os.path.join(config.video_dir, video_files[right])
+            return left_video, right_video
+        else:
+            print("Sorry, no valid files found for configuration. Please try again.")
+        sys.exit(0)
     elif opt == 3:
         main()
     else:
@@ -199,7 +195,7 @@ def stitch_videos(left_video, right_video):
     left_stream = cv2.VideoCapture(left_video)
     right_stream = cv2.VideoCapture(right_video)
 
-    while (left_stream.isOpened() and right_stream.isOpened()):
+    while left_stream.isOpened() and right_stream.isOpened():
         left_ret, left_frame = left_stream.read()
         right_ret, right_frame = right_stream.read()
 
@@ -240,8 +236,7 @@ def stitch_all_videos(config):
     while (video_streams[0].isOpened() and
            video_streams[1].isOpened() and
            video_streams[2].isOpened() and
-           video_streams[3].isOpened()
-           ):
+           video_streams[3].isOpened()):
         video_frames = [stream.read()[1] for stream in video_streams]
         resized_frames = [imutils.resize(frame, width=400) for frame in video_frames]
 

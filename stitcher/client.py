@@ -4,15 +4,14 @@
 This module is responsible for setting up the client-socket pairing for streaming of video output. It is simply a script and does not contain any classes or function declarations.
 """
 
+import pickle
 import socket
+import struct
 import sys
 import cv2
-import pickle
-import numpy as np
-import struct
-from utils.configuration import Configuration
+from configuration import Configuration
 
-def main(): 
+def main():
     """ The main function for the client.py script. """
 
     config = Configuration()
@@ -31,7 +30,7 @@ def main():
     conn, addr = s.accept()
 
     data = ""
-    payload_size = struct.calcsize("L") 
+    payload_size = struct.calcsize("L")
     while True:
         while len(data) < payload_size:
             data += conn.recv(4096)
@@ -43,7 +42,7 @@ def main():
         frame_data = data[:msg_size]
         data = data[msg_size:]
 
-        frame=pickle.loads(frame_data)
+        frame = pickle.loads(frame_data)
         cv2.imshow("Result", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             sys.exit(0)
