@@ -19,3 +19,6 @@ html:
 
 lint:
 	pylint stitcher --rcfile=config/pylintrc
+
+test: lint
+	echo "Running tests"

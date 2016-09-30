@@ -77,3 +77,7 @@ reports=no
 # XXX   -- some concern
 # YYY   -- comment/answer to above mentioned concern
 notes=FIXME,TODO,XXX,YYY
+
+[TYPECHECK]
+
+ignored-modules=numpy,cv2,socket
