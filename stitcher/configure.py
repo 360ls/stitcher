@@ -6,7 +6,7 @@ import yaml
 import utils.scanner as scanner
 from utils.sorted_dict import UnsortableOrderedDict
 
-config_dir = "config"
+CONFIG_DIR = "config"
 
 def main():
     """ Calls the main parse method. """
@@ -31,7 +31,7 @@ def parse():
     except ValueError:
         print "Please enter a number."
 
-    format = raw_input('Enter image format: ')
+    img_format = raw_input('Enter image format: ')
 
     settings = UnsortableOrderedDict([
         ('left-index', left_index),
@@ -40,15 +40,15 @@ def parse():
         ('dest-dir', dest_dir),
         ('key-frame', key_frame),
         ('width', width),
-        ('format', format),
+        ('format', img_format),
         ('video-dir', video_dir),
         ('left-video', left_video),
         ('right-video', right_video),
         ('port', port)
     ])
 
-    with open(config_dir + '/profile.yml', 'w') as file:
-        yaml.dump(settings, file, default_flow_style=False)
+    with open(CONFIG_DIR + '/profile.yml', 'w') as config_file:
+        yaml.dump(settings, config_file, default_flow_style=False)
 
 if __name__ == "__main__":
     """ Ensures that script only runs when called explicitly. """

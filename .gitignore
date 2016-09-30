@@ -6,6 +6,9 @@ __pycache__/
 # generated profile
 profile.yml
 
+# generated docs
+docs/build/*
+
 data/*
 
 # Vim
