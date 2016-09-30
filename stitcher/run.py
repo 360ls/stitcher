@@ -55,7 +55,7 @@ def main():
         main()
 
 def check_stream():
-    opt = scanner.read_int('Enter index number')
+    opt = scanner.read_int('Enter index number: ')
     left_stream = VideoStream(src=opt).start()
 
     while left_stream.isOpened():
