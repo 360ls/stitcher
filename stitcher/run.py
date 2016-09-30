@@ -28,6 +28,7 @@ def main():
     print("3) Stitch from 2 videos")
     print("4) Stitch from 4 videos")
     print("5) Stream stitched video")
+    print("6) Check camera stream")
 
     opt = scanner.read_int('Enter option number: ')
 
@@ -45,11 +46,31 @@ def main():
         left, right = configure_videos(config)
         port = config.port
         stream_video(left, right, port)
+    elif opt == 6:
+        check_stream()
     elif opt == 0:
         sys.exit(0)
     else:
         print("Invalid option")
         main()
+
+def check_stream():
+    opt = scanner.read_int('Enter index number')
+    left_stream = VideoStream(src=opt).start()
+
+    while left_stream.isOpened():
+        left_ret, left_frame = left_stream.read()
+
+        # resize the frames
+        left = imutils.resize(left_frame, width=400)
+        cv2.imshow("Frame", left)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            left_stream.release()
+            cv2.destroyAllWindows()
+            main()
+
+    left_stream.release()
+    cv2.destroyAllWindows()
 
 def stitch_local(config):
     """ Function for stitching from local images. """
