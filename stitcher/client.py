@@ -9,7 +9,7 @@ import socket
 import struct
 import sys
 import cv2
-from configuration import Configuration
+from utils.configuration import Configuration
 
 def main():
     """ The main function for the client.py script. """

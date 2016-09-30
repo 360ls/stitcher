@@ -14,24 +14,24 @@ class Stitcher:
         # determine if we are using OpenCV v3.X and initialize the
         # cached homography matrix
         self.isv3 = imutils.is_cv3()
-        self.cachedH = None
+        self.cached_homography = None
 
-    def stitch(self, images, ratio=0.75, reprojThresh=4.0):
+    def stitch(self, images, ratio=0.75, reproj_thresh=4.0):
         """ Primary method for stitching images together within the Stitcher class. """
         
         # unpack the images
-        (imageB, imageA) = images
+        (image_b, image_a) = images
 
         # if the cached homography matrix is None, then we need to
         # apply keypoint matching to construct it
-        if self.cachedH is None:
+        if self.cached_homography is None:
             # detect keypoints and extract
-            (kpsA, featuresA) = self.detectAndDescribe(imageA)
-            (kpsB, featuresB) = self.detectAndDescribe(imageB)
+            (kpsA, features_a) = self.detectAndDescribe(image_a)
+            (kpsB, features_b) = self.detectAndDescribe(image_b)
 
             # match features between the two images
             M = self.matchKeypoints(kpsA, kpsB,
-                    featuresA, featuresB, ratio, reprojThresh)
+                    features_a, features_b, ratio, reproj_thresh)
 
             # if the match is None, then there aren't enough matched
             # keypoints to create a panorama
@@ -39,13 +39,13 @@ class Stitcher:
                 return None
 
             # cache the homography matrix
-            self.cachedH = M[1]
+            self.cached_homography = M[1]
 
         # apply a perspective transform to stitch the images together
         # using the cached homography matrix
-        result = cv2.warpPerspective(imageA, self.cachedH,
-                                     (imageA.shape[1] + imageB.shape[1], imageA.shape[0]))
-        result[0:imageB.shape[0], 0:imageB.shape[1]] = imageB
+        result = cv2.warpPerspective(image_a, self.cached_homography,
+                                     (image_a.shape[1] + image_b.shape[1], image_a.shape[0]))
+        result[0:image_b.shape[0], 0:image_b.shape[1]] = image_b
 
         # return the stitched image
         return result
@@ -79,14 +79,14 @@ class Stitcher:
         # return a tuple of keypoints and features
         return (kps, features)
 
-    def matchKeypoints(self, kpsA, kpsB, featuresA, featuresB, 
-                       ratio, reprojThresh):
+    def matchKeypoints(self, kpsA, kpsB, features_a, features_b, 
+                       ratio, reproj_thresh):
         """ Computes keypoint matches and homography matrix based on those matches. """
 
         # compute the raw matches and initialize the list of actual
         # matches
         matcher = cv2.DescriptorMatcher_create("BruteForce")
-        rawMatches = matcher.knnMatch(featuresA, featuresB, 2)
+        rawMatches = matcher.knnMatch(features_a, features_b, 2)
         matches = []
 
         # loop over the raw matches
@@ -104,7 +104,7 @@ class Stitcher:
 
             # compute the homography between the two sets of points
             (H, status) = cv2.findHomography(ptsA, ptsB, cv2.RANSAC,
-                                             reprojThresh)
+                                             reproj_thresh)
 
             # return the matches along with the homograpy matrix
             # and status of each matched point
