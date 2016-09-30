@@ -16,3 +16,6 @@ client:
 
 html:
 	$(MAKE) -C $(DOC_DIR) html
+
+lint:
+	pylint stitcher --rcfile=config/pylintrc
