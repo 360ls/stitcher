@@ -1,6 +1,0 @@
-pyyaml
-numpy
-imutils
-image
-sphinx
-pylint

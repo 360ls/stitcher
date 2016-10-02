@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>stitcher package &#8212; 360ls-stitcher 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="360ls-stitcher 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="stitcher-package">
+<h1>stitcher package<a class="headerlink" href="#stitcher-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="stitcher.core.html">stitcher.core package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stitcher.core.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stitcher.core.html#module-stitcher.core.multistitch">stitcher.core.multistitch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stitcher.core.html#module-stitcher.core.panorama">stitcher.core.panorama module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stitcher.core.html#module-stitcher.core">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stitcher.utils.html">stitcher.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stitcher.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stitcher.utils.html#module-stitcher.utils.configuration">stitcher.utils.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stitcher.utils.html#module-stitcher.utils.scanner">stitcher.utils.scanner module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stitcher.utils.html#module-stitcher.utils.sorted_dict">stitcher.utils.sorted_dict module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stitcher.utils.html#module-stitcher.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-stitcher.client">
+<span id="stitcher-client-module"></span><h2>stitcher.client module<a class="headerlink" href="#module-stitcher.client" title="Permalink to this headline">¶</a></h2>
+<p>This module is responsible for setting up the client-socket pairing for streaming of video output. It is simply a script and does not contain any classes or function declarations.</p>
+<dl class="function">
+<dt id="stitcher.client.main">
+<code class="descclassname">stitcher.client.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.client.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function for the client.py script.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-stitcher.configure">
+<span id="stitcher-configure-module"></span><h2>stitcher.configure module<a class="headerlink" href="#module-stitcher.configure" title="Permalink to this headline">¶</a></h2>
+<p>This module is responsible for taking in user input from the terminal and turning it into a configuration profile.</p>
+<dl class="function">
+<dt id="stitcher.configure.main">
+<code class="descclassname">stitcher.configure.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configure.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the main parse method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="stitcher.configure.parse">
+<code class="descclassname">stitcher.configure.</code><code class="descname">parse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configure.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses user input to pass to the configuration profile.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-stitcher.run">
+<span id="stitcher-run-module"></span><h2>stitcher.run module<a class="headerlink" href="#module-stitcher.run" title="Permalink to this headline">¶</a></h2>
+<p>The main module for running and testing the stitching algorithm.</p>
+<dl class="function">
+<dt id="stitcher.run.check_stream">
+<code class="descclassname">stitcher.run.</code><code class="descname">check_stream</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.run.check_stream" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="stitcher.run.configure_videos">
+<code class="descclassname">stitcher.run.</code><code class="descname">configure_videos</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.run.configure_videos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates a CLI for configuration of videos.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="stitcher.run.get_video_files">
+<code class="descclassname">stitcher.run.</code><code class="descname">get_video_files</code><span class="sig-paren">(</span><em>src_dir</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.run.get_video_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets list of video files for inclusion in video configuration CLI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="stitcher.run.initialize">
+<code class="descclassname">stitcher.run.</code><code class="descname">initialize</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.run.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes stream from cameras.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="stitcher.run.main">
+<code class="descclassname">stitcher.run.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.run.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main script for instantiating a CLI to navigate stitching.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="stitcher.run.stitch_all_videos">
+<code class="descclassname">stitcher.run.</code><code class="descname">stitch_all_videos</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.run.stitch_all_videos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stitches four local videos.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="stitcher.run.stitch_local">
+<code class="descclassname">stitcher.run.</code><code class="descname">stitch_local</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.run.stitch_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for stitching from local images.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="stitcher.run.stitch_streams">
+<code class="descclassname">stitcher.run.</code><code class="descname">stitch_streams</code><span class="sig-paren">(</span><em>leftStream</em>, <em>rightStream</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.run.stitch_streams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stitches left and right streams.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="stitcher.run.stitch_videos">
+<code class="descclassname">stitcher.run.</code><code class="descname">stitch_videos</code><span class="sig-paren">(</span><em>left_video</em>, <em>right_video</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.run.stitch_videos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stitches local videos.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="stitcher.run.stream_video">
+<code class="descclassname">stitcher.run.</code><code class="descname">stream_video</code><span class="sig-paren">(</span><em>left_video</em>, <em>right_video</em>, <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.run.stream_video" title="Permalink to this definition">¶</a></dt>
+<dd><p>Streams video to socket.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-stitcher">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-stitcher" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">stitcher package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-stitcher.client">stitcher.client module</a></li>
+<li><a class="reference internal" href="#module-stitcher.configure">stitcher.configure module</a></li>
+<li><a class="reference internal" href="#module-stitcher.run">stitcher.run module</a></li>
+<li><a class="reference internal" href="#module-stitcher">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/stitcher.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Dong Yeop Lee, Luke Fernandez, Jonathan Witten, Spencer Lewis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/stitcher.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
