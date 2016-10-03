@@ -1,13 +1,15 @@
 """
-This module is responsible for configuring the stitching environment based on the configuration settings in profile.yml.
+Creates Configuration object based on profile.yml
 """
 
-import yaml
 import os.path
 import sys
+import yaml
 
-class Configuration:
+class Configuration(object):
     """ The Configuration class enables configuration instances to be created. """
+
+    # pylint: disable=too-many-instance-attributes
 
     def __init__(self):
         """ The Configuration class constructor instantiates the Configuration class. """
@@ -23,10 +25,10 @@ class Configuration:
             raise ValueError('Configuration file does not exist.')
 
     def initialize(self):
-        """ Initializes in-program configuration based on information in the profile.yml configuration file. """
+        """ Parses profile.yml to initialize configuration values """
 
-        with open(self.config_file, 'r') as f:
-            doc = yaml.load(f)
+        with open(self.config_file, 'r') as config_file:
+            doc = yaml.load(config_file)
             self.left_index = self.get_field("left-index", doc)
             self.right_index = self.get_field("right-index", doc)
             self.source_dir = self.get_field("source-dir", doc)

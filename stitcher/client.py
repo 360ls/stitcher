@@ -1,33 +1,34 @@
 #!/usr/bin/env python
 
 """
-This module is responsible for setting up the client-socket pairing for streaming of video output. It is simply a script and does not contain any classes or function declarations.
+Client that displays frames from socket
 """
 
+from __future__ import absolute_import
 import pickle
 import socket
 import struct
 import sys
 import cv2
-from utils.configuration import Configuration
+from stitcher.configuration import Configuration
 
 def main():
     """ The main function for the client.py script. """
 
     config = Configuration()
 
-    HOST = ''
-    PORT = config.port
+    host = ''
+    port = config.port
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print 'Socket created'
 
-    s.bind((HOST, PORT))
+    soc.bind((host, port))
     print 'Socket bind complete'
-    s.listen(10)
+    soc.listen(10)
     print 'Socket now listening'
 
-    conn, addr = s.accept()
+    conn = soc.accept()[0]
 
     data = ""
     payload_size = struct.calcsize("L")
@@ -48,5 +49,4 @@ def main():
             sys.exit(0)
 
 if __name__ == "__main__":
-    """ Ensures that script is only run when called explicitly. """
     main()

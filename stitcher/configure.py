@@ -1,10 +1,11 @@
 """
-This module is responsible for taking in user input from the terminal and turning it into a configuration profile.
+Creates configuration profile from user input
 """
 
+from __future__ import absolute_import
 import yaml
-import utils.scanner as scanner
-from utils.sorted_dict import UnsortableOrderedDict
+from .scanner import Scanner
+from .sorted_dict import UnsortableOrderedDict
 
 CONFIG_DIR = "config"
 
@@ -14,8 +15,9 @@ def main():
 
 def parse():
     """ Parses user input to pass to the configuration profile. """
+    scanner = Scanner()
     left_index = scanner.read_int('Enter index of left camera: ')
-    right_index = scanner.read_int('Enter index of right camer: ')
+    right_index = scanner.read_int('Enter index of right camera: ')
 
     source_dir = raw_input('Enter full path to image source directory: ')
     dest_dir = raw_input('Enter full path to image output directory: ')
@@ -51,5 +53,4 @@ def parse():
         yaml.dump(settings, config_file, default_flow_style=False)
 
 if __name__ == "__main__":
-    """ Ensures that script only runs when called explicitly. """
     main()
