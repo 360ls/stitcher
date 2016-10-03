@@ -9,7 +9,7 @@ configure:
 	python -m $(PACKAGE_DIR).configure
 
 run:
-	python -m $(PACKAGE_DIR).run
+	python -m $(PACKAGE_DIR).app
 
 client:
 	python -m $(PACKAGE_DIR).client &
