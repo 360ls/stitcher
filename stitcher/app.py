@@ -13,7 +13,6 @@ import pickle
 import struct
 import cv2
 import imutils
-from imutils.video import VideoStream
 from .panorama import Stitcher
 from .configuration import Configuration
 from .scanner import Scanner
@@ -32,6 +31,7 @@ def main():
     print("4) Stitch from 4 videos")
     print("5) Stream stitched video")
     print("6) Check stream")
+    print("7) Preview stream")
 
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
@@ -40,7 +40,10 @@ def main():
         reconfigure(config)
         main()
     elif opt == 2:
-        left_stream, right_stream = initialize(config)
+        try:
+            left_stream, right_stream = initialize(config)
+        except ValueError:
+            main()
         stitch_streams(left_stream, right_stream)
         main()
     elif opt == 3:
@@ -59,6 +62,10 @@ def main():
         index = scanner.read_int('Enter camera index: ')
         check_stream(index)
         main()
+    elif opt == 7:
+        index = scanner.read_int('Enter camera index: ')
+        show_stream(index)
+        main()
     elif opt == 0:
         sys.exit(0)
     else:
@@ -66,14 +73,19 @@ def main():
         main()
 
 def check_stream(index):
+    """
+    Checks if a given index is a valid usb camera index
+    """
     cap = cv2.VideoCapture(index)
     ret = cap.read()[0]
+    cap.release()
+
     if ret:
         print("Index {0} is valid".format(index))
+        return True
     else:
         print("Index {0} is invalid".format(index))
-    print("")
-    cap.release()
+        return False
 
 def reconfigure(configuration):
     """ Reconfigures profile.yml """
@@ -117,10 +129,42 @@ def initialize(config):
     # initialize the video streams and allow them to warmup
     time.sleep(0.5)
     print("[INFO] starting cameras...")
-    left_stream = VideoStream(src=left_index).start()
-    right_stream = VideoStream(src=right_index).start()
 
-    return left_stream, right_stream
+    left_stream = cv2.VideoCapture(left_index)
+    right_stream = cv2.VideoCapture(right_index)
+
+    if check_stream(left_stream) and check_stream(right_stream):
+        return left_stream, right_stream
+    else:
+        raise ValueError
+
+def show_stream(index):
+    """ shows stream of given index """
+    try:
+        is_valid = check_stream(index)
+        if is_valid:
+            stream = cv2.VideoCapture(index)
+            # loop over frames from the video streams
+            while True:
+                # grab the frames from their respective video streams
+                frame = stream.read()[1]
+                frame = imutils.resize(frame, width=400)
+
+                cv2.imshow("Stream", frame)
+                key = cv2.waitKey(1) & 0xFF
+
+                # if the `q` key was pressed, break from the loop
+                if key == ord("q"):
+                    break
+
+            # do a bit of cleanup
+            print("[INFO] cleaning up...")
+            stream.release()
+            cv2.destroyAllWindows()
+        else:
+            main()
+    except ValueError:
+        main()
 
 def stitch_streams(left_stream, right_stream):
     """ Stitches left and right streams. """
@@ -129,8 +173,8 @@ def stitch_streams(left_stream, right_stream):
     # loop over frames from the video streams
     while True:
         # grab the frames from their respective video streams
-        left = left_stream.read()
-        right = right_stream.read()
+        left = left_stream.read()[1]
+        right = right_stream.read()[1]
 
         # resize the frames
         left = imutils.resize(left, width=400)
@@ -159,9 +203,9 @@ def stitch_streams(left_stream, right_stream):
 
     # do a bit of cleanup
     print("[INFO] cleaning up...")
+    left_stream.release()
+    right_stream.release()
     cv2.destroyAllWindows()
-    left_stream.stop()
-    right_stream.stop()
 
 def configure_videos(config):
     """ Instantiates a CLI for configuration of videos. """
