@@ -31,6 +31,7 @@ def main():
     print("3) Stitch from 2 videos")
     print("4) Stitch from 4 videos")
     print("5) Stream stitched video")
+    print("6) Check stream")
 
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
@@ -54,11 +55,25 @@ def main():
         port = config.port.value
         stream_video(left, right, port)
         main()
+    elif opt == 6:
+        index = scanner.read_int('Enter camera index: ')
+        check_stream(index)
+        main()
     elif opt == 0:
         sys.exit(0)
     else:
         print("Invalid option")
         main()
+
+def check_stream(index):
+    cap = cv2.VideoCapture(index)
+    ret = cap.read()[0]
+    if ret:
+        print("Index {0} is valid".format(index))
+    else:
+        print("Index {0} is invalid".format(index))
+    print("")
+    cap.release()
 
 def reconfigure(configuration):
     """ Reconfigures profile.yml """
