@@ -69,7 +69,7 @@ def main():
     elif opt == 0:
         sys.exit(0)
     else:
-        print("Invalid option")
+        print("Invalid option\n------------------\n")
         main()
 
 def check_stream(index):
@@ -81,10 +81,10 @@ def check_stream(index):
     cap.release()
 
     if ret:
-        print("Index {0} is valid".format(index))
+        print("Index {0} is valid\n------------------\n".format(index))
         return True
     else:
-        print("Index {0} is invalid".format(index))
+        print("Index {0} is invalid\n------------------\n".format(index))
         return False
 
 def reconfigure(configuration):
@@ -302,6 +302,7 @@ def stitch_all_videos(config):
             print("[INFO] homography could not be computed")
             break
 
+        """ Cancel by pressing 1 """
         cv2.imshow("Result", result)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             for stream in video_streams:
