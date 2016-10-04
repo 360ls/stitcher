@@ -50,6 +50,7 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
@@ -60,21 +61,21 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.utils.html#stitcher.utils.configuration.Configuration.check_config_file">check_config_file() (stitcher.utils.configuration.Configuration method)</a>
+  <dt><a href="stitcher.html#stitcher.configuration.Configuration.check_config_file">check_config_file() (stitcher.configuration.Configuration method)</a>
   </dt>
 
       
-  <dt><a href="stitcher.html#stitcher.run.check_stream">check_stream() (in module stitcher.run)</a>
+  <dt><a href="stitcher.html#stitcher.app.check_stream">check_stream() (in module stitcher.app)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.utils.html#stitcher.utils.configuration.Configuration">Configuration (class in stitcher.utils.configuration)</a>
+  <dt><a href="stitcher.html#stitcher.configuration.Configuration">Configuration (class in stitcher.configuration)</a>
   </dt>
 
       
-  <dt><a href="stitcher.html#stitcher.run.configure_videos">configure_videos() (in module stitcher.run)</a>
+  <dt><a href="stitcher.html#stitcher.app.configure_videos">configure_videos() (in module stitcher.app)</a>
   </dt>
 
   </dl></td>
@@ -84,7 +85,13 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.core.html#stitcher.core.panorama.Stitcher.detectAndDescribe">detectAndDescribe() (stitcher.core.panorama.Stitcher method)</a>
+  <dt><a href="stitcher.html#stitcher.panorama.Stitcher.detect_and_describe">detect_and_describe() (stitcher.panorama.Stitcher method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="stitcher.html#stitcher.configuration.DirectoryField">DirectoryField (class in stitcher.configuration)</a>
   </dt>
 
   </dl></td>
@@ -94,13 +101,13 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.core.html#stitcher.core.multistitch.Multistitcher.filter_matches">filter_matches() (stitcher.core.multistitch.Multistitcher method)</a>
+  <dt><a href="stitcher.html#stitcher.configuration.Field">Field (class in stitcher.configuration)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.core.html#stitcher.core.multistitch.Multistitcher.findDimensions">findDimensions() (stitcher.core.multistitch.Multistitcher method)</a>
+  <dt><a href="stitcher.html#stitcher.configuration.FileField">FileField (class in stitcher.configuration)</a>
   </dt>
 
   </dl></td>
@@ -110,17 +117,39 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.utils.html#stitcher.utils.configuration.Configuration.get_field">get_field() (stitcher.utils.configuration.Configuration method)</a>
+  <dt><a href="stitcher.html#stitcher.configuration.Configuration.get_directory_field">get_directory_field() (stitcher.configuration.Configuration static method)</a>
   </dt>
 
       
-  <dt><a href="stitcher.html#stitcher.run.get_video_files">get_video_files() (in module stitcher.run)</a>
+  <dt><a href="stitcher.html#stitcher.configuration.Configuration.get_field">get_field() (stitcher.configuration.Configuration method)</a>
+  </dt>
+
+      
+  <dt><a href="stitcher.html#stitcher.configuration.Configuration.get_fields">get_fields() (stitcher.configuration.Configuration method)</a>
+  </dt>
+
+      
+  <dt><a href="stitcher.html#stitcher.configuration.Configuration.get_file_field">get_file_field() (stitcher.configuration.Configuration static method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.core.html#stitcher.core.multistitch.Multistitcher.getNextImage">getNextImage() (stitcher.core.multistitch.Multistitcher method)</a>
+  <dt><a href="stitcher.html#stitcher.configuration.Configuration.get_num_field">get_num_field() (stitcher.configuration.Configuration static method)</a>
+  </dt>
+
+      
+  <dt><a href="stitcher.html#stitcher.configuration.Configuration.get_value">get_value() (stitcher.configuration.Configuration method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="stitcher.html#stitcher.configuration.Field.get_value">(stitcher.configuration.Field method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="stitcher.html#stitcher.app.get_video_files">get_video_files() (in module stitcher.app)</a>
   </dt>
 
   </dl></td>
@@ -130,23 +159,19 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.core.html#stitcher.core.multistitch.Multistitcher.imageDistance">imageDistance() (stitcher.core.multistitch.Multistitcher method)</a>
-  </dt>
-
-      
-  <dt><a href="stitcher.html#stitcher.run.initialize">initialize() (in module stitcher.run)</a>
+  <dt><a href="stitcher.html#stitcher.app.initialize">initialize() (in module stitcher.app)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="stitcher.utils.html#stitcher.utils.configuration.Configuration.initialize">(stitcher.utils.configuration.Configuration method)</a>
+  <dt><a href="stitcher.html#stitcher.configuration.Configuration.initialize">(stitcher.configuration.Configuration method)</a>
   </dt>
 
       </dl></dd>
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.utils.html#stitcher.utils.sorted_dict.UnsortableOrderedDict.items">items() (stitcher.utils.sorted_dict.UnsortableOrderedDict method)</a>
+  <dt><a href="stitcher.html#stitcher.sorted_dict.UnsortableOrderedDict.items">items() (stitcher.sorted_dict.UnsortableOrderedDict method)</a>
   </dt>
 
   </dl></td>
@@ -156,27 +181,33 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.html#stitcher.client.main">main() (in module stitcher.client)</a>
+  <dt><a href="stitcher.html#stitcher.app.main">main() (in module stitcher.app)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="stitcher.html#stitcher.configure.main">(in module stitcher.configure)</a>
+  <dt><a href="stitcher.html#stitcher.client.main">(in module stitcher.client)</a>
   </dt>
 
         
-  <dt><a href="stitcher.html#stitcher.run.main">(in module stitcher.run)</a>
+  <dt><a href="stitcher.html#stitcher.configure.main">(in module stitcher.configure)</a>
   </dt>
 
       </dl></dd>
-      
-  <dt><a href="stitcher.core.html#stitcher.core.panorama.Stitcher.matchKeypoints">matchKeypoints() (stitcher.core.panorama.Stitcher method)</a>
-  </dt>
-
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.core.html#stitcher.core.multistitch.Multistitcher">Multistitcher (class in stitcher.core.multistitch)</a>
+  <dt><a href="stitcher.html#stitcher.panorama.Stitcher.match_keypoints">match_keypoints() (stitcher.panorama.Stitcher static method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="stitcher.html#stitcher.configuration.NumField">NumField (class in stitcher.configuration)</a>
   </dt>
 
   </dl></td>
@@ -190,19 +221,33 @@
   </dt>
 
   </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="stitcher.html#stitcher.configuration.Configuration.print_configuration">print_configuration() (stitcher.configuration.Configuration method)</a>
+  </dt>
+
+  </dl></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.utils.html#stitcher.utils.scanner.read_int">read_int() (in module stitcher.utils.scanner)</a>
+  <dt><a href="stitcher.html#stitcher.scanner.Scanner.read_dir">read_dir() (stitcher.scanner.Scanner static method)</a>
+  </dt>
+
+      
+  <dt><a href="stitcher.html#stitcher.scanner.Scanner.read_int">read_int() (stitcher.scanner.Scanner static method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.core.html#stitcher.core.multistitch.Multistitcher.resizeImages">resizeImages() (stitcher.core.multistitch.Multistitcher method)</a>
+  <dt><a href="stitcher.html#stitcher.scanner.Scanner.read_string">read_string() (stitcher.scanner.Scanner static method)</a>
+  </dt>
+
+      
+  <dt><a href="stitcher.html#stitcher.app.reconfigure">reconfigure() (in module stitcher.app)</a>
   </dt>
 
   </dl></td>
@@ -212,35 +257,49 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.utils.html#stitcher.utils.sorted_dict.UnsortableList.sort">sort() (stitcher.utils.sorted_dict.UnsortableList method)</a>
+  <dt><a href="stitcher.html#stitcher.scanner.Scanner">Scanner (class in stitcher.scanner)</a>
   </dt>
 
       
-  <dt><a href="stitcher.core.html#stitcher.core.panorama.Stitcher.stitch">stitch() (stitcher.core.panorama.Stitcher method)</a>
+  <dt><a href="stitcher.html#stitcher.configuration.Configuration.set">set() (stitcher.configuration.Configuration method)</a>
   </dt>
 
       
-  <dt><a href="stitcher.html#stitcher.run.stitch_all_videos">stitch_all_videos() (in module stitcher.run)</a>
+  <dt><a href="stitcher.html#stitcher.app.show_stream">show_stream() (in module stitcher.app)</a>
   </dt>
 
       
-  <dt><a href="stitcher.html#stitcher.run.stitch_local">stitch_local() (in module stitcher.run)</a>
+  <dt><a href="stitcher.html#stitcher.sorted_dict.UnsortableList.sort">sort() (stitcher.sorted_dict.UnsortableList method)</a>
   </dt>
 
       
-  <dt><a href="stitcher.html#stitcher.run.stitch_streams">stitch_streams() (in module stitcher.run)</a>
+  <dt><a href="stitcher.html#stitcher.panorama.Stitcher.stitch">stitch() (stitcher.panorama.Stitcher method)</a>
   </dt>
 
       
-  <dt><a href="stitcher.html#stitcher.run.stitch_videos">stitch_videos() (in module stitcher.run)</a>
+  <dt><a href="stitcher.html#stitcher.app.stitch_all_videos">stitch_all_videos() (in module stitcher.app)</a>
   </dt>
 
       
-  <dt><a href="stitcher.core.html#stitcher.core.panorama.Stitcher">Stitcher (class in stitcher.core.panorama)</a>
+  <dt><a href="stitcher.html#stitcher.app.stitch_streams">stitch_streams() (in module stitcher.app)</a>
   </dt>
 
+      
+  <dt><a href="stitcher.html#stitcher.app.stitch_videos">stitch_videos() (in module stitcher.app)</a>
+  </dt>
+
+      
+  <dt><a href="stitcher.html#stitcher.panorama.Stitcher">Stitcher (class in stitcher.panorama)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="stitcher.html#module-stitcher">stitcher (module)</a>
+  </dt>
+
+      
+  <dt><a href="stitcher.html#module-stitcher.app">stitcher.app (module)</a>
   </dt>
 
       
@@ -248,49 +307,27 @@
   </dt>
 
       
+  <dt><a href="stitcher.html#module-stitcher.configuration">stitcher.configuration (module)</a>
+  </dt>
+
+      
   <dt><a href="stitcher.html#module-stitcher.configure">stitcher.configure (module)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.core.html#module-stitcher.core">stitcher.core (module)</a>
+  <dt><a href="stitcher.html#module-stitcher.panorama">stitcher.panorama (module)</a>
   </dt>
 
       
-  <dt><a href="stitcher.core.html#module-stitcher.core.multistitch">stitcher.core.multistitch (module)</a>
+  <dt><a href="stitcher.html#module-stitcher.scanner">stitcher.scanner (module)</a>
   </dt>
 
       
-  <dt><a href="stitcher.core.html#module-stitcher.core.panorama">stitcher.core.panorama (module)</a>
+  <dt><a href="stitcher.html#module-stitcher.sorted_dict">stitcher.sorted_dict (module)</a>
   </dt>
 
       
-  <dt><a href="stitcher.html#module-stitcher.run">stitcher.run (module)</a>
-  </dt>
-
-      
-  <dt><a href="stitcher.utils.html#module-stitcher.utils">stitcher.utils (module)</a>
-  </dt>
-
-      
-  <dt><a href="stitcher.utils.html#module-stitcher.utils.configuration">stitcher.utils.configuration (module)</a>
-  </dt>
-
-      
-  <dt><a href="stitcher.utils.html#module-stitcher.utils.scanner">stitcher.utils.scanner (module)</a>
-  </dt>
-
-      
-  <dt><a href="stitcher.utils.html#module-stitcher.utils.sorted_dict">stitcher.utils.sorted_dict (module)</a>
-  </dt>
-
-      
-  <dt><a href="stitcher.core.html#stitcher.core.multistitch.Multistitcher.stitchImages">stitchImages() (stitcher.core.multistitch.Multistitcher method)</a>
-  </dt>
-
-      
-  <dt><a href="stitcher.html#stitcher.run.stream_video">stream_video() (in module stitcher.run)</a>
+  <dt><a href="stitcher.html#stitcher.app.stream_video">stream_video() (in module stitcher.app)</a>
   </dt>
 
   </dl></td>
@@ -300,15 +337,33 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.utils.html#stitcher.utils.sorted_dict.UnsortableList">UnsortableList (class in stitcher.utils.sorted_dict)</a>
+  <dt><a href="stitcher.html#stitcher.sorted_dict.UnsortableList">UnsortableList (class in stitcher.sorted_dict)</a>
+  </dt>
+
+      
+  <dt><a href="stitcher.html#stitcher.sorted_dict.UnsortableOrderedDict">UnsortableOrderedDict (class in stitcher.sorted_dict)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="stitcher.utils.html#stitcher.utils.sorted_dict.UnsortableOrderedDict">UnsortableOrderedDict (class in stitcher.utils.sorted_dict)</a>
+  <dt><a href="stitcher.html#stitcher.configuration.DirectoryField.update">update() (stitcher.configuration.DirectoryField method)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="stitcher.html#stitcher.configuration.Field.update">(stitcher.configuration.Field method)</a>
+  </dt>
+
+        
+  <dt><a href="stitcher.html#stitcher.configuration.FileField.update">(stitcher.configuration.FileField method)</a>
+  </dt>
+
+        
+  <dt><a href="stitcher.html#stitcher.configuration.NumField.update">(stitcher.configuration.NumField method)</a>
+  </dt>
+
+      </dl></dd>
   </dl></td>
 </tr></table>
 
