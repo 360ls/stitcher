@@ -62,10 +62,10 @@ class Configuration(object):
 
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self):
+    def __init__(self, configFile="config/profile.yml"):
         """ The Configuration class constructor instantiates the Configuration class. """
 
-        self.config_file = "config/profile.yml"
+        self.config_file = configFile
         self.check_config_file()
         self.initialize()
 

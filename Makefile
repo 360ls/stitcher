@@ -1,6 +1,10 @@
 PACKAGE_DIR=stitcher
 DOC_DIR=docs
+TEST_DIR=test
 all: run
+TEST_OPTS="--verbose"
+
+.PHONY: test
 
 install:
 	pip install -r requirements.txt
@@ -20,8 +24,8 @@ html:
 lint:
 	pylint stitcher --rcfile=config/pylintrc
 
-test: lint
-	echo "Running tests"
+test:
+	nosetests $(TEST_DIR) $(TEST_OPTS)
 
 clean:
 	find . -name '*.pyc' -delete
