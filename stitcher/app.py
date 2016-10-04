@@ -41,15 +41,19 @@ def main():
     elif opt == 2:
         left_stream, right_stream = initialize(config)
         stitch_streams(left_stream, right_stream)
+        main()
     elif opt == 3:
         left, right = configure_videos(config)
         stitch_videos(left, right)
+        main()
     elif opt == 4:
         stitch_all_videos(config)
+        main()
     elif opt == 5:
         left, right = configure_videos(config)
         port = config.port.value
         stream_video(left, right, port)
+        main()
     elif opt == 0:
         sys.exit(0)
     else:
@@ -61,12 +65,13 @@ def reconfigure(configuration):
     print("Choose Option")
     print("1) View current profile")
     print("2) Reconfigure option")
+    print("3) Return to main options")
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
     if opt == 1:
         configuration.print_configuration()
         reconfigure(configuration)
-    else:
+    elif opt == 2:
         print("Choose a field to modify")
         fields = configuration.get_fields()
         fields = [field for field in fields]
@@ -81,6 +86,8 @@ def reconfigure(configuration):
         elif isinstance(field, DirectoryField) or isinstance(field, FileField):
             new_val = scanner.read_string(prompt)
         configuration.set(field.key, new_val)
+    else:
+        main()
 
 def initialize(config):
     """ Initializes stream from cameras. """
@@ -167,10 +174,8 @@ def configure_videos(config):
         else:
             print("Sorry, no valid files found for configuration. Please try again.")
         sys.exit(0)
-    elif opt == 3:
-        main()
     else:
-        sys.exit(0)
+        main()
 
 def stitch_videos(left_video, right_video):
     """ Stitches local videos. """
