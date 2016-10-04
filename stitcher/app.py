@@ -69,6 +69,7 @@ def reconfigure(configuration):
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
     if opt == 1:
+        print ("Here is the current configuration:")
         configuration.print_configuration()
         reconfigure(configuration)
     elif opt == 2:
@@ -79,14 +80,18 @@ def reconfigure(configuration):
             print("{0}) {1}".format(i, fields[i].key))
         opt = scanner.read_int('Choose field: ')
         field = fields[opt]
-        print ("Here is the current configuration:")
+
         print("Current value for {0}: {1}".format(field.key, field.value))
         prompt = "Enter new value: "
         if isinstance(field, NumField):
             new_val = scanner.read_int(prompt)
         elif isinstance(field, DirectoryField) or isinstance(field, FileField):
             new_val = scanner.read_string(prompt)
-        configuration.set(field.key, new_val)
+        try:
+            configuration.set(field.key, new_val)
+        except (KeyError, ValueError):
+            reconfigure(configuration)
+
     else:
         main()
 
