@@ -18,31 +18,14 @@ def parse():
     scanner = Scanner()
     left_index = scanner.read_int('Enter index of left camera: ')
     right_index = scanner.read_int('Enter index of right camera: ')
-
-    source_dir = raw_input('Enter full path to image source directory: ')
-    dest_dir = raw_input('Enter full path to image output directory: ')
-    key_frame = raw_input('Enter full path to key frame image: ')
     video_dir = raw_input('Enter path to video source directory: ')
     left_video = raw_input('Enter path to left video: ')
     right_video = raw_input('Enter path to right video: ')
-
     port = scanner.read_int('Enter socket port number')
-
-    try:
-        width = int(raw_input('Enter image width: '))
-    except ValueError:
-        print "Please enter a number."
-
-    img_format = raw_input('Enter image format: ')
 
     settings = UnsortableOrderedDict([
         ('left-index', left_index),
         ('right-index', right_index),
-        ('source-dir', source_dir),
-        ('dest-dir', dest_dir),
-        ('key-frame', key_frame),
-        ('width', width),
-        ('img-format', img_format),
         ('video-dir', video_dir),
         ('left-video', left_video),
         ('right-video', right_video),

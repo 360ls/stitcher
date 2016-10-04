@@ -79,6 +79,7 @@ def reconfigure(configuration):
             print("{0}) {1}".format(i, fields[i].key))
         opt = scanner.read_int('Choose field: ')
         field = fields[opt]
+        print ("Here is the current configuration:")
         print("Current value for {0}: {1}".format(field.key, field.value))
         prompt = "Enter new value: "
         if isinstance(field, NumField):
