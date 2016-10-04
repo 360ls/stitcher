@@ -23,7 +23,7 @@ def main():
     config = Configuration()
     print("Choose Option:")
     print("0) Quit")
-    print("1) Stitch local images")
+    print("1) Reconfigure Profile")
     print("2) Stitch from cameras")
     print("3) Stitch from 2 videos")
     print("4) Stitch from 4 videos")
@@ -33,6 +33,7 @@ def main():
     opt = scanner.read_int('Enter option number: ')
 
     if opt == 1:
+        reconfigure(config)
         main()
     elif opt == 2:
         left_stream, right_stream = initialize(config)
@@ -44,13 +45,34 @@ def main():
         stitch_all_videos(config)
     elif opt == 5:
         left, right = configure_videos(config)
-        port = config.port
+        port = config.port.value
         stream_video(left, right, port)
     elif opt == 0:
         sys.exit(0)
     else:
         print("Invalid option")
         main()
+
+def reconfigure(configuration):
+    """ Reconfigures profile.yml """
+    print("Choose Option")
+    print("1) View current profile")
+    print("2) Reconfigure option")
+    scanner = Scanner()
+    opt = scanner.read_int('Enter option number: ')
+    if opt == 1:
+        configuration.print_configuration()
+        reconfigure(configuration)
+    else:
+        print("Choose a field to modify")
+        fields = configuration.get_fields()
+        for i in xrange(len(fields)):
+            print("{0}) {1}".format(i, fields[i]))
+        opt = scanner.read_int('Choose field: ')
+        field = fields[opt]
+        print("Current value for {0}: {1}".format(field, configuration.get_value(field)))
+        new_val = scanner.read_string("Enter new value: ")
+        configuration.modify(field, new_val)
 
 def initialize(config):
     """ Initializes stream from cameras. """
@@ -116,9 +138,9 @@ def configure_videos(config):
     opt = scanner.read_int('Enter option number: ')
 
     if opt == 1:
-        return config.left_video, config.right_video
+        return config.left_video.value, config.right_video.value
     elif opt == 2:
-        files = os.listdir(config.video_dir)
+        files = os.listdir(config.video_dir.value)
         video_files = [f for f in files if f.endswith(".mp4") or f.endswith(".MP4")]
         if len(video_files) > 0:
             video_files.sort()
@@ -131,8 +153,8 @@ def configure_videos(config):
             left = scanner.read_int('Choose left video: ')
             right = scanner.read_int('Choose right video: ')
 
-            left_video = os.path.join(config.video_dir, video_files[left])
-            right_video = os.path.join(config.video_dir, video_files[right])
+            left_video = os.path.join(config.video_dir.value, video_files[left])
+            right_video = os.path.join(config.video_dir.value, video_files[right])
             return left_video, right_video
         else:
             print("Sorry, no valid files found for configuration. Please try again.")
@@ -182,7 +204,7 @@ def stitch_all_videos(config):
     stitcher = Stitcher()
     fst_stitcher = Stitcher()
     snd_stitcher = Stitcher()
-    video_dir = config.video_dir
+    video_dir = config.video_dir.value
     video_files = get_video_files(video_dir)
     video_streams = [cv2.VideoCapture(path) for path in video_files]
 

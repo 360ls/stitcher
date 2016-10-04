@@ -30,3 +30,11 @@ class Scanner(object):
             return directory
         else:
             raise ValueError
+
+    @staticmethod
+    def read_string(prompt):
+        """
+        reads a string from standard input
+        """
+        string = raw_input(prompt)
+        return string

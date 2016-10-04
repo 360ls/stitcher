@@ -42,7 +42,7 @@ def parse():
         ('dest-dir', dest_dir),
         ('key-frame', key_frame),
         ('width', width),
-        ('format', img_format),
+        ('img-format', img_format),
         ('video-dir', video_dir),
         ('left-video', left_video),
         ('right-video', right_video),
