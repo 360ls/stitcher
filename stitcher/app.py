@@ -301,7 +301,7 @@ def stitch_all_videos(config):
            video_streams[2].isOpened() and
            video_streams[3].isOpened()):
         video_frames = [stream.read()[1] for stream in video_streams]
-        resized_frames = [imutils.resize(frame, width=400) for frame in video_frames]
+        resized_frames = [imutils.resize(frame, width=250) for frame in video_frames]
 
         left_result = fst_stitcher.stitch([resized_frames[0], resized_frames[1]])
         right_result = snd_stitcher.stitch([resized_frames[2], resized_frames[3]])
