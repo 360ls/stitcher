@@ -17,6 +17,9 @@ from imutils.video import VideoStream
 from .panorama import Stitcher
 from .configuration import Configuration
 from .scanner import Scanner
+from .configuration import NumField
+from .configuration import DirectoryField
+from .configuration import FileField
 
 def main():
     """ The main script for instantiating a CLI to navigate stitching. """
@@ -66,13 +69,18 @@ def reconfigure(configuration):
     else:
         print("Choose a field to modify")
         fields = configuration.get_fields()
+        fields = [field for field in fields]
         for i in xrange(len(fields)):
-            print("{0}) {1}".format(i, fields[i]))
+            print("{0}) {1}".format(i, fields[i].key))
         opt = scanner.read_int('Choose field: ')
         field = fields[opt]
-        print("Current value for {0}: {1}".format(field, configuration.get_value(field)))
-        new_val = scanner.read_string("Enter new value: ")
-        configuration.modify(field, new_val)
+        print("Current value for {0}: {1}".format(field.key, field.value))
+        prompt = "Enter new value: "
+        if isinstance(field, NumField):
+            new_val = scanner.read_int(prompt)
+        elif isinstance(field, DirectoryField) or isinstance(field, FileField):
+            new_val = scanner.read_string(prompt)
+        configuration.set(field.key, new_val)
 
 def initialize(config):
     """ Initializes stream from cameras. """

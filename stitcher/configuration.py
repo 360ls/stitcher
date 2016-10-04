@@ -31,6 +31,7 @@ class DirectoryField(Field):
     String Field
     """
     def update(self, value):
+        print value
         if not os.path.isdir(value):
             raise ValueError
         else:
@@ -67,6 +68,13 @@ class Configuration(object):
         self.config_file = "config/profile.yml"
         self.check_config_file()
         self.initialize()
+
+    def get_fields(self):
+        """ Returns generator of instance key value pairs """
+        for attr, value in self.__dict__.iteritems():
+            if attr == "config_file":
+                continue
+            yield value
 
     def check_config_file(self):
         """ Checks for an existing yml configuration file. """
@@ -145,28 +153,22 @@ class Configuration(object):
         with open(self.config_file, 'r') as config_file:
             print config_file.read()
 
-    def get_fields(self):
-        """
-        Returns list of the configuration fields
-        """
-        with open(self.config_file) as config_file:
-            config_dict = yaml.load(config_file)
-        return [field for field in config_dict]
-
     def get_value(self, field):
         """
         Returns the value of a field
         """
         return getattr(self, field.replace("-", "_"))
 
-    def modify(self, key, val):
+    def set(self, key, val):
         """
         Modifies a configuration field with specifed value
         """
         with open(self.config_file) as config_file:
             config_dict = yaml.load(config_file)
 
-        config_dict[key.replace("-", "_")] = val
+        field = self.get_value(key)
+        field.update(val)
+        config_dict[key.replace("_", "-")] = val
 
         with open(self.config_file, 'w') as config_file:
-            yaml.dump(config_dict, config_file, default_flow_style=True)
+            yaml.dump(config_dict, config_file, default_flow_style=False)
