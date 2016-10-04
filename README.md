@@ -31,6 +31,8 @@ This will start the CLI with the following options.
 
 1. Stitching Videos from Cameras
 2. Stitching from Local Videos
+3. Test camera stream
+4. Reconfigure profile
 
 ## Streaming
 Make sure that the port number is configured in `profile.yml`.
@@ -45,11 +47,15 @@ make client
 Then start the CLI and choose the streaming option.
 
 ## Generate Documentation
+The documentation is generated in a directory called
+`360ls-stitcher-docs` in the parent directory of the project.
+
 
 ```bash
 make html
 ```
-The generated documentation should be in the `docs/build` directory.
+
+The generated documentation should be in the `360ls-stitcher-docs/html` directory.
 
 ## Linting
 The linter configuration can be founder under `config/pylintrc`.
