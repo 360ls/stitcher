@@ -24,7 +24,6 @@ def main():
     """ The main script for instantiating a CLI to navigate stitching. """
     config = Configuration()
     print("Choose Option:")
-    print("0) Quit")
     print("1) Reconfigure Profile")
     print("2) Stitch from cameras")
     print("3) Stitch from 2 videos")
@@ -32,6 +31,8 @@ def main():
     print("5) Stream stitched video")
     print("6) Check stream")
     print("7) Preview stream")
+    print("8) Save stream locally")
+    print("0) Quit")
 
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
@@ -66,6 +67,9 @@ def main():
         index = scanner.read_int('Enter camera index: ')
         show_stream(index)
         main()
+    elif opt == 8:
+        print("Saving stream locally.")
+	main()
     elif opt == 0:
         sys.exit(0)
     else:
@@ -93,6 +97,7 @@ def reconfigure(configuration):
     print("1) View current profile")
     print("2) Reconfigure option")
     print("3) Return to main options")
+    print("0) Quit")
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
     if opt == 1:
@@ -119,8 +124,10 @@ def reconfigure(configuration):
         except (KeyError, ValueError):
             reconfigure(configuration)
 
-    else:
+    elif opt == 3:
         main()
+    else:
+        sys.exit(0)
 
 def initialize(config):
     """ Initializes stream from cameras. """
@@ -213,6 +220,7 @@ def configure_videos(config):
     print("1) Use preconfigured left/right video streams")
     print("2) Configure streams")
     print("3) Return to main options")
+    print("0) Quit")
 
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
@@ -239,8 +247,10 @@ def configure_videos(config):
         else:
             print("Sorry, no valid files found for configuration. Please try again.")
         sys.exit(0)
-    else:
+    elif opt == 3:
         main()
+    else:
+        sys.exit(0)
 
 def stitch_videos(left_video, right_video):
     """ Stitches local videos. """
