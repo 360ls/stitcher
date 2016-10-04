@@ -4,3 +4,4 @@ imutils
 image
 sphinx
 pylint
+nose
