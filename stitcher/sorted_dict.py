@@ -1,6 +1,6 @@
 """
 This module enapsulates the UnsortableList and UnsortableOrderedDict classes
-to enable instantiation of unsorted ordered dictionaries, which are used 
+to enable instantiation of unsorted ordered dictionaries, which are used
 to write key-value pairs in a desired order into a yaml format.
 """
 
@@ -13,7 +13,7 @@ class UnsortableList(list):
         pass
 
 class UnsortableOrderedDict(OrderedDict):
-    """ The UnsortableOrderedDict class is responsible for creating an unsortable dictionary from an ordered dictionary. """
+    """ Dictionary with Ordered Key/Value pairs """
 
     def items(self, *args, **kwargs):
         return UnsortableList(OrderedDict.items(self, *args, **kwargs))

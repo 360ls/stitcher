@@ -6,13 +6,13 @@ install:
 	pip install -r requirements.txt
 
 configure:
-	python $(PACKAGE_DIR)/configure.py
+	python -m $(PACKAGE_DIR).configure
 
 run:
-	python $(PACKAGE_DIR)/run.py
+	python -m $(PACKAGE_DIR).app
 
 client:
-	python $(PACKAGE_DIR)/client.py &
+	python -m $(PACKAGE_DIR).client &
 
 html:
 	$(MAKE) -C $(DOC_DIR) html
@@ -22,3 +22,6 @@ lint:
 
 test: lint
 	echo "Running tests"
+
+clean:
+	find . -name '*.pyc' -delete

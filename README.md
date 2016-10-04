@@ -1,4 +1,5 @@
 ## Realtime 360 Stitcher
+[![Build Status](https://travis-ci.org/dongy7/360ls-stitcher.svg?branch=master)](https://travis-ci.org/dongy7/360ls-stitcher)
 
 ## Pre-requisites
 - Python 2.7
@@ -29,8 +30,7 @@ make run
 This will start the CLI with the following options.
 
 1. Stitching Videos from Cameras
-2. Stitching Local Images
-3. Stitching from Local Videos
+2. Stitching from Local Videos
 
 ## Streaming
 Make sure that the port number is configured in `profile.yml`.
@@ -52,6 +52,7 @@ make html
 The generated documentation should be in the `docs/build` directory.
 
 ## Linting
+The linter configuration can be founder under `config/pylintrc`.
 
 ```bash
 make lint
