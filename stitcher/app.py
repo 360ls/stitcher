@@ -211,7 +211,7 @@ def stitch_streams(left_stream, right_stream):
 
         # no homograpy could be computed
         if result is None:
-            print("[INFO] homography could not be computed")
+            Formatter.print_err("[INFO] homography could not be computed")
             break
 
         # show the output images
@@ -261,7 +261,8 @@ def configure_videos(config):
             right_video = os.path.join(config.video_dir.value, video_files[right])
             return left_video, right_video
         else:
-            print("Sorry, no valid files found for configuration. Please try again.")
+            Formatter.print_err(
+                "No valid video files found. Please reconfigure the video directory")
         sys.exit(0)
     else:
         main()
@@ -284,7 +285,7 @@ def stitch_videos(left_video, right_video):
 
         # no homograpy could be computed
         if result is None:
-            print("[INFO] homography could not be computed")
+            Formatter.print_err("[INFO] homography could not be computed")
             break
 
         # show the output images
@@ -295,6 +296,7 @@ def stitch_videos(left_video, right_video):
             left_stream.release()
             right_stream.release()
             cv2.destroyAllWindows()
+            cv2.waitKey(1)
             main()
 
     left_stream.release()
@@ -324,7 +326,7 @@ def stitch_all_videos(config):
 
         # no homograpy could be computed
         if left_result is None or right_result is None:
-            print("[INFO] homography could not be computed")
+            Formatter.print_err("[INFO] homography could not be computed")
             break
 
         cv2.imshow("Result", result)
@@ -357,7 +359,7 @@ def stream_video(left_video, right_video, port):
 
         # no homograpy could be computed
         if result is None:
-            print("[INFO] homography could not be computed")
+            Formatter.print_err("[INFO] homography could not be computed")
             break
 
         data = pickle.dumps(result)
