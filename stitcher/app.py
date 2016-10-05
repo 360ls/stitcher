@@ -19,6 +19,7 @@ from .scanner import Scanner
 from .configuration import NumField
 from .configuration import DirectoryField
 from .configuration import FileField
+from encoder.save_to_local import save_video
 
 def main():
     """ The main script for instantiating a CLI to navigate stitching. """
@@ -50,10 +51,8 @@ def main():
     elif opt == 3:
         left, right = configure_videos(config)
         stitch_videos(left, right)
-        main()
     elif opt == 4:
         stitch_all_videos(config)
-        main()
     elif opt == 5:
         left, right = configure_videos(config)
         port = config.port.value
@@ -68,8 +67,7 @@ def main():
         show_stream(index)
         main()
     elif opt == 8:
-        print("Saving stream locally.")
-	main()
+        save_video()
     elif opt == 0:
         sys.exit(0)
     else:
@@ -200,8 +198,8 @@ def stitch_streams(left_stream, right_stream):
 
         # show the output images
         cv2.imshow("Result", result)
-        cv2.imshow("Left Frame", left)
-        cv2.imshow("Right Frame", right)
+        # cv2.imshow("Left Frame", left)
+        # cv2.imshow("Right Frame", right)
         key = cv2.waitKey(1) & 0xFF
 
         # if the `q` key was pressed, break from the loop
@@ -275,8 +273,8 @@ def stitch_videos(left_video, right_video):
 
         # show the output images
         cv2.imshow("Result", result)
-        cv2.imshow("Left Frame", left)
-        cv2.imshow("Right Frame", right)
+        # cv2.imshow("Left Frame", left)
+        # cv2.imshow("Right Frame", right)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             left_stream.release()
             right_stream.release()
@@ -301,7 +299,7 @@ def stitch_all_videos(config):
            video_streams[2].isOpened() and
            video_streams[3].isOpened()):
         video_frames = [stream.read()[1] for stream in video_streams]
-        resized_frames = [imutils.resize(frame, width=250) for frame in video_frames]
+        resized_frames = [imutils.resize(frame, width=275) for frame in video_frames]
 
         left_result = fst_stitcher.stitch([resized_frames[0], resized_frames[1]])
         right_result = snd_stitcher.stitch([resized_frames[2], resized_frames[3]])
