@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 # generated profile
-profile.yml
+config/profile.yml
 
 # generated docs
 docs/build/*

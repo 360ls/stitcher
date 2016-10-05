@@ -1,0 +1,6 @@
+left-index: 0
+right-index: 1
+video-dir: data/videos
+left-video: data/videos/cam1.mp4
+right-video: data/videos/cam2.mp4
+port: 8800
