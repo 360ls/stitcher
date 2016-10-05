@@ -124,16 +124,17 @@ def reconfigure(configuration):
 
 def initialize(config):
     """ Initializes stream from cameras. """
-    left_index = config.left_index
-    right_index = config.right_index
-    # initialize the video streams and allow them to warmup
-    time.sleep(0.5)
-    print("[INFO] starting cameras...")
+    left_index = config.left_index.value
+    right_index = config.right_index.value
 
-    left_stream = cv2.VideoCapture(left_index)
-    right_stream = cv2.VideoCapture(right_index)
+    if check_stream(left_index) and check_stream(right_index):
+        # initialize the video streams and allow them to warmup
+        time.sleep(0.5)
+        print("[INFO] starting cameras...")
 
-    if check_stream(left_stream) and check_stream(right_stream):
+        left_stream = cv2.VideoCapture(left_index)
+        right_stream = cv2.VideoCapture(right_index)
+
         return left_stream, right_stream
     else:
         raise ValueError
