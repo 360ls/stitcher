@@ -2,7 +2,7 @@ PACKAGE_DIR=stitcher
 DOC_DIR=docs
 TEST_DIR=test
 all: run
-TEST_OPTS="--verbose"
+TEST_OPTS=--rednose --force-color --verbosity=3
 
 .PHONY: test
 

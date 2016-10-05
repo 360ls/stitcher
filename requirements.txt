@@ -5,3 +5,4 @@ image
 sphinx
 pylint
 nose
+rednose
