@@ -40,14 +40,14 @@ def main():
     """ The main script for instantiating a CLI to navigate stitching. """
     print("")
     Formatter.print_heading("Choose option:")
-    print("0) Quit")
-    print("1) Reconfigure Profile")
-    print("2) Stitch from cameras")
-    print("3) Stitch from 2 videos")
-    print("4) Stitch from 4 videos")
-    print("5) Stream stitched video")
-    print("6) Check stream")
-    print("7) Preview stream")
+    Formatter.print_option(0, "Quit")
+    Formatter.print_option(1, "Reconfigure Profile")
+    Formatter.print_option(2, "Stitch from cameras")
+    Formatter.print_option(3, "Stitch from 2 videos")
+    Formatter.print_option(4, "Stitch from 4 videos")
+    Formatter.print_option(5, "Stream stitched video")
+    Formatter.print_option(6, "Check stream")
+    Formatter.print_option(7, "Preview stream")
 
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
@@ -112,11 +112,13 @@ def check_stream(index):
 def reconfigure(configuration):
     """ Reconfigures profile.yml """
     Formatter.print_heading("Choose option:")
-    print("1) View current profile")
-    print("2) Reconfigure option")
-    print("3) Return to main options")
+    Formatter.print_option(1, "View current profile")
+    Formatter.print_option(2, "Reconfigure option")
+    Formatter.print_option(3, "Return to main options")
+
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
+
     if opt == 1:
         print ("Here is the current configuration:")
         configuration.print_configuration()
@@ -235,9 +237,9 @@ def stitch_streams(left_stream, right_stream):
 def configure_videos(config):
     """ Instantiates a CLI for configuration of videos. """
     Formatter.print_heading("Choose option:")
-    print("1) Use preconfigured left/right video streams")
-    print("2) Configure streams")
-    print("3) Return to main options")
+    Formatter.print_option(1, "Use preconfigured left/right video streams")
+    Formatter.print_option(2, "Configure streams")
+    Formatter.print_option(3, "Return to main options")
 
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')

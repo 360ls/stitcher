@@ -43,3 +43,9 @@ class Formatter(object):
     def print_status(msg):
         formatted_msg = colored(msg, "green", attrs=['concealed'])
         print formatted_msg
+
+    @staticmethod
+    def print_option(num, msg):
+        prompt = "{0}) {1}".format(num, msg)
+        formatted_prompt = colored(prompt, "white", attrs=['bold'])
+        print(formatted_prompt)
