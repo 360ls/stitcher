@@ -21,7 +21,11 @@ from .configuration import DirectoryField
 from .configuration import FileField
 from .formatter import Formatter
 
+# pylint: disable=W0702
 def load_configuration():
+    """
+    returns configuration object
+    """
     try:
         config = Configuration()
         print("{0} {1}"
