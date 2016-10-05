@@ -162,6 +162,7 @@ def show_stream(index):
             print("[INFO] cleaning up...")
             stream.release()
             cv2.destroyAllWindows()
+            cv2.waitKey(1)
         else:
             main()
     except ValueError:
@@ -207,6 +208,7 @@ def stitch_streams(left_stream, right_stream):
     left_stream.release()
     right_stream.release()
     cv2.destroyAllWindows()
+    cv2.waitKey(1)
 
 def configure_videos(config):
     """ Instantiates a CLI for configuration of videos. """
@@ -277,6 +279,7 @@ def stitch_videos(left_video, right_video):
     left_stream.release()
     right_stream.release()
     cv2.destroyAllWindows()
+    cv2.waitKey(1)
 
 def stitch_all_videos(config):
     """ Stitches four local videos. """
@@ -308,6 +311,7 @@ def stitch_all_videos(config):
             for stream in video_streams:
                 stream.release()
             cv2.destroyAllWindows()
+            cv2.waitKey(1)
             main()
 
 def stream_video(left_video, right_video, port):
