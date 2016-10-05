@@ -1,6 +1,6 @@
 left-index: 0
 right-index: 1
 video-dir: data/videos
-left-video: data/videos/cam1.mp4
-right-video: data/videos/cam2.mp4
+left-video: data/videos/.gitkeep
+right-video: data/videos/.gitkeep
 port: 8800
