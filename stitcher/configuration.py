@@ -5,6 +5,7 @@ Creates Configuration object based on profile.yml
 import os.path
 import sys
 import yaml
+from .formatter import Formatter
 
 class Field(object):
     """
@@ -151,7 +152,9 @@ class Configuration(object):
         """
 
         with open(self.config_file, 'r') as config_file:
-            print config_file.read()
+            config_dict = yaml.load(config_file)
+        for key in sorted(config_dict.keys()):
+            Formatter.print_pair(key, config_dict[key])
 
     def get_value(self, field):
         """

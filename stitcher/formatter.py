@@ -48,4 +48,11 @@ class Formatter(object):
     def print_option(num, msg):
         prompt = "{0}) {1}".format(num, msg)
         formatted_prompt = colored(prompt, "white", attrs=['bold'])
-        print(formatted_prompt)
+        print formatted_prompt
+
+    @staticmethod
+    def print_pair(key, val):
+        adjusted_key = ("{0}:".format(key)).ljust(15)
+        formatted_key = colored(adjusted_key, "cyan", attrs=['bold'])
+        formatted_val = colored(val, "magenta", attrs=['bold'])
+        print "{0}{1}".format(formatted_key, formatted_val)

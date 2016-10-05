@@ -120,15 +120,16 @@ def reconfigure(configuration):
     opt = scanner.read_int('Enter option number: ')
 
     if opt == 1:
-        print ("Here is the current configuration:")
+        Formatter.print_heading("Current configuration:")
         configuration.print_configuration()
+        print("")
         reconfigure(configuration)
     elif opt == 2:
-        print("Choose a field to modify")
+        Formatter.print_heading("Choose a field to modify")
         fields = configuration.get_fields()
         fields = [field for field in fields]
         for i in xrange(len(fields)):
-            print("{0}) {1}".format(i, fields[i].key))
+            Formatter.print_option(i, fields[i].key)
         opt = scanner.read_int('Choose field: ')
         field = fields[opt]
 
