@@ -38,3 +38,8 @@ class Formatter(object):
     @staticmethod
     def get_input_msg(msg):
         return colored(msg, "yellow", attrs=['bold'])
+
+    @staticmethod
+    def print_status(msg):
+        formatted_msg = colored(msg, "green", attrs=['concealed'])
+        print formatted_msg

@@ -21,7 +21,6 @@ from .configuration import DirectoryField
 from .configuration import FileField
 from .formatter import Formatter
 
-
 def load_configuration():
     try:
         config = Configuration()
@@ -36,8 +35,10 @@ def load_configuration():
         sys.exit(-1)
 
 CONFIG = load_configuration()
+
 def main():
     """ The main script for instantiating a CLI to navigate stitching. """
+    print("")
     Formatter.print_heading("Choose option:")
     print("0) Quit")
     print("1) Reconfigure Profile")
@@ -151,7 +152,7 @@ def initialize(config):
     if check_stream(left_index) and check_stream(right_index):
         # initialize the video streams and allow them to warmup
         time.sleep(0.5)
-        print("[INFO] starting cameras...")
+        Formatter.print_status("[INFO] starting cameras...")
 
         left_stream = cv2.VideoCapture(left_index)
         right_stream = cv2.VideoCapture(right_index)
@@ -180,7 +181,7 @@ def show_stream(index):
                     break
 
             # do a bit of cleanup
-            print("[INFO] cleaning up...")
+            Formatter.print_status("[INFO] cleaning up...")
             stream.release()
             cv2.destroyAllWindows()
             cv2.waitKey(1)
@@ -225,7 +226,7 @@ def stitch_streams(left_stream, right_stream):
             break
 
     # do a bit of cleanup
-    print("[INFO] cleaning up...")
+    Formatter.print_status("[INFO] cleaning up...")
     left_stream.release()
     right_stream.release()
     cv2.destroyAllWindows()
@@ -233,7 +234,7 @@ def stitch_streams(left_stream, right_stream):
 
 def configure_videos(config):
     """ Instantiates a CLI for configuration of videos. """
-    print("Choose Option:")
+    Formatter.print_heading("Choose option:")
     print("1) Use preconfigured left/right video streams")
     print("2) Configure streams")
     print("3) Return to main options")
