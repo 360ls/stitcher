@@ -24,7 +24,7 @@ html:
 lint:
 	pylint stitcher --rcfile=config/pylintrc
 
-test:
+test: lint
 	nosetests $(TEST_DIR) $(TEST_OPTS)
 
 clean:
