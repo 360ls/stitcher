@@ -19,11 +19,26 @@ from .scanner import Scanner
 from .configuration import NumField
 from .configuration import DirectoryField
 from .configuration import FileField
+from .formatter import Formatter
 
+
+def load_configuration():
+    try:
+        config = Configuration()
+        print("{0} {1}"
+              .format("Profile parsed. All configuration options valid",
+                      Formatter.get_check()))
+        return config
+    except:
+        print("{0} {1}"
+              .format("Profile parsed. Invalid configuration. Please reconfigure.",
+                      Formatter.get_xmark()))
+        sys.exit(-1)
+
+CONFIG = load_configuration()
 def main():
     """ The main script for instantiating a CLI to navigate stitching. """
-    config = Configuration()
-    print("Choose Option:")
+    Formatter.print_heading("Choose option:")
     print("0) Quit")
     print("1) Reconfigure Profile")
     print("2) Stitch from cameras")
@@ -37,25 +52,25 @@ def main():
     opt = scanner.read_int('Enter option number: ')
 
     if opt == 1:
-        reconfigure(config)
+        reconfigure(CONFIG)
         main()
     elif opt == 2:
         try:
-            left_stream, right_stream = initialize(config)
+            left_stream, right_stream = initialize(CONFIG)
         except ValueError:
             main()
         stitch_streams(left_stream, right_stream)
         main()
     elif opt == 3:
-        left, right = configure_videos(config)
+        left, right = configure_videos(CONFIG)
         stitch_videos(left, right)
         main()
     elif opt == 4:
-        stitch_all_videos(config)
+        stitch_all_videos(CONFIG)
         main()
     elif opt == 5:
-        left, right = configure_videos(config)
-        port = config.port.value
+        left, right = configure_videos(CONFIG)
+        port = CONFIG.port.value
         stream_video(left, right, port)
         main()
     elif opt == 6:
@@ -81,15 +96,21 @@ def check_stream(index):
     cap.release()
 
     if ret:
-        print("Index {0} is valid".format(index))
+        msg = "Index {0} is valid {1}".format(
+            Formatter.color_text(str(index), "magenta"),
+            Formatter.get_check())
+        print(msg)
         return True
     else:
-        print("Index {0} is invalid".format(index))
+        msg = "Index {0} is invalid {1}".format(
+            Formatter.color_text(str(index), "magenta"),
+            Formatter.get_xmark())
+        print(msg)
         return False
 
 def reconfigure(configuration):
     """ Reconfigures profile.yml """
-    print("Choose Option")
+    Formatter.print_heading("Choose option:")
     print("1) View current profile")
     print("2) Reconfigure option")
     print("3) Return to main options")

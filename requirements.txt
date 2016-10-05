@@ -6,3 +6,4 @@ sphinx
 pylint
 nose
 rednose
+termcolor
