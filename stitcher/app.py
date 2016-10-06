@@ -177,8 +177,10 @@ def show_stream(index):
 
 def stitch_streams(left_index, right_index):
     """ Stitches left and right streams. """
-    left_stream = CameraStream(left_index, 400)
-    right_stream = CameraStream(right_index, 400)
+    scanner = Scanner()
+    width = scanner.read_int('Enter target resolution: ')
+    left_stream = CameraStream(left_index, width)
+    right_stream = CameraStream(right_index, width)
     stitcher = Stitcher()
 
     if left_stream.validate() and right_stream.validate():
@@ -246,8 +248,11 @@ def configure_videos(config):
 def stitch_videos(left_video, right_video):
     """ Stitches local videos. """
     stitcher = Stitcher()
-    left_stream = VideoStream(left_video, 400)
-    right_stream = VideoStream(right_video, 400)
+    scanner = Scanner()
+    width = scanner.read_int('Enter target resolution: ')
+    left_stream = VideoStream(left_video, width)
+    right_stream = VideoStream(right_video, width)
+
     if left_stream.validate() and right_stream.validate():
         while left_stream.has_next() and right_stream.has_next():
             left_frame = left_stream.next()
@@ -280,9 +285,11 @@ def stitch_all_videos(config):
     stitcher = Stitcher()
     fst_stitcher = Stitcher()
     snd_stitcher = Stitcher()
+    scanner = Scanner()
+    width = scanner.read_int('Enter target resolution: ')
     video_dir = config.video_dir.value
     video_files = get_video_files(video_dir)
-    video_streams = [VideoStream(path, 400) for path in video_files]
+    video_streams = [VideoStream(path, width) for path in video_files]
 
     if all([stream.validate() for stream in video_streams]):
         while all([stream.has_next() for stream in video_streams]):
