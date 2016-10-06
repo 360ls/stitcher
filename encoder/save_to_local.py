@@ -10,7 +10,7 @@ import time
 import cv2
 
 def save_video():
-    args = {'output': 'data/out/test.avi', 'codec': 'MJPG', 'fps': 20}
+    args = {'output': 'data/out/test.avi', 'codec': 'MJPG', 'fps': 30}
     
     # initialize the video stream and allow the camera
     # sensor to warmup
