@@ -21,6 +21,7 @@ from .configuration import DirectoryField
 from .configuration import FileField
 from .formatter import Formatter
 from .stream import CameraStream
+from .stream import VideoStream
 
 # pylint: disable=W0702
 def load_configuration():
@@ -245,39 +246,34 @@ def configure_videos(config):
 def stitch_videos(left_video, right_video):
     """ Stitches local videos. """
     stitcher = Stitcher()
-    left_stream = cv2.VideoCapture(left_video)
-    right_stream = cv2.VideoCapture(right_video)
+    left_stream = VideoStream(left_video, 400)
+    right_stream = VideoStream(right_video, 400)
+    if left_stream.validate() and right_stream.validate():
+        while left_stream.has_next() and right_stream.has_next():
+            left_frame = left_stream.next()
+            right_frame = right_stream.next()
+            result = stitcher.stitch([left_frame, right_frame])
 
-    while left_stream.isOpened() and right_stream.isOpened():
-        left_frame = left_stream.read()[1]
-        right_frame = right_stream.read()[1]
+            cv2.imshow("Left Stream", left_frame)
+            cv2.imshow("Right Stream", right_frame)
+            cv2.imshow("Stitched Stream", result)
 
-        # resize the frames
-        left = imutils.resize(left_frame, width=400)
-        right = imutils.resize(right_frame, width=400)
+            # no homograpy could be computed
+            if result is None:
+                Formatter.print_err("[INFO] homography could not be computed")
+                break
 
-        result = stitcher.stitch([left, right])
+            key = cv2.waitKey(1) & 0xFF
 
-        # no homograpy could be computed
-        if result is None:
-            Formatter.print_err("[INFO] homography could not be computed")
-            break
+            if key == ord("q"):
+                break
 
-        # show the output images
-        cv2.imshow("Result", result)
-        cv2.imshow("Left Frame", left)
-        cv2.imshow("Right Frame", right)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            left_stream.release()
-            right_stream.release()
-            cv2.destroyAllWindows()
-            cv2.waitKey(1)
-            main()
-
-    left_stream.release()
-    right_stream.release()
-    cv2.destroyAllWindows()
-    cv2.waitKey(1)
+        # do a bit of cleanup
+        Formatter.print_status("[INFO] cleaning up...")
+        left_stream.close()
+        right_stream.close()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
 
 def stitch_all_videos(config):
     """ Stitches four local videos. """
@@ -286,31 +282,32 @@ def stitch_all_videos(config):
     snd_stitcher = Stitcher()
     video_dir = config.video_dir.value
     video_files = get_video_files(video_dir)
-    video_streams = [cv2.VideoCapture(path) for path in video_files]
+    video_streams = [VideoStream(path, 400) for path in video_files]
 
-    while (video_streams[0].isOpened() and
-           video_streams[1].isOpened() and
-           video_streams[2].isOpened() and
-           video_streams[3].isOpened()):
-        video_frames = [stream.read()[1] for stream in video_streams]
-        resized_frames = [imutils.resize(frame, width=400) for frame in video_frames]
+    if all([stream.validate() for stream in video_streams]):
+        while all([stream.has_next() for stream in video_streams]):
+            frames = [stream.next() for stream in video_streams]
+            left_result = fst_stitcher.stitch([frames[0], frames[1]])
+            right_result = snd_stitcher.stitch([frames[2], frames[3]])
+            result = stitcher.stitch([left_result, right_result])
+            cv2.imshow("Stitched Stream", result)
 
-        left_result = fst_stitcher.stitch([resized_frames[0], resized_frames[1]])
-        right_result = snd_stitcher.stitch([resized_frames[2], resized_frames[3]])
-        result = stitcher.stitch([left_result, right_result])
+            # no homograpy could be computed
+            if result is None:
+                Formatter.print_err("[INFO] homography could not be computed")
+                break
 
-        # no homograpy could be computed
-        if left_result is None or right_result is None:
-            Formatter.print_err("[INFO] homography could not be computed")
-            break
+            key = cv2.waitKey(1) & 0xFF
 
-        cv2.imshow("Result", result)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            for stream in video_streams:
-                stream.release()
-            cv2.destroyAllWindows()
-            cv2.waitKey(1)
-            main()
+            if key == ord("q"):
+                break
+
+        # do a bit of cleanup
+        Formatter.print_status("[INFO] cleaning up...")
+        for stream in video_streams:
+            stream.close()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
 
 def stream_video(left_video, right_video, port):
     """ Streams video to socket. """
