@@ -20,6 +20,7 @@ from .configuration import NumField
 from .configuration import DirectoryField
 from .configuration import FileField
 from .formatter import Formatter
+from .stream import CameraStream
 
 # pylint: disable=W0702
 def load_configuration():
@@ -170,32 +171,19 @@ def initialize(config):
 
 def show_stream(index):
     """ shows stream of given index """
-    try:
-        is_valid = check_stream(index)
-        if is_valid:
-            stream = cv2.VideoCapture(index)
-            # loop over frames from the video streams
-            while True:
-                # grab the frames from their respective video streams
-                frame = stream.read()[1]
-                frame = imutils.resize(frame, width=400)
+    stream = CameraStream(index, 400)
+    if stream.validate():
+        while stream.has_next():
+            frame = stream.next()
+            cv2.imshow("Stream", frame)
+            key = cv2.waitKey(1) & 0xFF
 
-                cv2.imshow("Stream", frame)
-                key = cv2.waitKey(1) & 0xFF
-
-                # if the `q` key was pressed, break from the loop
-                if key == ord("q"):
-                    break
-
-            # do a bit of cleanup
-            Formatter.print_status("[INFO] cleaning up...")
-            stream.release()
-            cv2.destroyAllWindows()
-            cv2.waitKey(1)
-        else:
-            main()
-    except ValueError:
-        main()
+            if key == ord("q"):
+                break
+        Formatter.print_status("[INFO] cleaning up...")
+        stream.close()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
 
 def stitch_streams(left_stream, right_stream):
     """ Stitches left and right streams. """
