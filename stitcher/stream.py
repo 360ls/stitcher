@@ -1,28 +1,39 @@
+"""
+Wrapper classes for OpenCV streams
+"""
 from abc import ABCMeta, abstractmethod
 import imutils
 import cv2
 from .formatter import Formatter
 
 class Stream(object):
+    """
+    Abstract base stream class
+    """
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def has_next(self):
+        """ returns True if stream has remaining frames """
         pass
 
     @abstractmethod
     def next(self):
+        """ returns the next frame from stream """
         pass
 
     @abstractmethod
     def validate(self):
+        """ returns True if stream is valid """
         pass
-    
+
     @abstractmethod
     def close(self):
+        """ closes stream object """
         pass
 
 class CameraStream(Stream):
+    """ wrapper class for camera stream """
     def __init__(self, index, width):
         self.index = index
         self.stream = cv2.VideoCapture(index)
@@ -58,6 +69,7 @@ class CameraStream(Stream):
         self.stream.release()
 
 class VideoStream(Stream):
+    """ wrapper class for video stream """
     def __init__(self, path, width):
         self.path = path
         self.stream = cv2.VideoCapture(path)
