@@ -156,18 +156,7 @@ def initialize(config):
     """ Initializes stream from cameras. """
     left_index = config.left_index.value
     right_index = config.right_index.value
-
-    if check_stream(left_index) and check_stream(right_index):
-        # initialize the video streams and allow them to warmup
-        time.sleep(0.5)
-        Formatter.print_status("[INFO] starting cameras...")
-
-        left_stream = cv2.VideoCapture(left_index)
-        right_stream = cv2.VideoCapture(right_index)
-
-        return left_stream, right_stream
-    else:
-        raise ValueError
+    return left_index, right_index
 
 def show_stream(index):
     """ shows stream of given index """
@@ -185,47 +174,37 @@ def show_stream(index):
         cv2.destroyAllWindows()
         cv2.waitKey(1)
 
-def stitch_streams(left_stream, right_stream):
+def stitch_streams(left_index, right_index):
     """ Stitches left and right streams. """
+    left_stream = CameraStream(left_index, 400)
+    right_stream = CameraStream(right_index, 400)
     stitcher = Stitcher()
 
-    # loop over frames from the video streams
-    while True:
-        # grab the frames from their respective video streams
-        left = left_stream.read()[1]
-        right = right_stream.read()[1]
+    if left_stream.validate() and right_stream.validate():
+        while left_stream.has_next() and right_stream.has_next():
+            left_frame = left_stream.next()
+            right_frame = right_stream.next()
+            result = stitcher.stitch([left_frame, right_frame])
+            cv2.imshow("Left Stream", left_frame)
+            cv2.imshow("Right Stream", right_frame)
+            cv2.imshow("Stitched Stream", result)
 
-        # resize the frames
-        left = imutils.resize(left, width=400)
-        right = imutils.resize(right, width=400)
+            # no homograpy could be computed
+            if result is None:
+                Formatter.print_err("[INFO] homography could not be computed")
+                break
 
-        # stitch the frames together to form the panorama
-        # IMPORTANT: you might have to change this line of code
-        # depending on how your cameras are oriented; frames
-        # should be supplied in left-to-right order
-        result = stitcher.stitch([left, right])
+            key = cv2.waitKey(1) & 0xFF
 
-        # no homograpy could be computed
-        if result is None:
-            Formatter.print_err("[INFO] homography could not be computed")
-            break
+            if key == ord("q"):
+                break
 
-        # show the output images
-        cv2.imshow("Result", result)
-        cv2.imshow("Left Frame", left)
-        cv2.imshow("Right Frame", right)
-        key = cv2.waitKey(1) & 0xFF
-
-        # if the `q` key was pressed, break from the loop
-        if key == ord("q"):
-            break
-
-    # do a bit of cleanup
-    Formatter.print_status("[INFO] cleaning up...")
-    left_stream.release()
-    right_stream.release()
-    cv2.destroyAllWindows()
-    cv2.waitKey(1)
+        # do a bit of cleanup
+        Formatter.print_status("[INFO] cleaning up...")
+        left_stream.close()
+        right_stream.close()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
 
 def configure_videos(config):
     """ Instantiates a CLI for configuration of videos. """
