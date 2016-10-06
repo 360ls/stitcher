@@ -19,43 +19,63 @@ from .scanner import Scanner
 from .configuration import NumField
 from .configuration import DirectoryField
 from .configuration import FileField
+from .formatter import Formatter
+
+# pylint: disable=W0702
+def load_configuration():
+    """
+    returns configuration object
+    """
+    try:
+        config = Configuration()
+        print("{0} {1}"
+              .format("Profile parsed. All configuration options valid",
+                      Formatter.get_check()))
+        return config
+    except:
+        print("{0} {1}"
+              .format("Profile parsed. Invalid configuration. Please reconfigure.",
+                      Formatter.get_xmark()))
+        sys.exit(-1)
+
+CONFIG = load_configuration()
 
 def main():
     """ The main script for instantiating a CLI to navigate stitching. """
-    config = Configuration()
-    print("Choose Option:")
-    print("0) Quit")
-    print("1) Reconfigure Profile")
-    print("2) Stitch from cameras")
-    print("3) Stitch from 2 videos")
-    print("4) Stitch from 4 videos")
-    print("5) Stream stitched video")
-    print("6) Check stream")
-    print("7) Preview stream")
+    print("")
+    Formatter.print_heading("Choose option:")
+    Formatter.print_option(0, "Quit")
+    Formatter.print_option(1, "Reconfigure Profile")
+    Formatter.print_option(2, "Stitch from cameras")
+    Formatter.print_option(3, "Stitch from 2 videos")
+    Formatter.print_option(4, "Stitch from 4 videos")
+    Formatter.print_option(5, "Stream stitched video")
+    Formatter.print_option(6, "Check stream")
+    Formatter.print_option(7, "Preview stream")
 
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
 
     if opt == 1:
-        reconfigure(config)
+        reconfigure(CONFIG)
         main()
     elif opt == 2:
         try:
-            left_stream, right_stream = initialize(config)
+            left_stream, right_stream = initialize(CONFIG)
         except ValueError:
             main()
         stitch_streams(left_stream, right_stream)
         main()
     elif opt == 3:
-        left, right = configure_videos(config)
+        left, right = configure_videos(CONFIG)
         stitch_videos(left, right)
         main()
     elif opt == 4:
-        stitch_all_videos(config)
+        stitch_all_videos(CONFIG)
         main()
     elif opt == 5:
-        left, right = configure_videos(config)
-        port = config.port.value
+        left, right = configure_videos(CONFIG)
+        port = CONFIG.port.value
         stream_video(left, right, port)
         main()
     elif opt == 6:
@@ -81,30 +101,39 @@ def check_stream(index):
     cap.release()
 
     if ret:
-        print("Index {0} is valid".format(index))
+        msg = "Index {0} is valid {1}".format(
+            Formatter.color_text(str(index), "magenta"),
+            Formatter.get_check())
+        print(msg)
         return True
     else:
-        print("Index {0} is invalid".format(index))
+        msg = "Index {0} is invalid {1}".format(
+            Formatter.color_text(str(index), "magenta"),
+            Formatter.get_xmark())
+        print(msg)
         return False
 
 def reconfigure(configuration):
     """ Reconfigures profile.yml """
-    print("Choose Option")
-    print("1) View current profile")
-    print("2) Reconfigure option")
-    print("3) Return to main options")
+    Formatter.print_heading("Choose option:")
+    Formatter.print_option(1, "View current profile")
+    Formatter.print_option(2, "Reconfigure option")
+    Formatter.print_option(3, "Return to main options")
+
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
+
     if opt == 1:
-        print ("Here is the current configuration:")
+        Formatter.print_heading("Current configuration:")
         configuration.print_configuration()
+        print("")
         reconfigure(configuration)
     elif opt == 2:
-        print("Choose a field to modify")
+        Formatter.print_heading("Choose a field to modify")
         fields = configuration.get_fields()
         fields = [field for field in fields]
         for i in xrange(len(fields)):
-            print("{0}) {1}".format(i, fields[i].key))
+            Formatter.print_option(i, fields[i].key)
         opt = scanner.read_int('Choose field: ')
         field = fields[opt]
 
@@ -124,16 +153,17 @@ def reconfigure(configuration):
 
 def initialize(config):
     """ Initializes stream from cameras. """
-    left_index = config.left_index
-    right_index = config.right_index
-    # initialize the video streams and allow them to warmup
-    time.sleep(0.5)
-    print("[INFO] starting cameras...")
+    left_index = config.left_index.value
+    right_index = config.right_index.value
 
-    left_stream = cv2.VideoCapture(left_index)
-    right_stream = cv2.VideoCapture(right_index)
+    if check_stream(left_index) and check_stream(right_index):
+        # initialize the video streams and allow them to warmup
+        time.sleep(0.5)
+        Formatter.print_status("[INFO] starting cameras...")
 
-    if check_stream(left_stream) and check_stream(right_stream):
+        left_stream = cv2.VideoCapture(left_index)
+        right_stream = cv2.VideoCapture(right_index)
+
         return left_stream, right_stream
     else:
         raise ValueError
@@ -158,9 +188,10 @@ def show_stream(index):
                     break
 
             # do a bit of cleanup
-            print("[INFO] cleaning up...")
+            Formatter.print_status("[INFO] cleaning up...")
             stream.release()
             cv2.destroyAllWindows()
+            cv2.waitKey(1)
         else:
             main()
     except ValueError:
@@ -188,7 +219,7 @@ def stitch_streams(left_stream, right_stream):
 
         # no homograpy could be computed
         if result is None:
-            print("[INFO] homography could not be computed")
+            Formatter.print_err("[INFO] homography could not be computed")
             break
 
         # show the output images
@@ -202,17 +233,18 @@ def stitch_streams(left_stream, right_stream):
             break
 
     # do a bit of cleanup
-    print("[INFO] cleaning up...")
+    Formatter.print_status("[INFO] cleaning up...")
     left_stream.release()
     right_stream.release()
     cv2.destroyAllWindows()
+    cv2.waitKey(1)
 
 def configure_videos(config):
     """ Instantiates a CLI for configuration of videos. """
-    print("Choose Option:")
-    print("1) Use preconfigured left/right video streams")
-    print("2) Configure streams")
-    print("3) Return to main options")
+    Formatter.print_heading("Choose option:")
+    Formatter.print_option(1, "Use preconfigured left/right video streams")
+    Formatter.print_option(2, "Configure streams")
+    Formatter.print_option(3, "Return to main options")
 
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
@@ -237,7 +269,8 @@ def configure_videos(config):
             right_video = os.path.join(config.video_dir.value, video_files[right])
             return left_video, right_video
         else:
-            print("Sorry, no valid files found for configuration. Please try again.")
+            Formatter.print_err(
+                "No valid video files found. Please reconfigure the video directory")
         sys.exit(0)
     else:
         main()
@@ -260,7 +293,7 @@ def stitch_videos(left_video, right_video):
 
         # no homograpy could be computed
         if result is None:
-            print("[INFO] homography could not be computed")
+            Formatter.print_err("[INFO] homography could not be computed")
             break
 
         # show the output images
@@ -271,11 +304,13 @@ def stitch_videos(left_video, right_video):
             left_stream.release()
             right_stream.release()
             cv2.destroyAllWindows()
+            cv2.waitKey(1)
             main()
 
     left_stream.release()
     right_stream.release()
     cv2.destroyAllWindows()
+    cv2.waitKey(1)
 
 def stitch_all_videos(config):
     """ Stitches four local videos. """
@@ -299,7 +334,7 @@ def stitch_all_videos(config):
 
         # no homograpy could be computed
         if left_result is None or right_result is None:
-            print("[INFO] homography could not be computed")
+            Formatter.print_err("[INFO] homography could not be computed")
             break
 
         cv2.imshow("Result", result)
@@ -307,6 +342,7 @@ def stitch_all_videos(config):
             for stream in video_streams:
                 stream.release()
             cv2.destroyAllWindows()
+            cv2.waitKey(1)
             main()
 
 def stream_video(left_video, right_video, port):
@@ -331,7 +367,7 @@ def stream_video(left_video, right_video, port):
 
         # no homograpy could be computed
         if result is None:
-            print("[INFO] homography could not be computed")
+            Formatter.print_err("[INFO] homography could not be computed")
             break
 
         data = pickle.dumps(result)

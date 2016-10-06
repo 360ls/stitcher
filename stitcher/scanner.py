@@ -3,6 +3,7 @@ Scanner module
 """
 
 import os
+from .formatter import Formatter
 
 class Scanner(object):
     """
@@ -14,7 +15,7 @@ class Scanner(object):
         reads an integer from standard input
         """
         try:
-            num_input = int(raw_input(prompt))
+            num_input = int(raw_input(Formatter.get_input_msg(prompt)))
             print ""
             return num_input
         except ValueError:
@@ -25,7 +26,7 @@ class Scanner(object):
         """
         reads a directory from standard input
         """
-        directory = raw_input(prompt)
+        directory = raw_input(Formatter.get_input_msg(prompt))
         if os.path.isdir(directory):
             return directory
         else:
@@ -36,5 +37,5 @@ class Scanner(object):
         """
         reads a string from standard input
         """
-        string = raw_input(prompt)
+        string = raw_input(Formatter.get_input_msg(prompt))
         return string

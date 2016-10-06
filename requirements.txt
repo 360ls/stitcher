@@ -4,3 +4,6 @@ imutils
 image
 sphinx
 pylint
+nose
+rednose
+termcolor

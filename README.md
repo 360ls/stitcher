@@ -62,7 +62,7 @@ called `gh-pages` tracking the remote `gh-pages` branch:
 
 ```bash
 cd html
-git checout -b gh-pages origin/gh-pages
+git checkout -b gh-pages origin/gh-pages
 ```
 
 
@@ -81,6 +81,7 @@ make lint
 ```
 
 ## Testing
+The following command will run the test suite defined under the `test` directory.
 
 ```bash
 make test

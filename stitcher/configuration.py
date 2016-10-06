@@ -5,6 +5,7 @@ Creates Configuration object based on profile.yml
 import os.path
 import sys
 import yaml
+from .formatter import Formatter
 
 class Field(object):
     """
@@ -62,10 +63,10 @@ class Configuration(object):
 
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self):
+    def __init__(self, configFile="config/profile.yml"):
         """ The Configuration class constructor instantiates the Configuration class. """
 
-        self.config_file = "config/profile.yml"
+        self.config_file = configFile
         self.check_config_file()
         self.initialize()
 
@@ -151,7 +152,9 @@ class Configuration(object):
         """
 
         with open(self.config_file, 'r') as config_file:
-            print config_file.read()
+            config_dict = yaml.load(config_file)
+        for key in sorted(config_dict.keys()):
+            Formatter.print_pair(key, config_dict[key])
 
     def get_value(self, field):
         """
