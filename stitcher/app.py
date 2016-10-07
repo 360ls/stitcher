@@ -5,7 +5,6 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import division
-import time
 import os.path
 import sys
 import socket
@@ -20,6 +19,8 @@ from .configuration import NumField
 from .configuration import DirectoryField
 from .configuration import FileField
 from .formatter import Formatter
+from .stream import CameraStream
+from .stream import VideoStream
 
 # pylint: disable=W0702
 def load_configuration():
@@ -155,89 +156,57 @@ def initialize(config):
     """ Initializes stream from cameras. """
     left_index = config.left_index.value
     right_index = config.right_index.value
-
-    if check_stream(left_index) and check_stream(right_index):
-        # initialize the video streams and allow them to warmup
-        time.sleep(0.5)
-        Formatter.print_status("[INFO] starting cameras...")
-
-        left_stream = cv2.VideoCapture(left_index)
-        right_stream = cv2.VideoCapture(right_index)
-
-        return left_stream, right_stream
-    else:
-        raise ValueError
+    return left_index, right_index
 
 def show_stream(index):
     """ shows stream of given index """
-    try:
-        is_valid = check_stream(index)
-        if is_valid:
-            stream = cv2.VideoCapture(index)
-            # loop over frames from the video streams
-            while True:
-                # grab the frames from their respective video streams
-                frame = stream.read()[1]
-                frame = imutils.resize(frame, width=400)
+    stream = CameraStream(index, 400)
+    if stream.validate():
+        while stream.has_next():
+            frame = stream.next()
+            cv2.imshow("Stream", frame)
+            key = cv2.waitKey(1) & 0xFF
 
-                cv2.imshow("Stream", frame)
-                key = cv2.waitKey(1) & 0xFF
+            if key == ord("q"):
+                break
+        Formatter.print_status("[INFO] cleaning up...")
+        stream.close()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
 
-                # if the `q` key was pressed, break from the loop
-                if key == ord("q"):
-                    break
-
-            # do a bit of cleanup
-            Formatter.print_status("[INFO] cleaning up...")
-            stream.release()
-            cv2.destroyAllWindows()
-            cv2.waitKey(1)
-        else:
-            main()
-    except ValueError:
-        main()
-
-def stitch_streams(left_stream, right_stream):
+def stitch_streams(left_index, right_index):
     """ Stitches left and right streams. """
+    scanner = Scanner()
+    width = scanner.read_int('Enter target resolution: ')
+    left_stream = CameraStream(left_index, width)
+    right_stream = CameraStream(right_index, width)
     stitcher = Stitcher()
 
-    # loop over frames from the video streams
-    while True:
-        # grab the frames from their respective video streams
-        left = left_stream.read()[1]
-        right = right_stream.read()[1]
+    if left_stream.validate() and right_stream.validate():
+        while left_stream.has_next() and right_stream.has_next():
+            left_frame = left_stream.next()
+            right_frame = right_stream.next()
+            result = stitcher.stitch([left_frame, right_frame])
+            cv2.imshow("Left Stream", left_frame)
+            cv2.imshow("Right Stream", right_frame)
+            cv2.imshow("Stitched Stream", result)
 
-        # resize the frames
-        left = imutils.resize(left, width=400)
-        right = imutils.resize(right, width=400)
+            # no homograpy could be computed
+            if result is None:
+                Formatter.print_err("[INFO] homography could not be computed")
+                break
 
-        # stitch the frames together to form the panorama
-        # IMPORTANT: you might have to change this line of code
-        # depending on how your cameras are oriented; frames
-        # should be supplied in left-to-right order
-        result = stitcher.stitch([left, right])
+            key = cv2.waitKey(1) & 0xFF
 
-        # no homograpy could be computed
-        if result is None:
-            Formatter.print_err("[INFO] homography could not be computed")
-            break
+            if key == ord("q"):
+                break
 
-        # show the output images
-        cv2.imshow("Result", result)
-        cv2.imshow("Left Frame", left)
-        cv2.imshow("Right Frame", right)
-        key = cv2.waitKey(1) & 0xFF
-
-        # if the `q` key was pressed, break from the loop
-        if key == ord("q"):
-            break
-
-    # do a bit of cleanup
-    Formatter.print_status("[INFO] cleaning up...")
-    left_stream.release()
-    right_stream.release()
-    cv2.destroyAllWindows()
-    cv2.waitKey(1)
+        # do a bit of cleanup
+        Formatter.print_status("[INFO] cleaning up...")
+        left_stream.close()
+        right_stream.close()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
 
 def configure_videos(config):
     """ Instantiates a CLI for configuration of videos. """
@@ -278,72 +247,73 @@ def configure_videos(config):
 def stitch_videos(left_video, right_video):
     """ Stitches local videos. """
     stitcher = Stitcher()
-    left_stream = cv2.VideoCapture(left_video)
-    right_stream = cv2.VideoCapture(right_video)
+    scanner = Scanner()
+    width = scanner.read_int('Enter target resolution: ')
+    left_stream = VideoStream(left_video, width)
+    right_stream = VideoStream(right_video, width)
 
-    while left_stream.isOpened() and right_stream.isOpened():
-        left_frame = left_stream.read()[1]
-        right_frame = right_stream.read()[1]
+    if left_stream.validate() and right_stream.validate():
+        while left_stream.has_next() and right_stream.has_next():
+            left_frame = left_stream.next()
+            right_frame = right_stream.next()
+            result = stitcher.stitch([left_frame, right_frame])
 
-        # resize the frames
-        left = imutils.resize(left_frame, width=400)
-        right = imutils.resize(right_frame, width=400)
+            cv2.imshow("Left Stream", left_frame)
+            cv2.imshow("Right Stream", right_frame)
+            cv2.imshow("Stitched Stream", result)
 
-        result = stitcher.stitch([left, right])
+            # no homograpy could be computed
+            if result is None:
+                Formatter.print_err("[INFO] homography could not be computed")
+                break
 
-        # no homograpy could be computed
-        if result is None:
-            Formatter.print_err("[INFO] homography could not be computed")
-            break
+            key = cv2.waitKey(1) & 0xFF
 
-        # show the output images
-        cv2.imshow("Result", result)
-        cv2.imshow("Left Frame", left)
-        cv2.imshow("Right Frame", right)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            left_stream.release()
-            right_stream.release()
-            cv2.destroyAllWindows()
-            cv2.waitKey(1)
-            main()
+            if key == ord("q"):
+                break
 
-    left_stream.release()
-    right_stream.release()
-    cv2.destroyAllWindows()
-    cv2.waitKey(1)
+        # do a bit of cleanup
+        Formatter.print_status("[INFO] cleaning up...")
+        left_stream.close()
+        right_stream.close()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
 
 def stitch_all_videos(config):
     """ Stitches four local videos. """
     stitcher = Stitcher()
     fst_stitcher = Stitcher()
     snd_stitcher = Stitcher()
+    scanner = Scanner()
+    width = scanner.read_int('Enter target resolution: ')
     video_dir = config.video_dir.value
     video_files = get_video_files(video_dir)
-    video_streams = [cv2.VideoCapture(path) for path in video_files]
+    video_streams = [VideoStream(path, width) for path in video_files]
 
-    while (video_streams[0].isOpened() and
-           video_streams[1].isOpened() and
-           video_streams[2].isOpened() and
-           video_streams[3].isOpened()):
-        video_frames = [stream.read()[1] for stream in video_streams]
-        resized_frames = [imutils.resize(frame, width=400) for frame in video_frames]
+    if all([stream.validate() for stream in video_streams]):
+        while all([stream.has_next() for stream in video_streams]):
+            frames = [stream.next() for stream in video_streams]
+            left_result = fst_stitcher.stitch([frames[0], frames[1]])
+            right_result = snd_stitcher.stitch([frames[2], frames[3]])
+            result = stitcher.stitch([left_result, right_result])
+            cv2.imshow("Stitched Stream", result)
 
-        left_result = fst_stitcher.stitch([resized_frames[0], resized_frames[1]])
-        right_result = snd_stitcher.stitch([resized_frames[2], resized_frames[3]])
-        result = stitcher.stitch([left_result, right_result])
+            # no homograpy could be computed
+            if result is None:
+                Formatter.print_err("[INFO] homography could not be computed")
+                break
 
-        # no homograpy could be computed
-        if left_result is None or right_result is None:
-            Formatter.print_err("[INFO] homography could not be computed")
-            break
+            key = cv2.waitKey(1) & 0xFF
 
-        cv2.imshow("Result", result)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            for stream in video_streams:
-                stream.release()
-            cv2.destroyAllWindows()
-            cv2.waitKey(1)
-            main()
+            if key == ord("q"):
+                break
+
+        # do a bit of cleanup
+        Formatter.print_status("[INFO] cleaning up...")
+        for stream in video_streams:
+            stream.close()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
 
 def stream_video(left_video, right_video, port):
     """ Streams video to socket. """
