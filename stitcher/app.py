@@ -208,6 +208,44 @@ def stitch_streams(left_index, right_index):
         cv2.destroyAllWindows()
         cv2.waitKey(1)
 
+def stitch_all_streams(first_index, second_index, third_index, fourth_index):
+    """ Stitches left and right streams. """
+    scanner = Scanner()
+    width = scanner.read_int('Enter target resolution: ')
+    fst_stitcher = Stitcher()
+    snd_stitcher = Stitcher()
+    combo_stitcher = Stitcher()
+
+    left_stream = CameraStream(left_index, width)
+    right_stream = CameraStream(right_index, width)
+    stitcher = Stitcher()
+
+    if left_stream.validate() and right_stream.validate():
+        while left_stream.has_next() and right_stream.has_next():
+            left_frame = left_stream.next()
+            right_frame = right_stream.next()
+            result = stitcher.stitch([left_frame, right_frame])
+            cv2.imshow("Left Stream", left_frame)
+            cv2.imshow("Right Stream", right_frame)
+            cv2.imshow("Stitched Stream", result)
+
+            # no homograpy could be computed
+            if result is None:
+                Formatter.print_err("[INFO] homography could not be computed")
+                break
+
+            key = cv2.waitKey(1) & 0xFF
+
+            if key == ord("q"):
+                break
+
+        # do a bit of cleanup
+        Formatter.print_status("[INFO] cleaning up...")
+        left_stream.close()
+        right_stream.close()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
+
 def configure_videos(config):
     """ Instantiates a CLI for configuration of videos. """
     Formatter.print_heading("Choose option:")
