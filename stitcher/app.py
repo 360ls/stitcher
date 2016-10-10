@@ -5,6 +5,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import division
+import argparse
 import os.path
 import sys
 import socket
@@ -21,6 +22,16 @@ from .configuration import FileField
 from .formatter import Formatter
 from .stream import CameraStream
 from .stream import VideoStream
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n', action='store_true', default=False,
+                        dest='interactive_mode',
+                        help='Set interactive mode off')
+    parser.add_argument('--option', action='store',
+                        dest='option_num',
+                        help='Option number')
+    return parser.parse_args()
 
 # pylint: disable=W0702
 def load_configuration():
@@ -43,19 +54,22 @@ CONFIG = load_configuration()
 
 def main():
     """ The main script for instantiating a CLI to navigate stitching. """
-    print("")
-    Formatter.print_heading("Choose option:")
-    Formatter.print_option(0, "Quit")
-    Formatter.print_option(1, "Reconfigure Profile")
-    Formatter.print_option(2, "Stitch from cameras")
-    Formatter.print_option(3, "Stitch from 2 videos")
-    Formatter.print_option(4, "Stitch from 4 videos")
-    Formatter.print_option(5, "Stream stitched video")
-    Formatter.print_option(6, "Check stream")
-    Formatter.print_option(7, "Preview stream")
-
-    scanner = Scanner()
-    opt = scanner.read_int('Enter option number: ')
+    parsed_args = parse_args()
+    if not parsed_args.interactive_mode:
+        print("")
+        Formatter.print_heading("Choose option:")
+        Formatter.print_option(0, "Quit")
+        Formatter.print_option(1, "Reconfigure Profile")
+        Formatter.print_option(2, "Stitch from cameras")
+        Formatter.print_option(3, "Stitch from 2 videos")
+        Formatter.print_option(4, "Stitch from 4 videos")
+        Formatter.print_option(5, "Stream stitched video")
+        Formatter.print_option(6, "Check stream")
+        Formatter.print_option(7, "Preview stream")
+        scanner = Scanner()
+        opt = scanner.read_int('Enter option number: ')
+    else:
+        opt = parsed_args.option_num
 
     if opt == 1:
         reconfigure(CONFIG)
