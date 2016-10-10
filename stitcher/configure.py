@@ -23,6 +23,10 @@ def parse():
     right_video = raw_input('Enter path to right video: ')
     port = scanner.read_int('Enter socket port number')
     resolution = scanner.read_int('Enter target resolution: ')
+    first_index = scanner.read_int('Enter first camera index: ')
+    second_index = scanner.read_int('Enter second camera index: ')
+    third_index = scanner.read_int('Enter third camera index: ')
+    fourth_index = scanner.read_int('Enter fourth camera index: ')
 
     settings = UnsortableOrderedDict([
         ('left-index', left_index),
@@ -31,7 +35,11 @@ def parse():
         ('left-video', left_video),
         ('right-video', right_video),
         ('port', port),
-        ('resolution', resolution)
+        ('resolution', resolution),
+        ('first-index', first_index),
+        ('second-index', second_index),
+        ('third-index', third_index),
+        ('fourth-index', fourth_index)
     ])
 
     with open(CONFIG_DIR + '/profile.yml', 'w') as config_file:
