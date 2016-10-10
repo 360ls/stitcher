@@ -51,8 +51,7 @@ def main():
     Formatter.print_option(3, "Stitch from 2 videos")
     Formatter.print_option(4, "Stitch from 4 videos")
     Formatter.print_option(5, "Stream stitched video")
-    Formatter.print_option(6, "Check stream")
-    Formatter.print_option(7, "Preview stream")
+    Formatter.print_option(6, "Stream validation")
 
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
@@ -80,9 +79,7 @@ def main():
         stream_video(left, right, port)
         main()
     elif opt == 6:
-        index = scanner.read_int('Enter camera index: ')
-        check_stream(index)
-        main()
+        stream_validation()
     elif opt == 7:
         index = scanner.read_int('Enter camera index: ')
         show_stream(index)
@@ -113,6 +110,31 @@ def check_stream(index):
             Formatter.get_xmark())
         print(msg)
         return False
+
+def stream_validation():
+    Formatter.print_option(1, "Check streams")
+    Formatter.print_option(2, "Preview streams")
+    Formatter.print_option(3, "Print valid streams")
+    Formatter.print_option(0, "Exit")
+
+    scanner = Scanner()
+    opt = scanner.read_int('Enter option number: ')
+
+    if opt == 1:
+        index = scanner.read_int('Enter camera index: ')
+        check_stream(index)
+        main()
+    elif opt == 2:
+        index = scanner.read_int('Enter camera index: ')
+        show_stream(index)
+        main()
+    elif opt == 3:
+        print ("printing all valid indexes")
+    elif opt == 0:
+        sys.exit(0)
+    else:
+        print("Invalid option")
+        main()
 
 def reconfigure(configuration):
     """ Reconfigures profile.yml """
