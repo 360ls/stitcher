@@ -24,11 +24,14 @@ from .stream import CameraStream
 from .stream import VideoStream
 
 def parse_args():
+    """
+    returns parsed arugments from command line
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', action='store_true', default=False,
                         dest='interactive_mode',
                         help='Set interactive mode off')
-    parser.add_argument('--option', action='store', 
+    parser.add_argument('--option', action='store',
                         type=int,
                         dest='option_num',
                         help='Option number')
@@ -53,6 +56,7 @@ def load_configuration():
 
 CONFIG = load_configuration()
 
+# pylint: disable=R0915
 def main():
     """ The main script for instantiating a CLI to navigate stitching. """
     parsed_args = parse_args()
@@ -86,11 +90,11 @@ def main():
         continue_cli(int_flag)
     elif opt == 3:
         left, right = configure_videos(CONFIG, int_flag)
-        res = get_res(int_flag, CONFIG).value
+        res = get_res(int_flag, CONFIG)
         stitch_videos(left, right, res)
         continue_cli(int_flag)
     elif opt == 4:
-        res = get_res(int_flag, CONFIG).value
+        res = get_res(int_flag, CONFIG)
         stitch_all_videos(CONFIG, res)
         continue_cli(int_flag)
     elif opt == 5:
@@ -113,20 +117,29 @@ def main():
         main()
 
 def continue_cli(int_flag):
+    """
+    Continues CLI if in interactive mode
+    """
     if int_flag:
         sys.exit(0)
     else:
-        main
+        main()
 
 def get_res(int_flag, config):
+    """
+    Returns configured resolution or resolution from input if interactive
+    """
     if int_flag:
-        return config.resolution
+        return config.resolution.value
     else:
         scanner = Scanner()
         res = scanner.read_int('Enter target resolution: ')
         return res
 
 def stitch(left_stream, right_stream):
+    """
+    Stitches frames coming from two streams
+    """
     stitcher = Stitcher()
     if left_stream.validate() and right_stream.validate():
         while left_stream.has_next() and right_stream.has_next():
@@ -284,7 +297,6 @@ def configure_videos(config, int_flag):
 
 def stitch_videos(left_video, right_video, res):
     """ Stitches local videos. """
-    scanner = Scanner()
     left_stream = VideoStream(left_video, res)
     right_stream = VideoStream(right_video, res)
     stitch(left_stream, right_stream)

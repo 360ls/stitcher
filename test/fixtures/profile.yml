@@ -5,3 +5,7 @@ left-video: data/videos/.gitkeep
 right-video: data/videos/.gitkeep
 port: 8800
 resolution: 1280
+first-index: 0
+second-index: 1
+third-index: 2
+fourth-index: 3
