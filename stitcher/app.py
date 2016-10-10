@@ -90,7 +90,8 @@ def main():
         stitch_videos(left, right, res)
         continue_cli(int_flag)
     elif opt == 4:
-        stitch_all_videos(CONFIG)
+        res = get_res(int_flag, CONFIG).value
+        stitch_all_videos(CONFIG, res)
         continue_cli(int_flag)
     elif opt == 5:
         left, right = configure_videos(CONFIG, int_flag)
@@ -288,16 +289,18 @@ def stitch_videos(left_video, right_video, res):
     right_stream = VideoStream(right_video, res)
     stitch(left_stream, right_stream)
 
-def stitch_all_videos(config):
+def stitch_all_videos(config, res):
     """ Stitches four local videos. """
     stitcher = Stitcher()
     fst_stitcher = Stitcher()
     snd_stitcher = Stitcher()
-    scanner = Scanner()
-    width = scanner.read_int('Enter target resolution: ')
     video_dir = config.video_dir.value
     video_files = get_video_files(video_dir)
-    video_streams = [VideoStream(path, width) for path in video_files]
+    video_streams = [VideoStream(path, res) for path in video_files]
+
+    if len(video_streams) < 4:
+        Formatter.print_err("Only {0} video files found".format(len(video_streams)))
+        return
 
     if all([stream.validate() for stream in video_streams]):
         while all([stream.has_next() for stream in video_streams]):
