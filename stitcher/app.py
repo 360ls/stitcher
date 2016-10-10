@@ -7,6 +7,8 @@ from __future__ import print_function
 from __future__ import division
 import os.path
 import sys
+import glob
+import serial
 import socket
 import pickle
 import struct
@@ -111,10 +113,38 @@ def check_stream(index):
         print(msg)
         return False
 
+def serial_ports():
+    """ Lists serial port names
+
+        :raises EnvironmentError:
+            On unsupported or unknown platforms
+        :returns:
+            A list of the serial ports available on the system
+    """
+    if sys.platform.startswith('win'):
+        ports = ['COM%s' % (i + 1) for i in range(256)]
+    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+        # this excludes your current terminal "/dev/tty"
+        ports = glob.glob('/dev/tty[A-Za-z]*')
+    elif sys.platform.startswith('darwin'):
+        ports = glob.glob('/dev/tty.*')
+    else:
+        raise EnvironmentError('Unsupported platform')
+
+    result = []
+    for port in ports:
+        try:
+            s = serial.Serial(port)
+            s.close()
+            result.append(port)
+        except (OSError, serial.SerialException):
+            pass
+    return result
+
 def stream_validation():
     Formatter.print_option(1, "Check streams")
     Formatter.print_option(2, "Preview streams")
-    Formatter.print_option(3, "Print valid streams")
+    Formatter.print_option(3, "Identify Serial Ports")
     Formatter.print_option(0, "Exit")
 
     scanner = Scanner()
@@ -129,7 +159,7 @@ def stream_validation():
         show_stream(index)
         main()
     elif opt == 3:
-        print ("printing all valid indexes")
+        print(serial_ports())
     elif opt == 0:
         sys.exit(0)
     else:
