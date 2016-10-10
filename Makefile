@@ -29,3 +29,6 @@ test: lint
 
 clean:
 	find . -name '*.pyc' -delete
+
+run-stitcher:
+	python -m $(PACKAGE_DIR).app -n --option 3
