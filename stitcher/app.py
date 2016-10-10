@@ -125,6 +125,35 @@ def get_res(int_flag, config):
         res = scanner.read_int('Enter target resolution: ')
         return res
 
+def stitch(left_stream, right_stream):
+    stitcher = Stitcher()
+    if left_stream.validate() and right_stream.validate():
+        while left_stream.has_next() and right_stream.has_next():
+            left_frame = left_stream.next()
+            right_frame = right_stream.next()
+            result = stitcher.stitch([left_frame, right_frame])
+
+            cv2.imshow("Left Stream", left_frame)
+            cv2.imshow("Right Stream", right_frame)
+            cv2.imshow("Stitched Stream", result)
+
+            # no homograpy could be computed
+            if result is None:
+                Formatter.print_err("[INFO] homography could not be computed")
+                break
+
+            key = cv2.waitKey(1) & 0xFF
+
+            if key == ord("q"):
+                break
+
+        # do a bit of cleanup
+        Formatter.print_status("[INFO] cleaning up...")
+        left_stream.close()
+        right_stream.close()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
+
 def check_stream(index):
     """
     Checks if a given index is a valid usb camera index
@@ -212,33 +241,7 @@ def stitch_streams(left_index, right_index):
     width = scanner.read_int('Enter target resolution: ')
     left_stream = CameraStream(left_index, width)
     right_stream = CameraStream(right_index, width)
-    stitcher = Stitcher()
-
-    if left_stream.validate() and right_stream.validate():
-        while left_stream.has_next() and right_stream.has_next():
-            left_frame = left_stream.next()
-            right_frame = right_stream.next()
-            result = stitcher.stitch([left_frame, right_frame])
-            cv2.imshow("Left Stream", left_frame)
-            cv2.imshow("Right Stream", right_frame)
-            cv2.imshow("Stitched Stream", result)
-
-            # no homograpy could be computed
-            if result is None:
-                Formatter.print_err("[INFO] homography could not be computed")
-                break
-
-            key = cv2.waitKey(1) & 0xFF
-
-            if key == ord("q"):
-                break
-
-        # do a bit of cleanup
-        Formatter.print_status("[INFO] cleaning up...")
-        left_stream.close()
-        right_stream.close()
-        cv2.destroyAllWindows()
-        cv2.waitKey(1)
+    stitch(left_stream, right_stream)
 
 def configure_videos(config, int_flag):
     """ Instantiates a CLI for configuration of videos. """
@@ -280,38 +283,10 @@ def configure_videos(config, int_flag):
 
 def stitch_videos(left_video, right_video, res):
     """ Stitches local videos. """
-    stitcher = Stitcher()
     scanner = Scanner()
     left_stream = VideoStream(left_video, res)
     right_stream = VideoStream(right_video, res)
-    print(res)
-
-    if left_stream.validate() and right_stream.validate():
-        while left_stream.has_next() and right_stream.has_next():
-            left_frame = left_stream.next()
-            right_frame = right_stream.next()
-            result = stitcher.stitch([left_frame, right_frame])
-
-            cv2.imshow("Left Stream", left_frame)
-            cv2.imshow("Right Stream", right_frame)
-            cv2.imshow("Stitched Stream", result)
-
-            # no homograpy could be computed
-            if result is None:
-                Formatter.print_err("[INFO] homography could not be computed")
-                break
-
-            key = cv2.waitKey(1) & 0xFF
-
-            if key == ord("q"):
-                break
-
-        # do a bit of cleanup
-        Formatter.print_status("[INFO] cleaning up...")
-        left_stream.close()
-        right_stream.close()
-        cv2.destroyAllWindows()
-        cv2.waitKey(1)
+    stitch(left_stream, right_stream)
 
 def stitch_all_videos(config):
     """ Stitches four local videos. """
