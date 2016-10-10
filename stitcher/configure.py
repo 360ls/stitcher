@@ -22,6 +22,7 @@ def parse():
     left_video = raw_input('Enter path to left video: ')
     right_video = raw_input('Enter path to right video: ')
     port = scanner.read_int('Enter socket port number')
+    resolution = scanner.read_int('Enter target resolution: ')
 
     settings = UnsortableOrderedDict([
         ('left-index', left_index),
@@ -29,7 +30,8 @@ def parse():
         ('video-dir', video_dir),
         ('left-video', left_video),
         ('right-video', right_video),
-        ('port', port)
+        ('port', port),
+        ('resolution', resolution)
     ])
 
     with open(CONFIG_DIR + '/profile.yml', 'w') as config_file:

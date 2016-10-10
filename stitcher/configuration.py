@@ -94,6 +94,7 @@ class Configuration(object):
             self.right_video = self.get_file_field("right-video", doc)
             self.video_dir = self.get_directory_field("video-dir", doc)
             self.port = self.get_num_field("port", doc)
+            self.resolution = self.get_num_field("resolution", doc)
         except ValueError:
             print ValueError.message
             raise Exception

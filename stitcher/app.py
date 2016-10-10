@@ -28,7 +28,8 @@ def parse_args():
     parser.add_argument('-n', action='store_true', default=False,
                         dest='interactive_mode',
                         help='Set interactive mode off')
-    parser.add_argument('--option', action='store',
+    parser.add_argument('--option', action='store', 
+                        type=int,
                         dest='option_num',
                         help='Option number')
     return parser.parse_args()
@@ -71,41 +72,58 @@ def main():
     else:
         opt = parsed_args.option_num
 
+    int_flag = parsed_args.interactive_mode
+
     if opt == 1:
         reconfigure(CONFIG)
-        main()
+        continue_cli(int_flag)
     elif opt == 2:
         try:
             left_stream, right_stream = initialize(CONFIG)
         except ValueError:
-            main()
+            continue_cli(int_flag)
         stitch_streams(left_stream, right_stream)
-        main()
+        continue_cli(int_flag)
     elif opt == 3:
-        left, right = configure_videos(CONFIG)
-        stitch_videos(left, right)
-        main()
+        left, right = configure_videos(CONFIG, int_flag)
+        res = get_res(int_flag, CONFIG).value
+        stitch_videos(left, right, res)
+        continue_cli(int_flag)
     elif opt == 4:
         stitch_all_videos(CONFIG)
-        main()
+        continue_cli(int_flag)
     elif opt == 5:
-        left, right = configure_videos(CONFIG)
+        left, right = configure_videos(CONFIG, int_flag)
         port = CONFIG.port.value
         stream_video(left, right, port)
-        main()
+        continue_cli(int_flag)
     elif opt == 6:
         index = scanner.read_int('Enter camera index: ')
         check_stream(index)
-        main()
+        continue_cli(int_flag)
     elif opt == 7:
         index = scanner.read_int('Enter camera index: ')
         show_stream(index)
-        main()
+        continue_cli(int_flag)
     elif opt == 0:
         sys.exit(0)
     else:
         print("Invalid option")
         main()
+
+def continue_cli(int_flag):
+    if int_flag:
+        sys.exit(0)
+    else:
+        main
+
+def get_res(int_flag, config):
+    if int_flag:
+        return config.resolution
+    else:
+        scanner = Scanner()
+        res = scanner.read_int('Enter target resolution: ')
+        return res
 
 def check_stream(index):
     """
@@ -222,8 +240,10 @@ def stitch_streams(left_index, right_index):
         cv2.destroyAllWindows()
         cv2.waitKey(1)
 
-def configure_videos(config):
+def configure_videos(config, int_flag):
     """ Instantiates a CLI for configuration of videos. """
+    if int_flag:
+        return config.left_video.value, config.right_video.value
     Formatter.print_heading("Choose option:")
     Formatter.print_option(1, "Use preconfigured left/right video streams")
     Formatter.print_option(2, "Configure streams")
@@ -258,13 +278,13 @@ def configure_videos(config):
     else:
         main()
 
-def stitch_videos(left_video, right_video):
+def stitch_videos(left_video, right_video, res):
     """ Stitches local videos. """
     stitcher = Stitcher()
     scanner = Scanner()
-    width = scanner.read_int('Enter target resolution: ')
-    left_stream = VideoStream(left_video, width)
-    right_stream = VideoStream(right_video, width)
+    left_stream = VideoStream(left_video, res)
+    right_stream = VideoStream(right_video, res)
+    print(res)
 
     if left_stream.validate() and right_stream.validate():
         while left_stream.has_next() and right_stream.has_next():
