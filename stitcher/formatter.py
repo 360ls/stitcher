@@ -4,7 +4,7 @@ Module for formatting text
 from termcolor import colored
 
 CHECK = u'\u2713'
-X_MARK = u'\2717'
+X_MARK = u'\u2717'
 
 class Formatter(object):
     """

@@ -14,6 +14,8 @@ import pickle
 import struct
 import cv2
 import imutils
+import re
+import subprocess
 from .panorama import Stitcher
 from .configuration import Configuration
 from .scanner import Scanner
@@ -141,10 +143,15 @@ def serial_ports():
             pass
     return result
 
+def check_all_streams():
+    for i in range(20):
+        check_stream(i)
+
 def stream_validation():
-    Formatter.print_option(1, "Check streams")
-    Formatter.print_option(2, "Preview streams")
-    Formatter.print_option(3, "Identify Serial Ports")
+    Formatter.print_option(1, "Check stream")
+    Formatter.print_option(2, "Preview stream")
+    Formatter.print_option(3, "Identify serial ports")
+    Formatter.print_option(4, "Identify valid streams")
     Formatter.print_option(0, "Exit")
 
     scanner = Scanner()
@@ -160,6 +167,8 @@ def stream_validation():
         main()
     elif opt == 3:
         print(serial_ports())
+    elif opt == 4:
+        check_all_streams()
     elif opt == 0:
         sys.exit(0)
     else:
