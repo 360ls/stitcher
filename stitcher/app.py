@@ -144,8 +144,18 @@ def serial_ports():
     return result
 
 def check_all_streams():
+    valid_streams = []
     for i in range(20):
-        check_stream(i)
+        if (check_stream(i)):
+            valid_streams.append(i)
+    print_spacer()
+    for stream in valid_streams:
+        print ("Camera stream %s is a valid stream." % stream)
+    print_spacer()
+
+def print_spacer():
+    print ("\n--------------------\n")
+
 
 def stream_validation():
     Formatter.print_option(1, "Check stream")
