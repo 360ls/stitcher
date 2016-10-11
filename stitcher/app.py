@@ -47,7 +47,7 @@ CONFIG = load_configuration()
 
 def main():
     """ The main script for instantiating a CLI to navigate stitching. """
-    print("")
+    print_spacer()
     Formatter.print_heading("Choose option:")
     Formatter.print_option(0, "Quit")
     Formatter.print_option(1, "Reconfigure Profile")
@@ -158,6 +158,7 @@ def print_spacer():
 
 
 def stream_validation():
+    print_spacer()
     Formatter.print_option(1, "Check stream")
     Formatter.print_option(2, "Preview stream")
     Formatter.print_option(3, "Identify serial ports")
@@ -319,6 +320,7 @@ def stitch_all_streams(first_index, second_index, third_index, fourth_index):
 
 def configure_videos(config):
     """ Instantiates a CLI for configuration of videos. """
+    print_spacer()
     Formatter.print_heading("Choose option:")
     Formatter.print_option(1, "Use preconfigured left/right video streams")
     Formatter.print_option(2, "Configure streams")
