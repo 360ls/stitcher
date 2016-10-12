@@ -54,6 +54,7 @@ def load_configuration():
 CONFIG = load_configuration()
 
 # pylint: disable=R0915
+# pylint: disable=R0912
 def main():
     """ The main script for instantiating a CLI to navigate stitching. """
     parsed_args = parse_args()
@@ -95,9 +96,11 @@ def main():
         stitch_all_videos(CONFIG, res)
         continue_cli(int_flag)
     elif opt == 5:
-        left, right = configure_videos(CONFIG, int_flag)
-        res = get_res(int_flag, CONFIG)
-        stream_stitched_video(left, right)
+        try:
+            left_stream, right_stream = initialize(CONFIG)
+        except ValueError:
+            continue_cli(int_flag)
+        stream_video(left_stream, right_stream)
         continue_cli(int_flag)
     elif opt == 6:
         index = scanner.read_int('Enter camera index: ')
