@@ -148,7 +148,7 @@ def stitch(left_stream, right_stream):
             cv2.imshow("Left Stream", left_frame)
             cv2.imshow("Right Stream", right_frame)
             cv2.imshow("Stitched Stream", result)
-	    proc.stdin(result)
+	    proc.stdin(result.tostring())
             # no homograpy could be computed
             if result is None:
                 Formatter.print_err("[INFO] homography could not be computed")
