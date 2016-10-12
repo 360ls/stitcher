@@ -142,7 +142,8 @@ def stitch(left_stream, right_stream):
     """
     stitcher = Stitcher()
     if left_stream.validate() and right_stream.validate():
-        while left_stream.has_next() and right_stream.has_next():
+        proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo','-vcodec', 'rawvideo', '-s', '800x225', '-pix_fmt', 'rgb24', '-vb', '200k', '-r', '24', '-i', '-', '-an', '-f', 'flv', 'rtmp://localhost:1935/live-test/myStream'], stdin=subprocess.PIPE)
+	while left_stream.has_next() and right_stream.has_next():
             left_frame = left_stream.next()
             right_frame = right_stream.next()
             result = stitcher.stitch([left_frame, right_frame])
@@ -150,7 +151,7 @@ def stitch(left_stream, right_stream):
             cv2.imshow("Left Stream", left_frame)
             cv2.imshow("Right Stream", right_frame)
             cv2.imshow("Stitched Stream", result)
-
+	    proc.stdin(result.toString())
             # no homograpy could be computed
             if result is None:
                 Formatter.print_err("[INFO] homography could not be computed")
