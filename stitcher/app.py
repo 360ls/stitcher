@@ -5,14 +5,11 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import division
+import subprocess
 import argparse
 import os.path
 import sys
-import socket
-import pickle
-import struct
 import cv2
-import imutils
 from .panorama import Stitcher
 from .configuration import Configuration
 from .scanner import Scanner
@@ -99,8 +96,8 @@ def main():
         continue_cli(int_flag)
     elif opt == 5:
         left, right = configure_videos(CONFIG, int_flag)
-        port = CONFIG.port.value
-        stream_video(left, right, port)
+        res = get_res(int_flag, CONFIG)
+        stream_stitched_video(left, right)
         continue_cli(int_flag)
     elif opt == 6:
         index = scanner.read_int('Enter camera index: ')
@@ -152,6 +149,39 @@ def stitch(left_stream, right_stream):
             cv2.imshow("Right Stream", right_frame)
             cv2.imshow("Stitched Stream", result)
 	    proc.stdin(result.toString())
+            # no homograpy could be computed
+            if result is None:
+                Formatter.print_err("[INFO] homography could not be computed")
+                break
+
+            key = cv2.waitKey(1) & 0xFF
+
+            if key == ord("q"):
+                break
+
+        # do a bit of cleanup
+        Formatter.print_status("[INFO] cleaning up...")
+        left_stream.close()
+        right_stream.close()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
+
+def stream_stitched_video(left_stream, right_stream):
+    """
+    Stitches frames coming from two streams and pipe result to ffmpeg
+    """
+    stitcher = Stitcher()
+    proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo', '-vcodec',
+                             'rawvideo', '-s', '800x225', '-pix_fmt', 'rgb24', '-vb',
+                             '200k', '-r', '24', '-i', '-', '-an', '-f', 'flv',
+                             'rtmp://localhost:1935/live-test/myStream'], stdin=subprocess.PIPE)
+    if left_stream.validate() and right_stream.validate():
+        while left_stream.has_next() and right_stream.has_next():
+            left_frame = left_stream.next()
+            right_frame = right_stream.next()
+            result = stitcher.stitch([left_frame, right_frame])
+            proc.stdin.write(result.tostring())
+
             # no homograpy could be computed
             if result is None:
                 Formatter.print_err("[INFO] homography could not be computed")
@@ -340,37 +370,13 @@ def stitch_all_videos(config, res):
         cv2.destroyAllWindows()
         cv2.waitKey(1)
 
-def stream_video(left_video, right_video, port):
+def stream_video(left_index, right_index):
     """ Streams video to socket. """
-    stitcher = Stitcher()
-
-    left_stream = cv2.VideoCapture(left_video)
-    right_stream = cv2.VideoCapture(right_video)
-
-    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    clientsocket.connect(('localhost', port))
-
-    while left_stream.isOpened() and right_stream.isOpened():
-        left_frame = left_stream.read()[1]
-        right_frame = right_stream.read()[1]
-
-        # resize the frames
-        left = imutils.resize(left_frame, width=400)
-        right = imutils.resize(right_frame, width=400)
-
-        result = stitcher.stitch([left, right])
-
-        # no homograpy could be computed
-        if result is None:
-            Formatter.print_err("[INFO] homography could not be computed")
-            break
-
-        data = pickle.dumps(result)
-        clientsocket.sendall(struct.pack("L", len(data))+data)
-
-    left_stream.release()
-    right_stream.release()
-    cv2.destroyAllWindows()
+    scanner = Scanner()
+    width = scanner.read_int('Enter target resolution: ')
+    left_stream = CameraStream(left_index, width)
+    right_stream = CameraStream(right_index, width)
+    stream_stitched_video(left_stream, right_stream)
 
 def get_video_files(src_dir):
     """ Gets list of video files for inclusion in video configuration CLI. """
