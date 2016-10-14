@@ -25,6 +25,7 @@ from .configuration import FileField
 from .formatter import Formatter
 from .stream import CameraStream
 from .stream import VideoStream
+from .distortion_corrector.corrector import correct_distortion
 
 # pylint: disable=W0702
 def load_configuration():
@@ -269,8 +270,8 @@ def stitch_streams(left_index, right_index):
 
     if left_stream.validate() and right_stream.validate():
         while left_stream.has_next() and right_stream.has_next():
-            left_frame = left_stream.next()
-            right_frame = right_stream.next()
+            left_frame = correct_distortion(left_stream.next())
+            right_frame = correct_distortion(right_stream.next())
             result = stitcher.stitch([left_frame, right_frame])
             cv2.imshow("Left Stream", left_frame)
             cv2.imshow("Right Stream", right_frame)
