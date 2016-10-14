@@ -379,8 +379,8 @@ def stitch_videos(left_video, right_video):
 
     if left_stream.validate() and right_stream.validate():
         while left_stream.has_next() and right_stream.has_next():
-            left_frame = left_stream.next()
-            right_frame = right_stream.next()
+            left_frame = correct_distortion(left_stream.next())
+            right_frame = correct_distortion(right_stream.next())
             result = stitcher.stitch([left_frame, right_frame])
 
             cv2.imshow("Left Stream", left_frame)
