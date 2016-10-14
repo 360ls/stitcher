@@ -58,6 +58,7 @@ def main():
     Formatter.print_option(5, "Stream stitched video")
     Formatter.print_option(6, "Stream validation")
     Formatter.print_option(7, "Stitch from 2 corrected videos")
+    Formatter.print_option(8, "Stream from 2 corrected cameras")
 
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
@@ -89,6 +90,11 @@ def main():
     elif opt == 7:
         left, right = configure_videos(CONFIG)
         stitch_corrected_videos(left, right)
+        main()
+    elif opt == 8:
+        left, right = configure_videos(CONFIG)
+        port = CONFIG.port.value
+        stream_corrected_video(left, right, port)
         main()
     elif opt == 0:
         sys.exit(0)
@@ -489,6 +495,38 @@ def stream_video(left_video, right_video, port):
     while left_stream.isOpened() and right_stream.isOpened():
         left_frame = left_stream.read()[1]
         right_frame = right_stream.read()[1]
+
+        # resize the frames
+        left = imutils.resize(left_frame, width=400)
+        right = imutils.resize(right_frame, width=400)
+
+        result = stitcher.stitch([left, right])
+
+        # no homograpy could be computed
+        if result is None:
+            Formatter.print_err("[INFO] homography could not be computed")
+            break
+
+        data = pickle.dumps(result)
+        clientsocket.sendall(struct.pack("L", len(data))+data)
+
+    left_stream.release()
+    right_stream.release()
+    cv2.destroyAllWindows()
+
+def stream_corrected_video(left_video, right_video, port):
+    """ Streams video to socket. """
+    stitcher = Stitcher()
+
+    left_stream = cv2.VideoCapture(left_video)
+    right_stream = cv2.VideoCapture(right_video)
+
+    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    clientsocket.connect(('localhost', port))
+
+    while left_stream.isOpened() and right_stream.isOpened():
+        left_frame = correct_distortion(left_stream.read()[1])
+        right_frame = correct_distortion(right_stream.read()[1])
 
         # resize the frames
         left = imutils.resize(left_frame, width=400)
