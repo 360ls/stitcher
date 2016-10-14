@@ -14,11 +14,11 @@ def correct_distortion(image):
 	distortion_coefficients = np.array([-0.11199349, 0.0096919, 0, 0, 0])
 
 	# Read in the image for correction
-	src = cv2.imread(image)
+	src = image
 	height, width = src.shape[:2]
 
 	# Correct the radial distortion
-	new_camera, roi = cv2.getOptimalNewCameraMatrix(K, d, (width,height), 0) 
-	corrected_image = cv2.undistort(src, K, d, None, new_camera)
+	new_camera, roi = cv2.getOptimalNewCameraMatrix(camera_matrix, distortion_coefficients, (width,height), 0) 
+	corrected_image = cv2.undistort(src, camera_matrix, distortion_coefficients, None, new_camera)
 
 	return corrected_image

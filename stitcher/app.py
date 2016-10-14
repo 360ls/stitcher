@@ -57,6 +57,7 @@ def main():
     Formatter.print_option(4, "Stitch from 4 videos")
     Formatter.print_option(5, "Stream stitched video")
     Formatter.print_option(6, "Stream validation")
+    Formatter.print_option(7, "Stitch from 2 corrected videos")
 
     scanner = Scanner()
     opt = scanner.read_int('Enter option number: ')
@@ -86,8 +87,8 @@ def main():
     elif opt == 6:
         stream_validation()
     elif opt == 7:
-        index = scanner.read_int('Enter camera index: ')
-        show_stream(index)
+        left, right = configure_videos(CONFIG)
+        stitch_corrected_videos(left, right)
         main()
     elif opt == 0:
         sys.exit(0)
@@ -379,6 +380,41 @@ def stitch_videos(left_video, right_video):
 
     if left_stream.validate() and right_stream.validate():
         while left_stream.has_next() and right_stream.has_next():
+            left_frame = left_stream.next()
+            right_frame = right_stream.next()
+            result = stitcher.stitch([left_frame, right_frame])
+
+            cv2.imshow("Left Stream", left_frame)
+            cv2.imshow("Right Stream", right_frame)
+            cv2.imshow("Stitched Stream", result)
+
+            # no homograpy could be computed
+            if result is None:
+                Formatter.print_err("[INFO] homography could not be computed")
+                break
+
+            key = cv2.waitKey(1) & 0xFF
+
+            if key == ord("q"):
+                break
+
+        # do a bit of cleanup
+        Formatter.print_status("[INFO] cleaning up...")
+        left_stream.close()
+        right_stream.close()
+        cv2.waitKey(1)
+        cv2.destroyAllWindows()
+
+def stitch_corrected_videos(left_video, right_video):
+    """ Stitches local videos. """
+    stitcher = Stitcher()
+    scanner = Scanner()
+    width = scanner.read_int('Enter target resolution: ')
+    left_stream = VideoStream(left_video, width)
+    right_stream = VideoStream(right_video, width)
+
+    if left_stream.validate() and right_stream.validate():
+        while left_stream.has_next() and right_stream.has_next():
             left_frame = correct_distortion(left_stream.next())
             right_frame = correct_distortion(right_stream.next())
             result = stitcher.stitch([left_frame, right_frame])
@@ -401,8 +437,8 @@ def stitch_videos(left_video, right_video):
         Formatter.print_status("[INFO] cleaning up...")
         left_stream.close()
         right_stream.close()
-        cv2.destroyAllWindows()
         cv2.waitKey(1)
+        cv2.destroyAllWindows()
 
 def stitch_all_videos(config):
     """ Stitches four local videos. """
