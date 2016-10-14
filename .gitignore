@@ -10,6 +10,9 @@ config/profile.yml
 docs/build/*
 
 data/*
+stitcher/distortion_corrector/calibrate/inputs
+stitcher/distortion_corrector/calibrate/output
+
 
 # Vim
 *.swp
