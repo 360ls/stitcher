@@ -153,6 +153,16 @@ def check_all_streams():
         print ("Camera stream %s is a valid stream." % stream)
     print_spacer()
 
+def preview_all_valid_streams():
+    valid_streams = []
+    for i in range(20):
+        if (check_stream(i)):
+            valid_streams.append(i)
+    print_spacer()
+    for stream in valid_streams:
+        show_stream(stream)
+    print_spacer()
+
 def print_spacer():
     print ("\n--------------------\n")
 
@@ -163,6 +173,7 @@ def stream_validation():
     Formatter.print_option(2, "Preview stream")
     Formatter.print_option(3, "Identify serial ports")
     Formatter.print_option(4, "Identify valid streams")
+    Formatter.print_option(5, "Preview all valid streams")
     Formatter.print_option(0, "Exit")
 
     scanner = Scanner()
@@ -180,6 +191,8 @@ def stream_validation():
         print(serial_ports())
     elif opt == 4:
         check_all_streams()
+    elif opt == 5:
+        preview_all_valid_streams()
     elif opt == 0:
         sys.exit(0)
     else:
