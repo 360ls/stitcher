@@ -141,8 +141,8 @@ def stitch(left_stream, right_stream):
     Stitches frames coming from two streams
     """
     stitcher = Stitcher()
-    
-	while left_stream.has_next() and right_stream.has_next():
+    if left_stream.validate() and right_stream.validate():
+        while left_stream.has_next() and right_stream.has_next():
             left_frame = left_stream.next()
             right_frame = right_stream.next()
             result = stitcher.stitch([left_frame, right_frame])
@@ -172,7 +172,6 @@ def stream_stitched_video(left_stream, right_stream):
     Stitches frames coming from two streams and pipe result to ffmpeg
     """
     stitcher = Stitcher()
-    tracker = 0;
     proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo','-vcodec', 
                                 'rawvideo', '-s', '800x250', '-pix_fmt', 'bgr24',
                                 '-r', '5', '-i', '-', '-an', '-f', 
@@ -183,7 +182,6 @@ def stream_stitched_video(left_stream, right_stream):
             right_frame = right_stream.next()
             result = stitcher.stitch([left_frame, right_frame])
             proc.stdin.write(result.tostring())
-            tracker = tracker + 1
 
             # no homograpy could be computed
             if result is None:
@@ -193,7 +191,7 @@ def stream_stitched_video(left_stream, right_stream):
             key = cv2.waitKey(1) & 0xFF
 
             if key == ord("q"):
-                break
+                break9
         # do a bit of cleanup
         Formatter.print_status("[INFO] cleaning up...")
         left_stream.close()
