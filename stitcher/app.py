@@ -141,13 +141,7 @@ def stitch(left_stream, right_stream):
     Stitches frames coming from two streams
     """
     stitcher = Stitcher()
-    if left_stream.validate() and right_stream.validate():
-        proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo','-vcodec', 
-                                 'rawvideo', '-s', '800x250', '-pix_fmt', 'rgb24',
-                                 '-vb', '200k', '-r', '24', '-i', '-', '-an', '-f', 
-                                 'flv', 'rtmp://54.208.55.156:1935/live/myStream'],
-                                  stdin=subprocess.PIPE)
-
+    
 	while left_stream.has_next() and right_stream.has_next():
             left_frame = left_stream.next()
             right_frame = right_stream.next()
@@ -156,8 +150,6 @@ def stitch(left_stream, right_stream):
             cv2.imshow("Left Stream", left_frame)
             cv2.imshow("Right Stream", right_frame)
             cv2.imshow("Stitched Stream", result)
-            proc.stdin.write(result.tostring())
-            print(len(result))
 	    # no homograpy could be computed
             if result is None:
                 Formatter.print_err("[INFO] homography could not be computed")
@@ -180,16 +172,18 @@ def stream_stitched_video(left_stream, right_stream):
     Stitches frames coming from two streams and pipe result to ffmpeg
     """
     stitcher = Stitcher()
-    proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo', '-vcodec',
-                             'rawvideo', '-s', '800x225', '-pix_fmt', 'rgb24', '-vb',
-                             '200k', '-r', '24', '-i', '-', '-an', '-f', 'flv',
-                             'rtmp://localhost:1935/live-test/myStream'], stdin=subprocess.PIPE)
+    tracker = 0;
+    proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo','-vcodec', 
+                                'rawvideo', '-s', '800x250', '-pix_fmt', 'bgr24',
+                                '-r', '5', '-i', '-', '-an', '-f', 
+                                'flv', 'rtmp://54.208.55.156:1935/live/myStream'], stdin=subprocess.PIPE)
     if left_stream.validate() and right_stream.validate():
         while left_stream.has_next() and right_stream.has_next():
             left_frame = left_stream.next()
             right_frame = right_stream.next()
             result = stitcher.stitch([left_frame, right_frame])
             proc.stdin.write(result.tostring())
+            tracker = tracker + 1
 
             # no homograpy could be computed
             if result is None:
@@ -200,7 +194,6 @@ def stream_stitched_video(left_stream, right_stream):
 
             if key == ord("q"):
                 break
-
         # do a bit of cleanup
         Formatter.print_status("[INFO] cleaning up...")
         left_stream.close()
