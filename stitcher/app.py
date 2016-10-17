@@ -10,14 +10,12 @@ import argparse
 import os.path
 import sys
 import glob
-import serial
 import socket
 import pickle
 import struct
+import serial
 import cv2
 import imutils
-import re
-import subprocess
 from .panorama import Stitcher
 from .configuration import Configuration
 from .scanner import Scanner
@@ -152,6 +150,9 @@ def get_res(int_flag, config):
         return res
 
 def compute_frame(frame, cflag):
+    """
+    Returns computed frame based on correction flag
+    """
     if cflag:
         return correct_distortion(frame)
     else:
@@ -193,10 +194,11 @@ def stream_stitched_video(left_stream, right_stream):
     Stitches frames coming from two streams and pipe result to ffmpeg
     """
     stitcher = Stitcher()
-    proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo','-vcodec', 
-                                'rawvideo', '-s', '800x250', '-pix_fmt', 'bgr24',
-                                '-r', '5', '-i', '-', '-an', '-f', 
-                                'flv', 'rtmp://54.208.55.156:1935/live/myStream'], stdin=subprocess.PIPE)
+    proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo', '-vcodec',
+                             'rawvideo', '-s', '800x250', '-pix_fmt', 'bgr24',
+                             '-r', '5', '-i', '-', '-an', '-f',
+                             'flv', 'rtmp://54.208.55.156:1935/live/myStream']
+                            , stdin=subprocess.PIPE)
     if left_stream.validate() and right_stream.validate():
         while left_stream.has_next() and right_stream.has_next():
             left_frame = left_stream.next()
@@ -212,7 +214,7 @@ def stream_stitched_video(left_stream, right_stream):
             key = cv2.waitKey(1) & 0xFF
 
             if key == ord("q"):
-                break9
+                break
         # do a bit of cleanup
         Formatter.print_status("[INFO] cleaning up...")
         left_stream.close()
@@ -262,17 +264,20 @@ def serial_ports():
     result = []
     for port in ports:
         try:
-            s = serial.Serial(port)
-            s.close()
+            ser = serial.Serial(port)
+            ser.close()
             result.append(port)
         except (OSError, serial.SerialException):
             pass
     return result
 
 def check_all_streams():
+    """
+    Lists all connected camera streams
+    """
     valid_streams = []
     for i in range(20):
-        if (check_stream(i)):
+        if check_stream(i):
             valid_streams.append(i)
     print_spacer()
     for stream in valid_streams:
@@ -280,9 +285,12 @@ def check_all_streams():
     print_spacer()
 
 def preview_all_valid_streams():
+    """
+    Shows preview of all valid camera streams
+    """
     valid_streams = []
     for i in range(20):
-        if (check_stream(i)):
+        if check_stream(i):
             valid_streams.append(i)
     print_spacer()
     for stream in valid_streams:
@@ -290,10 +298,15 @@ def preview_all_valid_streams():
     print_spacer()
 
 def print_spacer():
+    """
+    Prints separator line
+    """
     print ("\n--------------------\n")
 
-
 def stream_validation():
+    """
+    CLI option for validating streams
+    """
     print_spacer()
     Formatter.print_option(1, "Check stream")
     Formatter.print_option(2, "Preview stream")
@@ -393,34 +406,6 @@ def stitch_streams(left_index, right_index, cflag):
     right_stream = CameraStream(right_index, width)
     stitch(left_stream, right_stream, cflag)
 
-def stitch_all_streams(first_index, second_index, third_index, fourth_index):
-    """ Stitches left and right streams. """
-    scanner = Scanner()
-    width = scanner.read_int('Enter target resolution: ')
-    fst_stitcher = Stitcher()
-    snd_stitcher = Stitcher()
-    combo_stitcher = Stitcher()
-
-    left_stream = CameraStream(left_index, width)
-    right_stream = CameraStream(right_index, width)
-    stitcher = Stitcher()
-
-    if left_stream.validate() and right_stream.validate():
-        while left_stream.has_next() and right_stream.has_next():
-            left_frame = left_stream.next()
-            right_frame = right_stream.next()
-            result = stitcher.stitch([left_frame, right_frame])
-            cv2.imshow("Left Stream", left_frame)
-            cv2.imshow("Right Stream", right_frame)
-            cv2.imshow("Stitched Stream", result)
-
-            # no homograpy could be computed
-            if result is None:
-                Formatter.print_err("[INFO] homography could not be computed")
-                break
-
-            key = cv2.waitKey(1) & 0xFF
-
 def configure_videos(config, int_flag):
     """ Instantiates a CLI for configuration of videos. """
     if int_flag:
@@ -467,6 +452,7 @@ def stitch_videos(left_video, right_video, res, cflag):
     right_stream = VideoStream(right_video, res)
     stitch(left_stream, right_stream, cflag)
 
+# pylint: disable=R0914
 def stitch_all_videos(config, res, cflag):
     """ Stitches four local videos. """
     stitcher = Stitcher()
