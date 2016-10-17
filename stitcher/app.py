@@ -594,6 +594,7 @@ def stitch_all_corrected_videos(config):
     video_streams = [VideoStream(path, width) for path in video_files]
 
     if all([stream.validate() for stream in video_streams]):
+        cv2.startWindowThread()
         while all([stream.has_next() for stream in video_streams]):
             frames = [stream.next() for stream in video_streams]
             left_result = fst_stitcher.stitch([correct_distortion(frames[0]), correct_distortion(frames[1])])
@@ -606,17 +607,12 @@ def stitch_all_corrected_videos(config):
                 Formatter.print_err("[INFO] homography could not be computed")
                 break
 
-            key = cv2.waitKey(1) & 0xFF
-
-            if key == ord("q"):
-                break
-
-        # do a bit of cleanup
-        Formatter.print_status("[INFO] cleaning up...")
-        for stream in video_streams:
-            stream.close()
-        cv2.destroyAllWindows()
-        cv2.waitKey(1)
+            cv2.waitKey(0)
+            Formatter.print_status("[INFO] cleaning up...")
+            for stream in video_streams:
+                stream.close()
+            cv2.destroyAllWindows()
+        
 
 def stream_video(left_video, right_video, port):
     """ Streams video to socket. """
