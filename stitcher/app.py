@@ -363,19 +363,26 @@ def stitch_corrected_streams(left_index, right_index):
         cv2.destroyAllWindows()
         cv2.waitKey(1)
 
-def stitch_four_streams(first_index, second_index, third_index, fourth_index):
+def stitch_four_streams(config):
     """ Stitches four incoming camera streams. """
     scanner = Scanner()
     width = scanner.read_int('Enter target resolution: ')
+
     fst_stitcher = Stitcher()
     snd_stitcher = Stitcher()
     combo_stitcher = Stitcher()
 
-    left_stream = CameraStream(left_index, width)
-    right_stream = CameraStream(right_index, width)
-    stitcher = Stitcher()
+    camera_streams = []
+    camera_streams[:3] = config.first_index, config.second_index, config.third_index, config.fourth_index
+    print(camera_streams)
 
-    if left_stream.validate() and right_stream.validate():
+    first_stream = CameraStream(camera_streams[0], width)
+    second_stream = CameraStream(camera_streams[1], width)
+    third_stream = CameraStream(camera_streams[2], width)
+    fourth_stream = CameraStream(camera_streams[3], width)
+
+
+    if first_stream.validate() and right_stream.validate() and third_stream.validate() and fourth_stream.validate():
         while left_stream.has_next() and right_stream.has_next():
             left_frame = left_stream.next()
             right_frame = right_stream.next()
