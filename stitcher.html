@@ -44,227 +44,17 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-stitcher.app">
-<span id="stitcher-app-module"></span><h2>stitcher.app module<a class="headerlink" href="#module-stitcher.app" title="Permalink to this headline">¶</a></h2>
-<p>The main module for running and testing the stitching algorithm.</p>
-<dl class="function">
-<dt id="stitcher.app.check_stream">
-<code class="descclassname">stitcher.app.</code><code class="descname">check_stream</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.app.check_stream" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if a given index is a valid usb camera index</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="stitcher.app.configure_videos">
-<code class="descclassname">stitcher.app.</code><code class="descname">configure_videos</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.app.configure_videos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instantiates a CLI for configuration of videos.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="stitcher.app.get_video_files">
-<code class="descclassname">stitcher.app.</code><code class="descname">get_video_files</code><span class="sig-paren">(</span><em>src_dir</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.app.get_video_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets list of video files for inclusion in video configuration CLI.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="stitcher.app.initialize">
-<code class="descclassname">stitcher.app.</code><code class="descname">initialize</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.app.initialize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes stream from cameras.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="stitcher.app.main">
-<code class="descclassname">stitcher.app.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.app.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>The main script for instantiating a CLI to navigate stitching.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="stitcher.app.reconfigure">
-<code class="descclassname">stitcher.app.</code><code class="descname">reconfigure</code><span class="sig-paren">(</span><em>configuration</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.app.reconfigure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reconfigures profile.yml</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="stitcher.app.show_stream">
-<code class="descclassname">stitcher.app.</code><code class="descname">show_stream</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.app.show_stream" title="Permalink to this definition">¶</a></dt>
-<dd><p>shows stream of given index</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="stitcher.app.stitch_all_videos">
-<code class="descclassname">stitcher.app.</code><code class="descname">stitch_all_videos</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.app.stitch_all_videos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stitches four local videos.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="stitcher.app.stitch_streams">
-<code class="descclassname">stitcher.app.</code><code class="descname">stitch_streams</code><span class="sig-paren">(</span><em>left_stream</em>, <em>right_stream</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.app.stitch_streams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stitches left and right streams.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="stitcher.app.stitch_videos">
-<code class="descclassname">stitcher.app.</code><code class="descname">stitch_videos</code><span class="sig-paren">(</span><em>left_video</em>, <em>right_video</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.app.stitch_videos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stitches local videos.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="stitcher.app.stream_video">
-<code class="descclassname">stitcher.app.</code><code class="descname">stream_video</code><span class="sig-paren">(</span><em>left_video</em>, <em>right_video</em>, <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.app.stream_video" title="Permalink to this definition">¶</a></dt>
-<dd><p>Streams video to socket.</p>
-</dd></dl>
-
+<div class="section" id="stitcher-app-module">
+<h2>stitcher.app module<a class="headerlink" href="#stitcher-app-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-stitcher.client">
-<span id="stitcher-client-module"></span><h2>stitcher.client module<a class="headerlink" href="#module-stitcher.client" title="Permalink to this headline">¶</a></h2>
-<p>Client that displays frames from socket</p>
-<dl class="function">
-<dt id="stitcher.client.main">
-<code class="descclassname">stitcher.client.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.client.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>The main function for the client.py script.</p>
-</dd></dl>
-
+<div class="section" id="stitcher-client-module">
+<h2>stitcher.client module<a class="headerlink" href="#stitcher-client-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-stitcher.configuration">
-<span id="stitcher-configuration-module"></span><h2>stitcher.configuration module<a class="headerlink" href="#module-stitcher.configuration" title="Permalink to this headline">¶</a></h2>
-<p>Creates Configuration object based on profile.yml</p>
-<dl class="class">
-<dt id="stitcher.configuration.Configuration">
-<em class="property">class </em><code class="descclassname">stitcher.configuration.</code><code class="descname">Configuration</code><a class="headerlink" href="#stitcher.configuration.Configuration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>The Configuration class enables configuration instances to be created.</p>
-<dl class="method">
-<dt id="stitcher.configuration.Configuration.check_config_file">
-<code class="descname">check_config_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Configuration.check_config_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks for an existing yml configuration file.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="stitcher.configuration.Configuration.get_directory_field">
-<em class="property">static </em><code class="descname">get_directory_field</code><span class="sig-paren">(</span><em>key</em>, <em>doc</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Configuration.get_directory_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns a directory field</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="stitcher.configuration.Configuration.get_field">
-<code class="descname">get_field</code><span class="sig-paren">(</span><em>key</em>, <em>doc</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Configuration.get_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks to make sure valid keys are in the profile.yml configuration file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="stitcher.configuration.Configuration.get_fields">
-<code class="descname">get_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Configuration.get_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns generator of instance key value pairs</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="stitcher.configuration.Configuration.get_file_field">
-<em class="property">static </em><code class="descname">get_file_field</code><span class="sig-paren">(</span><em>key</em>, <em>doc</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Configuration.get_file_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns a file field</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="stitcher.configuration.Configuration.get_num_field">
-<em class="property">static </em><code class="descname">get_num_field</code><span class="sig-paren">(</span><em>key</em>, <em>doc</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Configuration.get_num_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns a numeric field</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="stitcher.configuration.Configuration.get_value">
-<code class="descname">get_value</code><span class="sig-paren">(</span><em>field</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Configuration.get_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the value of a field</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="stitcher.configuration.Configuration.initialize">
-<code class="descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Configuration.initialize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses profile.yml to initialize configuration values</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="stitcher.configuration.Configuration.print_configuration">
-<code class="descname">print_configuration</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Configuration.print_configuration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Displays configuration file contents</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="stitcher.configuration.Configuration.set">
-<code class="descname">set</code><span class="sig-paren">(</span><em>key</em>, <em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Configuration.set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Modifies a configuration field with specifed value</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="stitcher.configuration.DirectoryField">
-<em class="property">class </em><code class="descclassname">stitcher.configuration.</code><code class="descname">DirectoryField</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.DirectoryField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#stitcher.configuration.Field" title="stitcher.configuration.Field"><code class="xref py py-class docutils literal"><span class="pre">stitcher.configuration.Field</span></code></a></p>
-<p>String Field</p>
-<dl class="method">
-<dt id="stitcher.configuration.DirectoryField.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.DirectoryField.update" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="stitcher.configuration.Field">
-<em class="property">class </em><code class="descclassname">stitcher.configuration.</code><code class="descname">Field</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Object representation for a configuration field</p>
-<dl class="method">
-<dt id="stitcher.configuration.Field.get_value">
-<code class="descname">get_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Field.get_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns field value</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="stitcher.configuration.Field.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.Field.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates field value</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="stitcher.configuration.FileField">
-<em class="property">class </em><code class="descclassname">stitcher.configuration.</code><code class="descname">FileField</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.FileField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#stitcher.configuration.Field" title="stitcher.configuration.Field"><code class="xref py py-class docutils literal"><span class="pre">stitcher.configuration.Field</span></code></a></p>
-<p>File Field</p>
-<dl class="method">
-<dt id="stitcher.configuration.FileField.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.FileField.update" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="stitcher.configuration.NumField">
-<em class="property">class </em><code class="descclassname">stitcher.configuration.</code><code class="descname">NumField</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.NumField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#stitcher.configuration.Field" title="stitcher.configuration.Field"><code class="xref py py-class docutils literal"><span class="pre">stitcher.configuration.Field</span></code></a></p>
-<p>Number Field</p>
-<dl class="method">
-<dt id="stitcher.configuration.NumField.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configuration.NumField.update" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="stitcher-configuration-module">
+<h2>stitcher.configuration module<a class="headerlink" href="#stitcher-configuration-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-stitcher.configure">
-<span id="stitcher-configure-module"></span><h2>stitcher.configure module<a class="headerlink" href="#module-stitcher.configure" title="Permalink to this headline">¶</a></h2>
-<p>Creates configuration profile from user input</p>
-<dl class="function">
-<dt id="stitcher.configure.main">
-<code class="descclassname">stitcher.configure.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configure.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls the main parse method.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="stitcher.configure.parse">
-<code class="descclassname">stitcher.configure.</code><code class="descname">parse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.configure.parse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses user input to pass to the configuration profile.</p>
-</dd></dl>
-
+<div class="section" id="stitcher-configure-module">
+<h2>stitcher.configure module<a class="headerlink" href="#stitcher-configure-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-stitcher.panorama">
 <span id="stitcher-panorama-module"></span><h2>stitcher.panorama module<a class="headerlink" href="#module-stitcher.panorama" title="Permalink to this headline">¶</a></h2>
@@ -295,34 +85,8 @@
 </dd></dl>
 
 </div>
-<div class="section" id="module-stitcher.scanner">
-<span id="stitcher-scanner-module"></span><h2>stitcher.scanner module<a class="headerlink" href="#module-stitcher.scanner" title="Permalink to this headline">¶</a></h2>
-<p>Scanner module</p>
-<dl class="class">
-<dt id="stitcher.scanner.Scanner">
-<em class="property">class </em><code class="descclassname">stitcher.scanner.</code><code class="descname">Scanner</code><a class="headerlink" href="#stitcher.scanner.Scanner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Scanner for reading user input</p>
-<dl class="staticmethod">
-<dt id="stitcher.scanner.Scanner.read_dir">
-<em class="property">static </em><code class="descname">read_dir</code><span class="sig-paren">(</span><em>prompt</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.scanner.Scanner.read_dir" title="Permalink to this definition">¶</a></dt>
-<dd><p>reads a directory from standard input</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="stitcher.scanner.Scanner.read_int">
-<em class="property">static </em><code class="descname">read_int</code><span class="sig-paren">(</span><em>prompt</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.scanner.Scanner.read_int" title="Permalink to this definition">¶</a></dt>
-<dd><p>reads an integer from standard input</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="stitcher.scanner.Scanner.read_string">
-<em class="property">static </em><code class="descname">read_string</code><span class="sig-paren">(</span><em>prompt</em><span class="sig-paren">)</span><a class="headerlink" href="#stitcher.scanner.Scanner.read_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>reads a string from standard input</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="stitcher-scanner-module">
+<h2>stitcher.scanner module<a class="headerlink" href="#stitcher-scanner-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-stitcher.sorted_dict">
 <span id="stitcher-sorted-dict-module"></span><h2>stitcher.sorted_dict module<a class="headerlink" href="#module-stitcher.sorted_dict" title="Permalink to this headline">¶</a></h2>
@@ -369,12 +133,12 @@ to write key-value pairs in a desired order into a yaml format.</p>
   <ul>
 <li><a class="reference internal" href="#">stitcher package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-stitcher.app">stitcher.app module</a></li>
-<li><a class="reference internal" href="#module-stitcher.client">stitcher.client module</a></li>
-<li><a class="reference internal" href="#module-stitcher.configuration">stitcher.configuration module</a></li>
-<li><a class="reference internal" href="#module-stitcher.configure">stitcher.configure module</a></li>
+<li><a class="reference internal" href="#stitcher-app-module">stitcher.app module</a></li>
+<li><a class="reference internal" href="#stitcher-client-module">stitcher.client module</a></li>
+<li><a class="reference internal" href="#stitcher-configuration-module">stitcher.configuration module</a></li>
+<li><a class="reference internal" href="#stitcher-configure-module">stitcher.configure module</a></li>
 <li><a class="reference internal" href="#module-stitcher.panorama">stitcher.panorama module</a></li>
-<li><a class="reference internal" href="#module-stitcher.scanner">stitcher.scanner module</a></li>
+<li><a class="reference internal" href="#stitcher-scanner-module">stitcher.scanner module</a></li>
 <li><a class="reference internal" href="#module-stitcher.sorted_dict">stitcher.sorted_dict module</a></li>
 <li><a class="reference internal" href="#module-stitcher">Module contents</a></li>
 </ul>
