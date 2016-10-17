@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-import imutils
 
 def correct_distortion(image):
 	"""
@@ -20,5 +19,7 @@ def correct_distortion(image):
 	# Correct the radial distortion
 	new_camera, roi = cv2.getOptimalNewCameraMatrix(camera_matrix, distortion_coefficients, (width,height), 0) 
 	corrected_image = cv2.undistort(src, camera_matrix, distortion_coefficients, None, new_camera)
+
+	# new_camera = cv2.getOptimalNewCameraMatrix(camera_matrix distortion_coefficients, (width,height), 1)
 
 	return corrected_image
