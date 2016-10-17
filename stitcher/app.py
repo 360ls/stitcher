@@ -9,7 +9,15 @@ import subprocess
 import argparse
 import os.path
 import sys
+import glob
+import serial
+import socket
+import pickle
+import struct
 import cv2
+import imutils
+import re
+import subprocess
 from .panorama import Stitcher
 from .configuration import Configuration
 from .scanner import Scanner
@@ -19,6 +27,7 @@ from .configuration import FileField
 from .formatter import Formatter
 from .stream import CameraStream
 from .stream import VideoStream
+from .distortion_corrector.corrector import correct_distortion
 
 def parse_args():
     """
@@ -59,7 +68,7 @@ def main():
     """ The main script for instantiating a CLI to navigate stitching. """
     parsed_args = parse_args()
     if not parsed_args.interactive_mode:
-        print("")
+        print_spacer()
         Formatter.print_heading("Choose option:")
         Formatter.print_option(0, "Quit")
         Formatter.print_option(1, "Reconfigure Profile")
@@ -67,8 +76,9 @@ def main():
         Formatter.print_option(3, "Stitch from 2 videos")
         Formatter.print_option(4, "Stitch from 4 videos")
         Formatter.print_option(5, "Stream stitched video")
-        Formatter.print_option(6, "Check stream")
-        Formatter.print_option(7, "Preview stream")
+        Formatter.print_option(6, "Stream validation")
+        Formatter.print_option(7, "Stitch from 2 corrected videos")
+        Formatter.print_option(8, "Stream from 2 corrected cameras")
         scanner = Scanner()
         opt = scanner.read_int('Enter option number: ')
     else:
@@ -84,16 +94,16 @@ def main():
             left_stream, right_stream = initialize(CONFIG)
         except ValueError:
             continue_cli(int_flag)
-        stitch_streams(left_stream, right_stream)
+        stitch_streams(left_stream, right_stream, False)
         continue_cli(int_flag)
     elif opt == 3:
         left, right = configure_videos(CONFIG, int_flag)
         res = get_res(int_flag, CONFIG)
-        stitch_videos(left, right, res)
+        stitch_videos(left, right, res, False)
         continue_cli(int_flag)
     elif opt == 4:
         res = get_res(int_flag, CONFIG)
-        stitch_all_videos(CONFIG, res)
+        stitch_all_videos(CONFIG, res, False)
         continue_cli(int_flag)
     elif opt == 5:
         try:
@@ -103,12 +113,17 @@ def main():
         stream_video(left_stream, right_stream)
         continue_cli(int_flag)
     elif opt == 6:
-        index = scanner.read_int('Enter camera index: ')
-        check_stream(index)
+        stream_validation()
         continue_cli(int_flag)
     elif opt == 7:
-        index = scanner.read_int('Enter camera index: ')
-        show_stream(index)
+        left, right = configure_videos(CONFIG, int_flag)
+        res = get_res(int_flag, CONFIG)
+        stitch_videos(left, right, res, True)
+        continue_cli(int_flag)
+    elif opt == 8:
+        left, right = configure_videos(CONFIG, int_flag)
+        port = CONFIG.port.value
+        stream_corrected_video(left, right, port)
         continue_cli(int_flag)
     elif opt == 0:
         sys.exit(0)
@@ -136,15 +151,21 @@ def get_res(int_flag, config):
         res = scanner.read_int('Enter target resolution: ')
         return res
 
-def stitch(left_stream, right_stream):
+def compute_frame(frame, cflag):
+    if cflag:
+        return correct_distortion(frame)
+    else:
+        return frame
+
+def stitch(left_stream, right_stream, cflag):
     """
     Stitches frames coming from two streams
     """
     stitcher = Stitcher()
     if left_stream.validate() and right_stream.validate():
         while left_stream.has_next() and right_stream.has_next():
-            left_frame = left_stream.next()
-            right_frame = right_stream.next()
+            left_frame = compute_frame(left_stream.next(), cflag)
+            right_frame = compute_frame(right_stream.next(), cflag)
             result = stitcher.stitch([left_frame, right_frame])
 
             cv2.imshow("Left Stream", left_frame)
@@ -220,6 +241,90 @@ def check_stream(index):
         print(msg)
         return False
 
+def serial_ports():
+    """ Lists serial port names
+
+        :raises EnvironmentError:
+            On unsupported or unknown platforms
+        :returns:
+            A list of the serial ports available on the system
+    """
+    if sys.platform.startswith('win'):
+        ports = ['COM%s' % (i + 1) for i in range(256)]
+    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+        # this excludes your current terminal "/dev/tty"
+        ports = glob.glob('/dev/tty[A-Za-z]*')
+    elif sys.platform.startswith('darwin'):
+        ports = glob.glob('/dev/tty.*')
+    else:
+        raise EnvironmentError('Unsupported platform')
+
+    result = []
+    for port in ports:
+        try:
+            s = serial.Serial(port)
+            s.close()
+            result.append(port)
+        except (OSError, serial.SerialException):
+            pass
+    return result
+
+def check_all_streams():
+    valid_streams = []
+    for i in range(20):
+        if (check_stream(i)):
+            valid_streams.append(i)
+    print_spacer()
+    for stream in valid_streams:
+        print ("Camera stream %s is a valid stream." % stream)
+    print_spacer()
+
+def preview_all_valid_streams():
+    valid_streams = []
+    for i in range(20):
+        if (check_stream(i)):
+            valid_streams.append(i)
+    print_spacer()
+    for stream in valid_streams:
+        show_stream(stream)
+    print_spacer()
+
+def print_spacer():
+    print ("\n--------------------\n")
+
+
+def stream_validation():
+    print_spacer()
+    Formatter.print_option(1, "Check stream")
+    Formatter.print_option(2, "Preview stream")
+    Formatter.print_option(3, "Identify serial ports")
+    Formatter.print_option(4, "Identify valid streams")
+    Formatter.print_option(5, "Preview all valid streams")
+    Formatter.print_option(0, "Exit")
+
+    scanner = Scanner()
+    opt = scanner.read_int('Enter option number: ')
+
+    if opt == 1:
+        index = scanner.read_int('Enter camera index: ')
+        check_stream(index)
+        main()
+    elif opt == 2:
+        index = scanner.read_int('Enter camera index: ')
+        show_stream(index)
+        main()
+    elif opt == 3:
+        print(serial_ports())
+    elif opt == 4:
+        check_all_streams()
+    elif opt == 5:
+        preview_all_valid_streams()
+    elif opt == 0:
+        sys.exit(0)
+    else:
+        print("Invalid option")
+        main()
+
 def reconfigure(configuration):
     """ Reconfigures profile.yml """
     Formatter.print_heading("Choose option:")
@@ -280,18 +385,48 @@ def show_stream(index):
         cv2.destroyAllWindows()
         cv2.waitKey(1)
 
-def stitch_streams(left_index, right_index):
+def stitch_streams(left_index, right_index, cflag):
     """ Stitches left and right streams. """
     scanner = Scanner()
     width = scanner.read_int('Enter target resolution: ')
     left_stream = CameraStream(left_index, width)
     right_stream = CameraStream(right_index, width)
-    stitch(left_stream, right_stream)
+    stitch(left_stream, right_stream, cflag)
+
+def stitch_all_streams(first_index, second_index, third_index, fourth_index):
+    """ Stitches left and right streams. """
+    scanner = Scanner()
+    width = scanner.read_int('Enter target resolution: ')
+    fst_stitcher = Stitcher()
+    snd_stitcher = Stitcher()
+    combo_stitcher = Stitcher()
+
+    left_stream = CameraStream(left_index, width)
+    right_stream = CameraStream(right_index, width)
+    stitcher = Stitcher()
+
+    if left_stream.validate() and right_stream.validate():
+        while left_stream.has_next() and right_stream.has_next():
+            left_frame = left_stream.next()
+            right_frame = right_stream.next()
+            result = stitcher.stitch([left_frame, right_frame])
+            cv2.imshow("Left Stream", left_frame)
+            cv2.imshow("Right Stream", right_frame)
+            cv2.imshow("Stitched Stream", result)
+
+            # no homograpy could be computed
+            if result is None:
+                Formatter.print_err("[INFO] homography could not be computed")
+                break
+
+            key = cv2.waitKey(1) & 0xFF
 
 def configure_videos(config, int_flag):
     """ Instantiates a CLI for configuration of videos. """
     if int_flag:
         return config.left_video.value, config.right_video.value
+
+    print_spacer()
     Formatter.print_heading("Choose option:")
     Formatter.print_option(1, "Use preconfigured left/right video streams")
     Formatter.print_option(2, "Configure streams")
@@ -326,13 +461,13 @@ def configure_videos(config, int_flag):
     else:
         main()
 
-def stitch_videos(left_video, right_video, res):
+def stitch_videos(left_video, right_video, res, cflag):
     """ Stitches local videos. """
     left_stream = VideoStream(left_video, res)
     right_stream = VideoStream(right_video, res)
-    stitch(left_stream, right_stream)
+    stitch(left_stream, right_stream, cflag)
 
-def stitch_all_videos(config, res):
+def stitch_all_videos(config, res, cflag):
     """ Stitches four local videos. """
     stitcher = Stitcher()
     fst_stitcher = Stitcher()
@@ -347,7 +482,7 @@ def stitch_all_videos(config, res):
 
     if all([stream.validate() for stream in video_streams]):
         while all([stream.has_next() for stream in video_streams]):
-            frames = [stream.next() for stream in video_streams]
+            frames = [compute_frame(stream.next(), cflag) for stream in video_streams]
             left_result = fst_stitcher.stitch([frames[0], frames[1]])
             right_result = snd_stitcher.stitch([frames[2], frames[3]])
             result = stitcher.stitch([left_result, right_result])
@@ -377,6 +512,38 @@ def stream_video(left_index, right_index):
     left_stream = CameraStream(left_index, width)
     right_stream = CameraStream(right_index, width)
     stream_stitched_video(left_stream, right_stream)
+
+def stream_corrected_video(left_video, right_video, port):
+    """ Streams video to socket. """
+    stitcher = Stitcher()
+
+    left_stream = cv2.VideoCapture(left_video)
+    right_stream = cv2.VideoCapture(right_video)
+
+    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    clientsocket.connect(('localhost', port))
+
+    while left_stream.isOpened() and right_stream.isOpened():
+        left_frame = correct_distortion(left_stream.read()[1])
+        right_frame = correct_distortion(right_stream.read()[1])
+
+        # resize the frames
+        left = imutils.resize(left_frame, width=400)
+        right = imutils.resize(right_frame, width=400)
+
+        result = stitcher.stitch([left, right])
+
+        # no homograpy could be computed
+        if result is None:
+            Formatter.print_err("[INFO] homography could not be computed")
+            break
+
+        data = pickle.dumps(result)
+        clientsocket.sendall(struct.pack("L", len(data))+data)
+
+    left_stream.release()
+    right_stream.release()
+    cv2.destroyAllWindows()
 
 def get_video_files(src_dir):
     """ Gets list of video files for inclusion in video configuration CLI. """
