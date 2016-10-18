@@ -114,10 +114,13 @@ def main():
         continue_cli(int_flag)
     elif opt == 5:
         try:
-            left_stream, right_stream = initialize(CONFIG)
+            left_index, right_index = initialize(CONFIG)
         except ValueError:
             continue_cli(int_flag)
-        stream_video(left_stream, right_stream)
+        res = get_res(int_flag, CONFIG)
+        lstream = CameraStream(left_index, res)
+        rstream = CameraStream(right_index, res)
+        stream_stitched_streams([lstream, rstream])
         continue_cli(int_flag)
     elif opt == 6:
         stream_validation()
@@ -127,7 +130,7 @@ def main():
         res = get_res(int_flag, CONFIG)
         left_video_stream = VideoStream(left, res)
         right_video_stream = VideoStream(right, res)
-        stitch_corrected_streams(left_video_stream, right_video_stream)
+        stitch_corrected_streams([left_video_stream, right_video_stream])
         continue_cli(int_flag)
     elif opt == 8:
         try:
@@ -164,48 +167,6 @@ def get_res(int_flag, config):
         scanner = Scanner()
         res = scanner.read_int('Enter target resolution: ')
         return res
-
-def compute_frame(frame, cflag):
-    """
-    Returns computed frame based on correction flag
-    """
-    if cflag:
-        return correct_distortion(frame)
-    else:
-        return frame
-
-def stream_stitched_video(left_stream, right_stream):
-    """
-    Stitches frames coming from two streams and pipe result to ffmpeg
-    """
-    stitcher = Stitcher()
-    proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo', '-vcodec',
-                             'rawvideo', '-s', '800x250', '-pix_fmt', 'bgr24',
-                             '-r', '5', '-i', '-', '-an', '-f',
-                             'flv', 'rtmp://54.208.55.156:1935/live/myStream']
-                            , stdin=subprocess.PIPE)
-    if left_stream.validate() and right_stream.validate():
-        while left_stream.has_next() and right_stream.has_next():
-            left_frame = left_stream.next()
-            right_frame = right_stream.next()
-            result = stitcher.stitch([left_frame, right_frame])
-            proc.stdin.write(result.tostring())
-
-            # no homograpy could be computed
-            if result is None:
-                Formatter.print_err("[INFO] homography could not be computed")
-                break
-
-            key = cv2.waitKey(1) & 0xFF
-
-            if key == ord("q"):
-                break
-        # do a bit of cleanup
-        Formatter.print_status("[INFO] cleaning up...")
-        left_stream.close()
-        right_stream.close()
-        cv2.destroyAllWindows()
-        cv2.waitKey(1)
 
 def check_stream(index):
     """
@@ -403,13 +364,13 @@ def stitch_corrected_streams(streams):
     handler = MultiStreamHandler(streams)
     handler.stitch_corrected_streams()
 
-def stitch_streams(left_index, right_index, cflag):
-    """ Stitches left and right streams. """
-    scanner = Scanner()
-    width = scanner.read_int('Enter target resolution: ')
-    left_stream = CameraStream(left_index, width)
-    right_stream = CameraStream(right_index, width)
-    stitch(left_stream, right_stream, cflag)
+def stream_stitched_stream(stream):
+    handler = SingleStreamHandler(stream)
+    handler.stream_rtmp()
+
+def stream_stitched_streams(streams):
+    handler = MultiStreamHandler(streams)
+    handler.stream_rtmp()
 
 def configure_videos(config, int_flag):
     """ Instantiates a CLI for configuration of videos. """
@@ -450,14 +411,6 @@ def configure_videos(config, int_flag):
         sys.exit(0)
     else:
         main()
-
-def stream_video(left_index, right_index):
-    """ Streams video to socket. """
-    scanner = Scanner()
-    width = scanner.read_int('Enter target resolution: ')
-    left_stream = CameraStream(left_index, width)
-    right_stream = CameraStream(right_index, width)
-    stream_stitched_video(left_stream, right_stream)
 
 def get_video_files(src_dir):
     """ Gets list of video files for inclusion in video configuration CLI. """
