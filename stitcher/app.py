@@ -26,6 +26,8 @@ from .formatter import Formatter
 from .stream import CameraStream
 from .stream import VideoStream
 from .distortion_corrector.corrector import correct_distortion
+from .stream_handler import SingleStreamHandler
+from .stream_handler import MultiStreamHandler
 
 def parse_args():
     """
@@ -89,15 +91,20 @@ def main():
         continue_cli(int_flag)
     elif opt == 2:
         try:
-            left_stream, right_stream = initialize(CONFIG)
+            left_index, right_index = initialize(CONFIG)
         except ValueError:
             continue_cli(int_flag)
-        stitch_streams(left_stream, right_stream, False)
+        res = get_res(int_flag, CONFIG)
+        lstream = CameraStream(left_index, res)
+        rstream = CameraStream(right_index, res)
+        stitch_uncorrected_streams(lstream, rstream)
         continue_cli(int_flag)
     elif opt == 3:
         left, right = configure_videos(CONFIG, int_flag)
         res = get_res(int_flag, CONFIG)
-        stitch_videos(left, right, res, False)
+        left_video_stream = VideoStream(left, res)
+        right_video_stream = VideoStream(right, res)
+        stitch_uncorrected_streams(left_video_stream, right_video_stream)
         continue_cli(int_flag)
     elif opt == 4:
         res = get_res(int_flag, CONFIG)
@@ -116,7 +123,9 @@ def main():
     elif opt == 7:
         left, right = configure_videos(CONFIG, int_flag)
         res = get_res(int_flag, CONFIG)
-        stitch_videos(left, right, res, True)
+        left_video_stream = VideoStream(left, res)
+        right_video_stream = VideoStream(right, res)
+        stitch_corrected_streams(left_video_stream, right_video_stream)
         continue_cli(int_flag)
     elif opt == 8:
         left, right = configure_videos(CONFIG, int_flag)
@@ -172,7 +181,7 @@ def stitch(left_stream, right_stream, cflag):
             cv2.imshow("Left Stream", left_frame)
             cv2.imshow("Right Stream", right_frame)
             cv2.imshow("Stitched Stream", result)
-	    # no homograpy could be computed
+        # no homograpy could be computed
             if result is None:
                 Formatter.print_err("[INFO] homography could not be computed")
                 break
@@ -397,6 +406,26 @@ def show_stream(index):
         stream.close()
         cv2.destroyAllWindows()
         cv2.waitKey(1)
+
+def stitch_uncorrected_stream(stream):
+    """ Stitches single stream """
+    handler = SingleStreamHandler(stream)
+    handler.stitch_streams()
+
+def stitch_corrected_stream(stream):
+    """ Stitches single stream """
+    handler = SingleStreamHandler(stream)
+    handler.stitch_corrected_streams()
+
+def stitch_uncorrected_streams(lstream, rstream):
+    """ Stitches left and right streams. """
+    handler = MultiStreamHandler([lstream, rstream])
+    handler.stitch_streams()
+
+def stitch_corrected_streams(lstream, rstream):
+    """ Stitches left and right streams. """
+    handler = MultiStreamHandler([lstream, rstream])
+    handler.stitch_corrected_streams()
 
 def stitch_streams(left_index, right_index, cflag):
     """ Stitches left and right streams. """
