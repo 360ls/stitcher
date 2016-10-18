@@ -78,7 +78,7 @@ def main():
         Formatter.print_option(5, "Stream stitched video")
         Formatter.print_option(6, "Stream validation")
         Formatter.print_option(7, "Stitch from 2 corrected videos")
-        Formatter.print_option(8, "Stream from 2 corrected cameras")
+        Formatter.print_option(8, "Stitch from 2 corrected cameras")
         scanner = Scanner()
         opt = scanner.read_int('Enter option number: ')
     else:
@@ -97,18 +97,20 @@ def main():
         res = get_res(int_flag, CONFIG)
         lstream = CameraStream(left_index, res)
         rstream = CameraStream(right_index, res)
-        stitch_uncorrected_streams(lstream, rstream)
+        stitch_uncorrected_streams([lstream, rstream])
         continue_cli(int_flag)
     elif opt == 3:
         left, right = configure_videos(CONFIG, int_flag)
         res = get_res(int_flag, CONFIG)
         left_video_stream = VideoStream(left, res)
         right_video_stream = VideoStream(right, res)
-        stitch_uncorrected_streams(left_video_stream, right_video_stream)
+        stitch_uncorrected_streams([left_video_stream, right_video_stream])
         continue_cli(int_flag)
     elif opt == 4:
         res = get_res(int_flag, CONFIG)
-        stitch_all_videos(CONFIG, res, False)
+        video_dir = CONFIG.video_dir.value
+        video_streams = get_video_streams(video_dir, res)
+        stitch_uncorrected_streams(video_streams)
         continue_cli(int_flag)
     elif opt == 5:
         try:
@@ -128,9 +130,14 @@ def main():
         stitch_corrected_streams(left_video_stream, right_video_stream)
         continue_cli(int_flag)
     elif opt == 8:
-        left, right = configure_videos(CONFIG, int_flag)
-        port = CONFIG.port.value
-        stream_corrected_video(left, right, port)
+        try:
+            left_index, right_index = initialize(CONFIG)
+        except ValueError:
+            continue_cli(int_flag)
+        res = get_res(int_flag, CONFIG)
+        lstream = CameraStream(left_index, res)
+        rstream = CameraStream(right_index, res)
+        stitch_corrected_streams([lstream, rstream])
         continue_cli(int_flag)
     elif opt == 0:
         sys.exit(0)
@@ -166,37 +173,6 @@ def compute_frame(frame, cflag):
         return correct_distortion(frame)
     else:
         return frame
-
-def stitch(left_stream, right_stream, cflag):
-    """
-    Stitches frames coming from two streams
-    """
-    stitcher = Stitcher()
-    if left_stream.validate() and right_stream.validate():
-        while left_stream.has_next() and right_stream.has_next():
-            left_frame = compute_frame(left_stream.next(), cflag)
-            right_frame = compute_frame(right_stream.next(), cflag)
-            result = stitcher.stitch([left_frame, right_frame])
-
-            cv2.imshow("Left Stream", left_frame)
-            cv2.imshow("Right Stream", right_frame)
-            cv2.imshow("Stitched Stream", result)
-        # no homograpy could be computed
-            if result is None:
-                Formatter.print_err("[INFO] homography could not be computed")
-                break
-
-            key = cv2.waitKey(1) & 0xFF
-
-            if key == ord("q"):
-                break
-
-        # do a bit of cleanup
-        Formatter.print_status("[INFO] cleaning up...")
-        left_stream.close()
-        right_stream.close()
-        cv2.destroyAllWindows()
-        cv2.waitKey(1)
 
 def stream_stitched_video(left_stream, right_stream):
     """
@@ -417,14 +393,14 @@ def stitch_corrected_stream(stream):
     handler = SingleStreamHandler(stream)
     handler.stitch_corrected_streams()
 
-def stitch_uncorrected_streams(lstream, rstream):
+def stitch_uncorrected_streams(streams):
     """ Stitches left and right streams. """
-    handler = MultiStreamHandler([lstream, rstream])
+    handler = MultiStreamHandler(streams)
     handler.stitch_streams()
 
-def stitch_corrected_streams(lstream, rstream):
+def stitch_corrected_streams(streams):
     """ Stitches left and right streams. """
-    handler = MultiStreamHandler([lstream, rstream])
+    handler = MultiStreamHandler(streams)
     handler.stitch_corrected_streams()
 
 def stitch_streams(left_index, right_index, cflag):
@@ -475,51 +451,6 @@ def configure_videos(config, int_flag):
     else:
         main()
 
-def stitch_videos(left_video, right_video, res, cflag):
-    """ Stitches local videos. """
-    left_stream = VideoStream(left_video, res)
-    right_stream = VideoStream(right_video, res)
-    stitch(left_stream, right_stream, cflag)
-
-# pylint: disable=R0914
-def stitch_all_videos(config, res, cflag):
-    """ Stitches four local videos. """
-    stitcher = Stitcher()
-    fst_stitcher = Stitcher()
-    snd_stitcher = Stitcher()
-    video_dir = config.video_dir.value
-    video_files = get_video_files(video_dir)
-    video_streams = [VideoStream(path, res) for path in video_files]
-
-    if len(video_streams) < 4:
-        Formatter.print_err("Only {0} video files found".format(len(video_streams)))
-        return
-
-    if all([stream.validate() for stream in video_streams]):
-        while all([stream.has_next() for stream in video_streams]):
-            frames = [compute_frame(stream.next(), cflag) for stream in video_streams]
-            left_result = fst_stitcher.stitch([frames[0], frames[1]])
-            right_result = snd_stitcher.stitch([frames[2], frames[3]])
-            result = stitcher.stitch([left_result, right_result])
-            cv2.imshow("Stitched Stream", result)
-
-            # no homograpy could be computed
-            if result is None:
-                Formatter.print_err("[INFO] homography could not be computed")
-                break
-
-            key = cv2.waitKey(1) & 0xFF
-
-            if key == ord("q"):
-                break
-
-        # do a bit of cleanup
-        Formatter.print_status("[INFO] cleaning up...")
-        for stream in video_streams:
-            stream.close()
-        cv2.destroyAllWindows()
-        cv2.waitKey(1)
-
 def stream_video(left_index, right_index):
     """ Streams video to socket. """
     scanner = Scanner()
@@ -528,38 +459,6 @@ def stream_video(left_index, right_index):
     right_stream = CameraStream(right_index, width)
     stream_stitched_video(left_stream, right_stream)
 
-def stream_corrected_video(left_video, right_video, port):
-    """ Streams video to socket. """
-    stitcher = Stitcher()
-
-    left_stream = cv2.VideoCapture(left_video)
-    right_stream = cv2.VideoCapture(right_video)
-
-    clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    clientsocket.connect(('localhost', port))
-
-    while left_stream.isOpened() and right_stream.isOpened():
-        left_frame = correct_distortion(left_stream.read()[1])
-        right_frame = correct_distortion(right_stream.read()[1])
-
-        # resize the frames
-        left = imutils.resize(left_frame, width=400)
-        right = imutils.resize(right_frame, width=400)
-
-        result = stitcher.stitch([left, right])
-
-        # no homograpy could be computed
-        if result is None:
-            Formatter.print_err("[INFO] homography could not be computed")
-            break
-
-        data = pickle.dumps(result)
-        clientsocket.sendall(struct.pack("L", len(data))+data)
-
-    left_stream.release()
-    right_stream.release()
-    cv2.destroyAllWindows()
-
 def get_video_files(src_dir):
     """ Gets list of video files for inclusion in video configuration CLI. """
     files = os.listdir(src_dir)
@@ -567,6 +466,10 @@ def get_video_files(src_dir):
     video_files.sort()
     video_paths = [os.path.join(src_dir, path) for path in video_files]
     return video_paths
+
+def get_video_streams(src_dir, res):
+    video_files = get_video_files(src_dir)
+    return [VideoStream(filepath, res) for filepath in video_files]
 
 if __name__ == "__main__":
     main()
