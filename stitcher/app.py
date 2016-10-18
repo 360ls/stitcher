@@ -5,18 +5,12 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import division
-import subprocess
 import argparse
 import os.path
 import sys
 import glob
-import socket
-import pickle
-import struct
 import serial
 import cv2
-import imutils
-from .panorama import Stitcher
 from .configuration import Configuration
 from .scanner import Scanner
 from .configuration import NumField
@@ -25,7 +19,6 @@ from .configuration import FileField
 from .formatter import Formatter
 from .stream import CameraStream
 from .stream import VideoStream
-from .distortion_corrector.corrector import correct_distortion
 from .stream_handler import SingleStreamHandler
 from .stream_handler import MultiStreamHandler
 
@@ -365,10 +358,12 @@ def stitch_corrected_streams(streams):
     handler.stitch_corrected_streams()
 
 def stream_stitched_stream(stream):
+    """ Streams single stream """
     handler = SingleStreamHandler(stream)
     handler.stream_rtmp()
 
 def stream_stitched_streams(streams):
+    """ Streams stitch of two streams """
     handler = MultiStreamHandler(streams)
     handler.stream_rtmp()
 
@@ -421,6 +416,7 @@ def get_video_files(src_dir):
     return video_paths
 
 def get_video_streams(src_dir, res):
+    """ Returns list of video streams created from videos in configured directory """
     video_files = get_video_files(src_dir)
     return [VideoStream(filepath, res) for filepath in video_files]
 

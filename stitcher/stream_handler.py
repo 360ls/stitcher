@@ -31,6 +31,9 @@ class StreamHandler(object):
 
     @abstractmethod
     def stream_rtmp(self):
+        """
+        Streams image frames to RTMP
+        """
         pass
 
 class SingleStreamHandler(StreamHandler):
@@ -75,6 +78,9 @@ class MultiStreamHandler(StreamHandler):
 
 
 def stitch(streams, correction_func, stitcher_func, should_stream):
+    """
+    Generic stitching function
+    """
     left_stitcher = Stitcher()
     right_stitcher = Stitcher()
     combined_stitcher = Stitcher()
@@ -90,7 +96,8 @@ def stitch(streams, correction_func, stitcher_func, should_stream):
     if all([stream.validate for stream in streams]):
         while all([stream.has_next() for stream in streams]):
             frames = [correction_func(stream.next()) for stream in streams]
-            stitched_frame = stitcher_func(frames, [left_stitcher, right_stitcher, combined_stitcher])
+            stitched_frame = stitcher_func(frames,
+                                           [left_stitcher, right_stitcher, combined_stitcher])
 
             if should_stream:
                 proc.stdin.write(stitched_frame.tostring())
@@ -110,15 +117,27 @@ def stitch(streams, correction_func, stitcher_func, should_stream):
         cv2.waitKey(1)
 
 def identity(frame):
+    """
+    Identity function
+    """
     return frame
 
-def stitch_frame(frames, stitchers):
+def stitch_frame(frames, _):
+    """
+    Stitching for single frame
+    """
     return frames[0]
 
 def stitch_two_frames(frames, stitchers):
+    """
+    Stitching for two frames
+    """
     return stitchers[0].stitch([frames[0], frames[1]])
 
 def stitch_four_frames(frames, stitchers):
+    """
+    Stitching for four frames
+    """
     left_stitch = stitch_two_frames([frames[0], frames[1]], [stitchers[0]])
     right_stitch = stitch_two_frames([frames[2], frames[3]], [stitchers[1]])
     return stitch_two_frames([left_stitch, right_stitch], [stitchers[2]])
