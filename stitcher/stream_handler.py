@@ -36,32 +36,10 @@ class SingleStreamHandler(StreamHandler):
         self.stream = stream
 
     def stitch_streams(self):
-        if self.stream.validate():
-            while self.stream.has_next():
-                frame = self.stream.next()
-                cv2.imshow("Stream", frame)
-                key = cv2.waitKey(1) & 0xFF
-
-                if key == ord("q"):
-                    break
-            Formatter.print_status("[INFO] cleaning up...")
-            self.stream.close()
-            cv2.destroyAllWindows()
-            cv2.waitKey(1)
+        stitch([self.stream], identity, stitch_frame)
 
     def stitch_corrected_streams(self):
-        if self.stream.validate():
-            while self.stream.has_next():
-                frame = correct_distortion(self.stream.next())
-                cv2.imshow("Stream", frame)
-                key = cv2.waitKey(1) & 0xFF
-
-                if key == ord("q"):
-                    break
-            Formatter.print_status("[INFO] cleaning up...")
-            self.stream.close()
-            cv2.destroyAllWindows()
-            cv2.waitKey(1)
+        stitch([self.stream], correct_distortion, stitch_frame)
 
 class MultiStreamHandler(StreamHandler):
     """
@@ -71,119 +49,53 @@ class MultiStreamHandler(StreamHandler):
         self.streams = streams
 
     def stitch_streams(self):
-        if all([stream.validate for stream in self.streams]):
-            if len(self.streams) < 4:
-                stitcher = Stitcher()
-                left_stream = self.streams[0]
-                right_stream = self.streams[1]
-                while left_stream.has_next() and right_stream.has_next():
-                    left_frame = left_stream.next()
-                    right_frame = right_stream.next()
-                    result = stitcher.stitch([left_frame, right_frame])
-
-                    cv2.imshow("Left Stream", left_frame)
-                    cv2.imshow("Right Stream", right_frame)
-                    cv2.imshow("Stitched Stream", result)
-
-                    # no homograpy could be computed
-                    if result is None:
-                        Formatter.print_err("[INFO] homography could not be computed")
-                        break
-
-                    key = cv2.waitKey(1) & 0xFF
-
-                    if key == ord("q"):
-                        break
-
-                # do a bit of cleanup
-                Formatter.print_status("[INFO] cleaning up...")
-                left_stream.close()
-                right_stream.close()
-                cv2.destroyAllWindows()
-                cv2.waitKey(1)
-            else:
-                fst_stitcher = Stitcher()
-                snd_stitcher = Stitcher()
-                combined_stitcher = Stitcher()
-                while all([stream.has_next() for stream in self.streams]):
-                    frames = [stream.next() for stream in self.streams]
-                    left_result = fst_stitcher.stitch([frames[0], frames[1]])
-                    right_result = snd_stitcher.stitch([frames[2], frames[3]])
-                    result = combined_stitcher.stitch([left_result, right_result])
-                    cv2.imshow("Stitched Stream", result)
-
-                    # no homograpy could be computed
-                    if result is None:
-                        Formatter.print_err("[INFO] homography could not be computed")
-                        break
-
-                    key = cv2.waitKey(1) & 0xFF
-
-                    if key == ord("q"):
-                        break
-
-                # do a bit of cleanup
-                Formatter.print_status("[INFO] cleaning up...")
-                for stream in self.streams:
-                    stream.close()
-                cv2.destroyAllWindows()
-                cv2.waitKey(1)
+        stream_count = len(self.streams)
+        if stream_count < 4:
+            stitch(self.streams, identity, stitch_two_frames)
+        else:
+            stitch(self.streams, identity, stitch_four_frames)
 
     def stitch_corrected_streams(self):
-        if all([stream.validate for stream in self.streams]):
-            if len(self.streams) < 4:
-                stitcher = Stitcher()
-                left_stream = self.streams[0]
-                right_stream = self.streams[1]
-                while left_stream.has_next() and right_stream.has_next():
-                    left_frame = correct_distortion(left_stream.next())
-                    right_frame = correct_distortion(right_stream.next())
-                    result = stitcher.stitch([left_frame, right_frame])
+        stream_count = len(self.streams)
+        if stream_count < 4:
+            stitch(self.streams, correct_distortion, stitch_two_frames)
+        else:
+            stitch(self.streams, correct_distortion, stitch_four_frames)
 
-                    cv2.imshow("Left Stream", left_frame)
-                    cv2.imshow("Right Stream", right_frame)
-                    cv2.imshow("Stitched Stream", result)
+def stitch(streams, correction_func, stitcher_func):
+    left_stitcher = Stitcher()
+    right_stitcher = Stitcher()
+    combined_stitcher = Stitcher()
 
-                    # no homograpy could be computed
-                    if result is None:
-                        Formatter.print_err("[INFO] homography could not be computed")
-                        break
+    if all([stream.validate for stream in streams]):
+        while all([stream.has_next() for stream in streams]):
+            frames = [correction_func(stream.next()) for stream in streams]
+            stitched_frame = stitcher_func(frames, [left_stitcher, right_stitcher, combined_stitcher])
 
-                    key = cv2.waitKey(1) & 0xFF
+            cv2.imshow("Result", stitched_frame)
 
-                    if key == ord("q"):
-                        break
+            key = cv2.waitKey(1) & 0xFF
 
-                # do a bit of cleanup
-                Formatter.print_status("[INFO] cleaning up...")
-                left_stream.close()
-                right_stream.close()
-                cv2.destroyAllWindows()
-                cv2.waitKey(1)
-            else:
-                fst_stitcher = Stitcher()
-                snd_stitcher = Stitcher()
-                combined_stitcher = Stitcher()
-                while all([stream.has_next() for stream in self.streams]):
-                    frames = [correct_distortion(stream.next()) for stream in self.streams]
-                    left_result = fst_stitcher.stitch([frames[0], frames[1]])
-                    right_result = snd_stitcher.stitch([frames[2], frames[3]])
-                    result = combined_stitcher.stitch([left_result, right_result])
-                    cv2.imshow("Stitched Stream", result)
+            if key == ord("q"):
+                break
 
-                    # no homograpy could be computed
-                    if result is None:
-                        Formatter.print_err("[INFO] homography could not be computed")
-                        break
+        Formatter.print_status("[INFO] cleaning up...")
 
-                    key = cv2.waitKey(1) & 0xFF
+        for stream in streams:
+            stream.close()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
 
-                    if key == ord("q"):
-                        break
+def identity(frame):
+    return frame
 
-                # do a bit of cleanup
-                Formatter.print_status("[INFO] cleaning up...")
-                for stream in self.streams:
-                    stream.close()
-                cv2.destroyAllWindows()
-                cv2.waitKey(1)
+def stitch_frame(frames, stitchers):
+    return frames[0]
+
+def stitch_two_frames(frames, stitchers):
+    return stitchers[0].stitch([frames[0], frames[1]])
+
+def stitch_four_frames(frames, stitchers):
+    left_stitch = stitch_two_frames([frames[0], frames[1]], [stitchers[0]])
+    right_stitch = stitch_two_frames([frames[2], frames[3]], [stitchers[1]])
+    return stitch_two_frames([left_stitch, right_stitch], [stitchers[2]])
