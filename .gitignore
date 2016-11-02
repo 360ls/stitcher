@@ -90,3 +90,9 @@ ENV/
 
 # Node package management
 node_modules/
+
+# Mac directory metadata files
+.DS_Store
+
+# output files from snapshot
+app/output/
