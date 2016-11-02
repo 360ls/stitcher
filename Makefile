@@ -15,3 +15,6 @@ run:
 clean:
 	find . -name '*.pyc' -delete
 
+snap:
+	python app/snapstreams.py --output output
+
