@@ -7,10 +7,10 @@ all: clean install run
 .PHONY: all 
 
 install:
-	pip install -r $(CONFIGURATION_DIR)/requirements.txt ; npm install config
+	pip install -r $(CONFIGURATION_DIR)/requirements.txt ; npm install
 
 run:
-	python -m $(PACKAGE_DIR).app
+	electron .
 
 clean:
 	find . -name '*.pyc' -delete
