@@ -1,7 +1,9 @@
 # stitch-flex
 Demonstrates flexible stitching for an incoming array of cameras.
 
-## To install the package:
+## Production
+
+### To install the package:
 
 ```bash
 make clean-install
@@ -9,7 +11,7 @@ make clean-install
 
 This will install package dependencies via npm (node.js) and pip (python), including the yarn package manager dependency.
 
-## Then, to run the app, either:
+### Then, to run the app, either:
 
 ```bash
 make run
@@ -23,3 +25,11 @@ make
 ```
 
 to clean the package, do a fresh install of dependencies, and then run the app.
+
+## Development
+
+### To test the application:
+
+```bash
+make test
+```
