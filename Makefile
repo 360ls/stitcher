@@ -6,14 +6,20 @@ CONFIGURATION_DIR=config
 all: clean install run
 .PHONY: all 
 
+clean-install:
+	rm -rf node_modules ; pip install -r $(CONFIGURATION_DIR)/requirements.txt ; npm install
+
 install:
-	pip install -r $(CONFIGURATION_DIR)/requirements.txt ; npm install
+	pip install -r $(CONFIGURATION_DIR)/requirements.txt ; yarn install
 
 run:
 	electron .
 
 clean:
 	find . -name '*.pyc' -delete
+
+test:
+	pytest
 
 snap:
 	python app/snapstreams.py --output output

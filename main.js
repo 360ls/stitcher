@@ -2,7 +2,7 @@
 
 const {app, BrowserWindow, crashReporter} = require('electron');
 
-// Report crashes to our server.
+// Reports server crashes to the designated submitURL (which is unset at the moment)
 crashReporter.start({
     productName: 'stitch-flex',
     companyName: 'lukejfernandez',
@@ -12,18 +12,19 @@ crashReporter.start({
 
 
 // Global reference for the mainWindow to bypass garbage collection
-var mainWindow = null;
+let mainWindow = null;
 
-// This method will be called when Electron has done everything
-// initialization and ready for creating browser windows.
+// Called when Electron initialization is complete and instance is ready to create browser windows.
 app.on('ready', function() {
 
-  var python_subprocess = require('child_process').spawn('python', ['./app/app.py']);
+  // Creates python child process for running python instructions in app/app.py
+  let python_subprocess = require('child_process').spawn('python', ['./app/app.py']);
 
-  var rq = require('request-promise');
-  var mainAddr = 'http://localhost:5000';
+  // Imports request-promise for request and promise handling
+  let request = require('request-promise');
+  let mainAddress = 'http://localhost:5000';
 
-  var openWindow = function(){
+  let openWindow = function(){
     // Create the browser window.
     mainWindow = new BrowserWindow({width: 800, height: 600});
     // and load the index.html of the app.
@@ -47,8 +48,8 @@ app.on('window-all-closed', function() {
   //}
 });
 
-  var startUp = function(){
-    rq(mainAddr)
+  let startUp = function(){
+    request(mainAddress)
       .then(function(htmlString){
         console.log('Server initialized and started.');
         openWindow();
