@@ -1,5 +1,5 @@
 ## Realtime 360 Stitcher
-[![Build Status](https://travis-ci.org/dongy7/360ls-stitcher.svg?branch=master)](https://travis-ci.org/dongy7/360ls-stitcher)
+[![Build Status](https://travis-ci.org/360ls/360ls-stitcher.svg?branch=master)](https://travis-ci.org/360ls/360ls-stitcher)
 
 ## Pre-requisites
 - Python 2.7
