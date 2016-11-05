@@ -2,21 +2,24 @@
 
 from __future__ import print_function
 import sys
-from flask import Flask
-
-APP = Flask(__name__)
-
-@APP.route("/")
-def home():
-    """ Displays boilerplate output to the electron application. """
-    run_cli()
-    return "This just demonstrates that a python script can be run with a proper electron instance."
-
+from flask import Flask, render_template
 
 
 def run_cli():
     """ Runs the command line interface for displaying stitching and streaming functionality. """
-    print('hey there')
+    return "Running from script outside of Flask."
+
+APP = Flask(__name__)
+
+@APP.route("/")
+def index():
+    """ Displays boilerplate output to the electron application. """
+    return render_template('index.html', cli_driver=run_cli)
+
+@APP.route('/cli')
+def cli_driver():
+    """ The route for calling the stitching and streaming command line interface. """
+    return render_template('cli.html', cli_driver=run_cli)
 
 if __name__ == "__main__":
     run_cli()
