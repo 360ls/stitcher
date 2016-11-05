@@ -23,11 +23,19 @@ class TextFormatter(object):
             return colored(text, color, attrs=text_attributes)
 
     @staticmethod
+    def print_title(title_text):
+        """
+        Prints a green, bold, underlined blinking title.
+        """
+        title = colored(title_text, "blue", attrs=['bold'])
+        TextFormatter.print_box(title, "=")
+
+    @staticmethod
     def print_heading(heading_text):
         """
         Prints a blue, bold heading.
         """
-        heading = colored(heading_text, "blue", attrs=['bold'])
+        heading = colored(heading_text, "green", attrs=['bold'])
         TextFormatter.print_box(heading)
 
     @staticmethod
@@ -66,20 +74,21 @@ class TextFormatter(object):
         print("{0}{1}".format(formatted_key, formatted_val))
 
     @staticmethod
-    def print_spacer():
+    def print_spacer(length=30, character_type="-"):
         """
         Prints separator line.
         """
-        print ("----------------------------")
+        print (character_type * length)
 
     @staticmethod
-    def print_box(msg):
+    def print_box(msg, character_type="-"):
         """
         Prints box with defined msg in the middle of the box.
         """
-        TextFormatter.print_spacer()
-        print(msg)
-        TextFormatter.print_spacer()
+        msg_length = len(msg) - 9
+        TextFormatter.print_spacer(msg_length, character_type)
+        print("# %s #" % msg)
+        TextFormatter.print_spacer(msg_length, character_type)
 
     @staticmethod
     def get_check():

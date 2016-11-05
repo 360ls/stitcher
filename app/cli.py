@@ -10,6 +10,7 @@ def main():
 
     parsed_args = parse_args()
     if not parsed_args.interactive_mode:
+        TextFormatter.print_title("Welcome to the 360ls Stitching and Streaming CLI")
         TextFormatter.print_heading("Choose an option to proceed:")
         TextFormatter.print_option(0, "Quit")
         TextFormatter.print_option(1, "Reconfigure Profile")
