@@ -35,9 +35,13 @@ make test
 ```
 
 ### To lint the application:
+
+For JS files:
 ```bash
 eslint nameoffile.js
 ```
+
+You can also install packages in a text editor like Sublime Text 3 to show linting in real-time. This can be done for both eslint (JS) and pylint (Python)
 
 ## Package Structure
 ```bash
