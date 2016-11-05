@@ -12,17 +12,23 @@ def main():
     if not parsed_args.interactive_mode:
         TextFormatter.print_title("Welcome to the 360ls Stitching and Streaming CLI")
         TextFormatter.print_heading("Choose an option to proceed:")
+        TextFormatter.print_option(1, "View Stitching and Correction Functionality")
+        TextFormatter.print_option(2, "Run Utilities for Setup and Configuration")
         TextFormatter.print_option(0, "Quit")
-        TextFormatter.print_option(1, "Reconfigure Profile")
-        TextFormatter.print_option(2, "Stitch from cameras")
-        TextFormatter.print_option(3, "Stitch from 2 videos")
-        TextFormatter.print_option(4, "Stitch from 4 videos")
-        TextFormatter.print_option(5, "Stream stitched video")
-        TextFormatter.print_option(6, "Stream validation")
-        TextFormatter.print_option(7, "Stitch from 2 corrected videos")
-        TextFormatter.print_option(8, "Stitch from 2 corrected cameras")
     else:
         option = parsed_args.option_num
+
+def stitching_and_streaming():
+    """
+    Provides interaction with application stitching and streaming functionality.
+    """
+    TextFormatter.print_title("View current stitching and streaming functionality below.")
+    TextFormatter.print_heading("Choose an option to proceed:")
+    TextFormatter.print_option(1, "Show Corrected Image - Single Image")
+    TextFormatter.print_option(2, "Show Corrected Live Feed - Single Camera")
+    TextFormatter.print_option(3, "Show Corrected Live Feed - Two Stiched Cameras")
+    TextFormatter.print_option(4, "Show Corrected Live Feed - Four Stitched Cameras")
+    TextFormatter.print_option(0, "Quit")
 
 def parse_args():
     """
