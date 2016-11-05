@@ -45,7 +45,7 @@ class TextFormatter(object):
         """
         Prints error message.
         """
-        error_msg = colored("[ERR] %s" % msg, "red", attrs=['bold'])
+        error_msg = colored("[ERROR] %s" % msg, "red", attrs=['bold'])
         print(error_msg)
 
     @staticmethod
@@ -87,7 +87,7 @@ class TextFormatter(object):
         """
         Prints new line.
         """
-        print("\n")
+        print("")
 
     @staticmethod
     def print_box(msg, character_type="-"):

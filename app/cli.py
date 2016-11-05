@@ -1,6 +1,7 @@
 """ Responsible for demonstrating stitching and streaming functionality in the terminal. """
 from __future__ import print_function
 import argparse
+import sys
 from .util.textformatter import TextFormatter
 from .util.inputscanner import InputScanner
 
@@ -8,9 +9,8 @@ def main():
     """
     The main script for instantiating a CLI to demonstrate stitching and streaming functionality.
     """
-
     parsed_args = parse_args()
-    if not parsed_args.interactive_mode:
+    if parsed_args.interactive_mode:
         TextFormatter.print_title("Welcome to the 360ls Stitching and Streaming CLI")
         TextFormatter.print_heading("Choose an option to proceed:")
         TextFormatter.print_option(1, "View Stitching and Correction Functionality")
@@ -18,9 +18,18 @@ def main():
         TextFormatter.print_option(0, "Quit")
 
         scanner = InputScanner()
-        option = scanner.read_int('Enter option number: ')
+        selected_option = scanner.read_int('Enter option number: ')
     else:
-        option = parsed_args.option_num
+        selected_option = parsed_args.option_num
+
+    if selected_option == 1:
+        pass
+    elif selected_option == 2:
+        pass
+    elif selected_option == 0:
+        sys.exit(0)
+    else: 
+        pass
 
 def stitching_and_streaming():
     """
@@ -43,7 +52,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Facilitates interactive mode.")
 
     # Adds arguments to the parser for interactive mode and options.
-    parser.add_argument('-n', action='store_false', default=True,
+    parser.add_argument('-n', action='store_true', default=False,
                         dest='interactive_mode',
                         help='Turns interactive mode on.')
     parser.add_argument('--option', action='store',

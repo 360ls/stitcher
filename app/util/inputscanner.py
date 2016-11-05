@@ -16,7 +16,7 @@ class InputScanner(object):
         """
         try:
             num_input = int(raw_input(TextFormatter.get_input_msg(prompt)))
-            print ""
+            TextFormatter.print_new_line()
             return num_input
         except ValueError:
             TextFormatter.print_error("Please retry and enter a valid number.")
