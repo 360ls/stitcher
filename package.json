@@ -1,5 +1,5 @@
 {
-  "name"    : "stitch-flex",
+  "name": "stitch-flex",
   "description": "Demonstrates flexible stitching for an incoming array of cameras.",
   "author": "Luke Fernandez <lukejohnfernandez@gmail.com>",
   "repository": {
@@ -7,9 +7,10 @@
     "url": "https://github.com/LukeJFernandez/stitch-flex.git"
   },
   "license": "MIT",
-  "version" : "0.1.0",
-  "main"    : "main.js",
+  "version": "0.1.0",
+  "main": "main.js",
   "devDependencies": {
+    "eslint": "^3.9.1",
     "yarn": "*"
   },
   "dependencies": {

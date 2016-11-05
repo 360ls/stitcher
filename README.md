@@ -34,9 +34,15 @@ to clean the package, do a fresh install of dependencies, and then run the app.
 make test
 ```
 
+### To lint the application:
+```bash
+make lint
+```
+
 ## Package Structure
 ```bash
 stitch-flex/
+    .eslintrc.json
     .gitignore
     LICENSE
     main.js

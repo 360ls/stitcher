@@ -25,7 +25,8 @@ app.on('ready', function() {
   let mainAddress = 'http://localhost:5000';
 
   let openWindow = function(){
-    // Create the browser window.
+
+    // Instantiates the main browser window.
     mainWindow = new BrowserWindow({width: 800, height: 600});
     // and load the index.html of the app.
     // mainWindow.loadURL('file://' + __dirname + '/index.html');
