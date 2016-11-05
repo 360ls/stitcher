@@ -29,6 +29,7 @@ class TextFormatter(object):
         """
         heading = colored(heading_text, "blue", attrs=['bold'])
         print(heading)
+        TextFormatter.print_spacer()
 
     @staticmethod
     def print_err(msg):
@@ -64,6 +65,13 @@ class TextFormatter(object):
         formatted_key = colored(adjusted_key, "cyan", attrs=['bold'])
         formatted_val = colored(val, "magenta", attrs=['bold'])
         print("{0}{1}".format(formatted_key, formatted_val))
+
+    @staticmethod
+    def print_spacer():
+        """
+        Prints separator line.
+        """
+        print ("\n--------------------\n")
 
     @staticmethod
     def get_check():
