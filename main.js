@@ -61,7 +61,7 @@ function createWindow(){
             })
             .catch(function(err){
                 console.log('Waiting for server to start...');
-                startUp();
+                startApplication();
             });
     }
 
