@@ -97,12 +97,12 @@ def utilities():
     elif selected_option == 5:
         pass
     elif selected_option == 6:
-        pass    
+        pass
     elif selected_option == 0:
         exit_python()
     else:
         TextFormatter.print_error("Please retry and enter a valid number.")
-        stitching_and_streaming()
+        utilities()
 
 def parse_args():
     """
