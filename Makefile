@@ -1,6 +1,7 @@
 # Directory Variables for Relative Paths
-PACKAGE_DIR=.
+PACKAGE_DIR=app
 CONFIGURATION_DIR=config
+UTILITY_DIR=app/util
 
 # Ensures clean and run are not interpreted as files
 all: clean install run
@@ -16,6 +17,9 @@ install:
 run:
 	electron .
 
+cli:
+	python -m $(PACKAGE_DIR).cli -n
+
 clean:
 	find . -name '*.pyc' -delete ; rm node_
 
@@ -25,9 +29,12 @@ test:
 ### =============  Utilities  ============= ###
 
 tree:
-	python app/util/listfiles.py
+	python $(UTILITY_DIR)/listfiles.py
+
+capture-pictures:
+	python $(UTILITY_DIR)/capturepictures.py
 
 snap:
-	python app/snapper/snapstreams.py --output ../../out
+	python $(UTILITY_DIR)/snapstreams.py --output ../../out
 
 

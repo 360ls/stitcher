@@ -28,8 +28,7 @@ class TextFormatter(object):
         Prints a blue, bold heading.
         """
         heading = colored(heading_text, "blue", attrs=['bold'])
-        print(heading)
-        TextFormatter.print_spacer()
+        TextFormatter.print_box(heading)
 
     @staticmethod
     def print_err(msg):
@@ -71,7 +70,16 @@ class TextFormatter(object):
         """
         Prints separator line.
         """
-        print ("\n--------------------\n")
+        print ("----------------------------")
+
+    @staticmethod
+    def print_box(msg):
+        """
+        Prints box with defined msg in the middle of the box.
+        """
+        TextFormatter.print_spacer()
+        print(msg)
+        TextFormatter.print_spacer()
 
     @staticmethod
     def get_check():
