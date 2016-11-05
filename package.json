@@ -10,8 +10,6 @@
   "version": "0.1.0",
   "main": "main.js",
   "devDependencies": {
-    "eslint": "^3.9.1",
-    "yarn": "*"
   },
   "dependencies": {
     "request-promise": "*",

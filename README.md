@@ -36,7 +36,7 @@ make test
 
 ### To lint the application:
 ```bash
-make lint
+eslint nameoffile.js
 ```
 
 ## Package Structure
