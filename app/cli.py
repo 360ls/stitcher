@@ -2,6 +2,7 @@
 from __future__ import print_function
 import argparse
 from .util.textformatter import TextFormatter
+from .util.inputscanner import InputScanner
 
 def main():
     """
@@ -15,6 +16,9 @@ def main():
         TextFormatter.print_option(1, "View Stitching and Correction Functionality")
         TextFormatter.print_option(2, "Run Utilities for Setup and Configuration")
         TextFormatter.print_option(0, "Quit")
+
+        scanner = InputScanner()
+        option = scanner.read_int('Enter option number: ')
     else:
         option = parsed_args.option_num
 

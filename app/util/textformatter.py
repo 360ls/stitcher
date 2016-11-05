@@ -28,7 +28,9 @@ class TextFormatter(object):
         Prints a green, bold, underlined blinking title.
         """
         title = colored(title_text, "blue", attrs=['bold'])
+        TextFormatter.print_new_line()
         TextFormatter.print_box(title, "=")
+        TextFormatter.print_new_line()
 
     @staticmethod
     def print_heading(heading_text):
@@ -39,11 +41,11 @@ class TextFormatter(object):
         TextFormatter.print_box(heading)
 
     @staticmethod
-    def print_err(msg):
+    def print_error(msg):
         """
         Prints error message.
         """
-        error_msg = colored(msg, "red", attrs=['bold'])
+        error_msg = colored("[ERR] %s" % msg, "red", attrs=['bold'])
         print(error_msg)
 
     @staticmethod
@@ -78,7 +80,14 @@ class TextFormatter(object):
         """
         Prints separator line.
         """
-        print (character_type * length)
+        print(character_type * length)
+
+    @staticmethod
+    def print_new_line():
+        """
+        Prints new line.
+        """
+        print("\n")
 
     @staticmethod
     def print_box(msg, character_type="-"):
@@ -109,4 +118,4 @@ class TextFormatter(object):
         """
         Returns message prompt for user input.
         """
-        return colored(msg, "yellow", attrs=['bold'])
+        return colored("\n%s" % msg, "yellow", attrs=['bold'])
