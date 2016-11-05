@@ -1,5 +1,5 @@
 """
-Module for formatting text
+Module for formatting text - typically used in conjunction with the command line interface.
 """
 from termcolor import colored
 
@@ -10,14 +10,13 @@ class Formatter(object):
     """
     Text formatter
     """
-    # pylint: disable=W0102
-    # pylint: disable=C0103
+
     @staticmethod
-    def color_text(text, color, textAttrs=[]):
+    def color_text(text, color, text_attributes):
         """
-        returns text with given color and attributes
+        Returns text with defined color and text_attributes.
         """
-        return colored(text, color, attrs=textAttrs)
+        return colored(text, color, attrs=text_attributes)
 
     @staticmethod
     def print_heading(text):

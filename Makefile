@@ -28,6 +28,6 @@ tree:
 	python app/util/listfiles.py
 
 snap:
-	python app/snapstreams.py --output ../out
+	python app/snapper/snapstreams.py --output ../../out
 
 
