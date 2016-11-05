@@ -15,8 +15,16 @@ crashReporter.start({
 let mainWindow = null;
 
 // Called when Electron initialization is complete and instance is ready to create browser windows.
-app.on('ready', function() {
+app.on('ready', createWindow);
 
+// Ensures quit on window close, even for OSX
+app.on('window-all-closed', function() {
+  //if (process.platform != 'darwin') {
+    app.quit();
+  //}
+});
+
+function createWindow(){
   // Creates python child process for running python instructions in app/app.py
   let python_subprocess = require('child_process').spawn('python', ['./app/app.py']);
 
@@ -27,29 +35,26 @@ app.on('ready', function() {
   let openWindow = function(){
 
     // Instantiates the main browser window.
-    mainWindow = new BrowserWindow({width: 800, height: 600});
-    // and load the index.html of the app.
-    // mainWindow.loadURL('file://' + __dirname + '/index.html');
-    mainWindow.loadURL('http://localhost:5000');
-    // Open the devtools.
-    // mainWindow.webContents.openDevTools();
-    // Emitted when the window is closed.
+    mainWindow = new BrowserWindow({
+      width: 800,
+      height: 500});
+
+    // Loads the mainAdress set above as the url for the main browser window.
+    mainWindow.loadURL(mainAddress);
+    
+    // Called when the main browser window is closed.
     mainWindow.on('closed', function() {
+
       // Dereferences the mainWindow object. Replace with stack, if multiwindow
       mainWindow = null;
+      
       // Kills subprocess opened up to pass Python to Electron
       python_subprocess.kill('SIGINT');
     });
-  };
+};
 
-// Ensures quit on window close, even for OSX
-app.on('window-all-closed', function() {
-  //if (process.platform != 'darwin') {
-    app.quit();
-  //}
-});
 
-  let startUp = function(){
+function startUp(){
     request(mainAddress)
       .then(function(htmlString){
         console.log('Server initialized and started.');
@@ -59,7 +64,7 @@ app.on('window-all-closed', function() {
         console.log('Waiting for server to start...');
         startUp();
       });
-  };
+  }
 
   startUp();
-});
+}
