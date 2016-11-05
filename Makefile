@@ -21,6 +21,13 @@ clean:
 test:
 	pytest
 
+### =============  Utilities  ============= ###
+
+tree:
+	python app/util/listfiles.py
+
 snap:
 	python app/snapstreams.py --output output
+
+
 

@@ -33,3 +33,25 @@ to clean the package, do a fresh install of dependencies, and then run the app.
 ```bash
 make test
 ```
+
+## Package Structure
+```bash
+stitch-flex/
+    .gitignore
+    LICENSE
+    main.js
+    Makefile
+    package.json
+    README.md
+    yarn.lock
+    app/
+        __init__.py
+        app.py
+        snapstreams.py
+        streamsnapper.py
+        output/
+        util/
+            listfiles.py
+    config/
+        requirements.txt
+```
