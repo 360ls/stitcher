@@ -57,6 +57,14 @@ class TextFormatter(object):
         print(status_msg)
 
     @staticmethod
+    def print_info(msg):
+        """
+        Prints information message.
+        """
+        info_msg = colored("[INFO] %s" % msg, "white", attrs=['bold'])
+        print(info_msg)
+
+    @staticmethod
     def print_option(num, msg):
         """
         Prints option message.
