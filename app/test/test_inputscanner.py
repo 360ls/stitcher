@@ -7,3 +7,4 @@ from .util.inputscanner import InputScanner
 
 def test_read_int():
     """ Checks to make sure output of read_int is the same as input. """
+    pass

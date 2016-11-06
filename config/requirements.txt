@@ -2,3 +2,5 @@ Flask
 imutils
 pytest
 termcolor
+future
+mock

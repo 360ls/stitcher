@@ -9,7 +9,7 @@ all: clean install run
 
 clean-install:
 	rm -rf node_modules ; pip install -r $(CONFIGURATION_DIR)/requirements.txt ; npm install ;
-		npm install -g eslint yarn electron-prebuilt 
+		npm install -g eslint yarn electron-prebuilt pylint
 
 install:
 	pip install -r $(CONFIGURATION_DIR)/requirements.txt ; yarn install
@@ -22,6 +22,9 @@ cli:
 
 clean:
 	find . -name '*.pyc' -delete ; rm node_
+
+lint-py:
+	pylint app --rcfile=config/.pylintrc
 
 test:
 	pytest
