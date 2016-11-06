@@ -25,7 +25,7 @@ class TextFormatter(object):
     @staticmethod
     def print_title(title_text):
         """
-        Prints a green, bold, underlined blinking title.
+        Prints a blue, bold title.
         """
         title = colored(title_text, "blue", attrs=['bold'])
         TextFormatter.print_new_line()
@@ -35,7 +35,7 @@ class TextFormatter(object):
     @staticmethod
     def print_heading(heading_text):
         """
-        Prints a blue, bold heading.
+        Prints a green, bold heading.
         """
         heading = colored(heading_text, "green", attrs=['bold'])
         TextFormatter.print_box(heading)

@@ -1,7 +1,8 @@
 # Directory Variables for Relative Paths
 PACKAGE_DIR=app
 CONFIGURATION_DIR=config
-UTILITY_DIR=app/util
+SNAPPER_DIR=app.snapper
+UTILITY_DIR=app.util
 
 # Ensures clean and run are not interpreted as files
 all: clean install run
@@ -34,13 +35,14 @@ push:
 
 ### =============  Utilities  ============= ###
 
-tree:
-	python $(UTILITY_DIR)/listfiles.py
+camera-setup:
+	python -m $(UTILITY_DIR).validatefeeds
 
 capture-pictures:
-	python $(UTILITY_DIR)/capturepictures.py
+	python -m $(UTILITY_DIR).capturepictures
 
 snap:
-	python $(UTILITY_DIR)/snapstreams.py --output ../../out
+	python -m $(SNAPPER_DIR).snapstreams --output ../../out
 
-
+tree:
+	python -m $(UTILITY_DIR).listfiles

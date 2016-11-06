@@ -41,74 +41,103 @@ class Feed(object):
         """
         pass
 
-class CameraStream(Stream):
-    """ Wrapper class for incoming camera feed. """
-    def __init__(self, index, width):
-        self.index = index
-        self.feed = cv2.VideoCapture(index)
+class CameraFeed(Feed):
+    """
+    Wrapper class for incoming camera feed.
+    """
+    def __init__(self, feed_index, width=400):
+        self.feed_index = feed_index
+        self.camera_feed = cv2.VideoCapture(feed_index)
         self.width = width
 
     def is_valid(self):
-        frame = self.feed.read()[0]
-        self.feed.release()
-        self.feed = cv2.VideoCapture(self.index)
+        """
+        Declares whether or not the CameraStream instance is a valid stream.
+        Similar in meaning to has_next(self), but with output.
+        """
+        frame = self.camera_feed.grab()
+        self.camera_feed.release()
+        self.camera_feed = cv2.VideoCapture(self.feed_index)
 
-        if ret:
+        # If a frame is read, print message and return True.
+        if frame:
             msg = "Index {0} is valid {1}".format(
-                Formatter.color_text(str(self.index), "magenta"),
-                Formatter.get_check())
-            print msg
+                TextFormatter.color_text(str(self.feed_index), "magenta"),
+                TextFormatter.get_check())
+            print(msg)
             return True
         else:
             msg = "Index {0} is invalid {1}".format(
-                Formatter.color_text(str(self.index), "magenta"),
-                Formatter.get_xmark())
-            print msg
+                TextFormatter.color_text(str(self.feed_index), "magenta"),
+                TextFormatter.get_xmark())
+            print(msg)
             return False
 
     def has_next(self):
-        return True
+        """
+        Declares if the CameraFeed has a next frame.
+        """
+        return self.camera_feed.grab()
 
     def get_next(self):
-        frame = self.stream.read()[1]
+        """
+        Gets the next frame in the CameraFeed.
+        """
+        frame = self.camera_feed.retrieve()
         frame = imutils.resize(frame, width=self.width)
         return frame
 
     def close(self):
-        self.stream.release()
+        """
+        Closes the CameraFeed.
+        """
+        self.camera_feed.release()
 
-class VideoStream(Stream):
-    """ wrapper class for video stream """
-    def __init__(self, path, width):
+class VideoFeed(Feed):
+    """ Wrapper class for video feed. """
+    def __init__(self, path, width=400):
         self.path = path
-        self.stream = cv2.VideoCapture(path)
+        self.video_feed = cv2.VideoCapture(path)
         self.width = width
 
-    def validate(self):
-        ret = self.stream.read()[0]
-        self.stream.release()
-        self.stream = cv2.VideoCapture(self.path)
+    def is_valid(self):
+        """
+        Declares whether or not the VideoStream instance is a valid stream.
+        Similar in meaning to has_next(self), but with output.
+        """
+        frame = self.video_feed.grab()
+        self.video_feed.release()
+        self.video_feed = cv2.VideoCapture(self.path)
 
-        if ret:
+        if frame:
             msg = "Video file {0} is valid {1}".format(
-                Formatter.color_text(str(self.path), "magenta"),
-                Formatter.get_check())
-            print msg
+                TextFormatter.color_text(str(self.path), "magenta"),
+                TextFormatter.get_check())
+            print(msg)
             return True
         else:
             msg = "Video file {0} is invalid {1}".format(
-                Formatter.color_text(str(self.path), "magenta"),
-                Formatter.get_xmark())
-            print msg
+                TextFormatter.color_text(str(self.path), "magenta"),
+                TextFormatter.get_xmark())
+            print(msg)
             return False
 
     def has_next(self):
-        return self.stream.isOpened()
+        """
+        Declares if the VideoFeed has a next frame.
+        """
+        return self.video_feed.grab()
 
-    def next(self):
-        frame = self.stream.read()[1]
+    def get_next(self):
+        """
+        Gets the next frame in the VideoFeed.
+        """
+        frame = self.video_feed.retrieve()
         frame = imutils.resize(frame, width=self.width)
         return frame
 
     def close(self):
-        self.stream.release()
+        """
+        Closes the VideoFeed.
+        """
+        self.video_feed.release()

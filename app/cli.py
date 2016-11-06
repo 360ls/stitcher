@@ -4,7 +4,7 @@ import argparse
 import sys
 from .util.textformatter import TextFormatter
 from .util.inputscanner import InputScanner
-from .util.validatefeeds import view_valid_feeds
+from .util.validatefeeds import view_valid_camera_feeds
 
 def main():
     """
@@ -88,18 +88,19 @@ def utilities():
 
     # Responds to user-provided option selection
     if selected_option == 1:
-        TextFormatter.print_box("Calibrate Camera - Single Camera")
+        TextFormatter.print_title("Calibrate Camera - Single Camera")
 
     elif selected_option == 2:
-        TextFormatter.print_box("Check Camera Views - All Available Cameras")
+        TextFormatter.print_title("Check Camera Views - All Available Cameras")
+        view_valid_camera_feeds()
     elif selected_option == 3:
-        TextFormatter.print_box("Capture Video - Two Cameras")
+        TextFormatter.print_title("Capture Video - Two Cameras")
     elif selected_option == 4:
-        TextFormatter.print_box("Capture Video - Four Cameras")
+        TextFormatter.print_title("Capture Video - Four Cameras")
     elif selected_option == 5:
-        TextFormatter.print_box("Take Photos - Two Cameras")
+        TextFormatter.print_title("Take Photos - Two Cameras")
     elif selected_option == 6:
-        TextFormatter.print_box("Take Photos - Four Cameras")
+        TextFormatter.print_title("Take Photos - Four Cameras")
     elif selected_option == 0:
         exit_python()
     else:
