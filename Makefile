@@ -15,13 +15,13 @@ install:
 	pip install -r $(CONFIGURATION_DIR)/requirements.txt ; yarn install
 
 run:
-	electron .
+	electron . ; python -m $(PACKAGE_DIR).cli -n
 
 cli:
 	python -m $(PACKAGE_DIR).cli -n
 
 clean:
-	find . -name '*.pyc' -delete ; rm node_
+	find . -name '*.pyc' -delete ;
 
 lint-py:
 	pylint app --rcfile=config/.pylintrc
