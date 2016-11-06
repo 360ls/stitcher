@@ -2,6 +2,7 @@
 Module for reading user input from the command line.
 """
 
+from __future__ import absolute_import, division, print_function
 import os
 from .textformatter import TextFormatter
 

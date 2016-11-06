@@ -1,6 +1,8 @@
-""" Primary handler for python output as input to the electron application. """
+"""
+Primary handler for python output as input to the electron application.
+"""
 
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 import sys
 from flask import Flask, render_template
 

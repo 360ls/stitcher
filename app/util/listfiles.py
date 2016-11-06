@@ -1,5 +1,7 @@
-""" Provides functionality for listing the files of a set directory. """
-from __future__ import print_function
+"""
+Provides functionality for listing the files of a set directory.
+"""
+from __future__ import absolute_import, division, print_function
 import os
 
 def main():

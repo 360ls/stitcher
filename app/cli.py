@@ -1,5 +1,5 @@
 """ Responsible for demonstrating stitching and streaming functionality in the terminal. """
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 import argparse
 import sys
 from .util.textformatter import TextFormatter
@@ -87,17 +87,18 @@ def utilities():
 
     # Responds to user-provided option selection
     if selected_option == 1:
-        pass
+        TextFormatter.print_box("Calibrate Camera - Single Camera")
+
     elif selected_option == 2:
-        pass
+        TextFormatter.print_box("Check Camera Views - All Available Cameras")
     elif selected_option == 3:
-        pass
+        TextFormatter.print_box("Capture Video - Two Cameras")
     elif selected_option == 4:
-        pass
+        TextFormatter.print_box("Capture Video - Four Cameras")
     elif selected_option == 5:
-        pass
+        TextFormatter.print_box("Take Photos - Two Cameras")
     elif selected_option == 6:
-        pass
+        TextFormatter.print_box("Take Photos - Four Cameras")
     elif selected_option == 0:
         exit_python()
     else:
