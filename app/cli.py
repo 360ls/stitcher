@@ -4,6 +4,7 @@ import argparse
 import sys
 from .util.textformatter import TextFormatter
 from .util.inputscanner import InputScanner
+from .util.validatefeeds import view_valid_feeds
 
 def main():
     """
@@ -75,7 +76,7 @@ def utilities():
     TextFormatter.print_title("Use one of the useful utility functions below.")
     TextFormatter.print_heading("Choose an option to proceed:")
     TextFormatter.print_option(1, "Calibrate Camera - Single Camera")
-    TextFormatter.print_option(2, "Check Camera Views - All Available Cameras")
+    TextFormatter.print_option(2, "Check Camera Feeds - All Available Cameras")
     TextFormatter.print_option(3, "Capture Video - Two Cameras")
     TextFormatter.print_option(4, "Capture Video - Four Cameras")
     TextFormatter.print_option(5, "Take Photos - Two Cameras")
