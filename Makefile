@@ -9,7 +9,7 @@ all: clean install run
 
 clean-install:
 	rm -rf node_modules ; pip install -r $(CONFIGURATION_DIR)/requirements.txt ; npm install ;
-		npm install -g eslint yarn electron-prebuilt pylint
+		npm install -g eslint yarn electron-prebuilt
 
 install:
 	pip install -r $(CONFIGURATION_DIR)/requirements.txt ; yarn install

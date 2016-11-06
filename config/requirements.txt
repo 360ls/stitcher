@@ -3,4 +3,4 @@ imutils
 pytest
 termcolor
 future
-mock
+pylint

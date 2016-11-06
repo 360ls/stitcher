@@ -27,8 +27,6 @@ app.on('window-all-closed', function() {
 function createWindow(){
     // Creates python child process for running python instructions in app/app.py.
     let python_subprocess = require('child_process').spawn('python', ['./app/electronapp.py']);
-    // Creates python child process for running stitching and streaming cli.
-    let cli_subprocess = require('child_process').spawn('python', ['./app/cli.py']);
 
     // Imports request-promise for request and promise handling
     let request = require('request-promise');
@@ -53,7 +51,7 @@ function createWindow(){
           // Kills subprocess opened up to pass Python to Electron.
           python_subprocess.kill('SIGINT');
           // Kills subprocess opened up to run the cli.
-          cli_subprocess.kill('SIGINT');
+          // cli_subprocess.kill('SIGINT');
         });
     }
 
