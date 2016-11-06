@@ -29,6 +29,9 @@ lint-py:
 test:
 	pytest
 
+push:
+	git push origin; git push 360;
+
 ### =============  Utilities  ============= ###
 
 tree:
