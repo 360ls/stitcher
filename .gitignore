@@ -94,5 +94,8 @@ node_modules/
 # Mac directory metadata files
 .DS_Store
 
-# output files from snapshot
-app/output/
+# Output files
+out/
+
+# Yarn
+yarn.lock
