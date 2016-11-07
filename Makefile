@@ -42,7 +42,7 @@ capture-pictures:
 	python -m $(UTILITY_DIR).capturepictures
 
 snap:
-	python -m $(SNAPPER_DIR).snapstreams --output ../../out
+	python -m $(SNAPPER_DIR).snapstreams --output out
 
 tree:
 	python -m $(UTILITY_DIR).listfiles
