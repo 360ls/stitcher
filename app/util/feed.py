@@ -3,6 +3,7 @@ Module for defining wrappers to OpenCV incoming feeds.
 """
 from __future__ import absolute_import, division, print_function
 from abc import ABCMeta, abstractmethod
+import time
 import imutils
 import cv2
 from .textformatter import TextFormatter
@@ -50,7 +51,6 @@ class CameraFeed(Feed):
         self.camera_feed = cv2.VideoCapture(feed_index)
         self.width = width
         self.fps = fps
-        self.set_fps(fps)
 
     def is_valid(self):
         """
@@ -60,7 +60,6 @@ class CameraFeed(Feed):
         frame = self.camera_feed.grab()
         self.camera_feed.release()
         self.camera_feed = cv2.VideoCapture(self.feed_index)
-        self.set_fps(self.fps)
 
         # If a frame is read, print message and return True.
         if frame:
@@ -82,10 +81,19 @@ class CameraFeed(Feed):
         """
         return self.camera_feed.grab()
 
+    def fps_wait(self):
+        """
+        Waits for the calculated frame_duration.
+        Used to ensure fps is as accurate as possible.
+        """
+        frame_duration = 1.0/self.fps
+        time.sleep(frame_duration)
+
     def get_next(self):
         """
         Gets the next frame in the CameraFeed.
         """
+        self.fps_wait()
         frame = self.camera_feed.read()[1]
         return frame
 
@@ -93,6 +101,7 @@ class CameraFeed(Feed):
         """
         Gets a resized version of the next frame in the CameraFeed.
         """
+        self.fps_wait()
         frame = self.camera_feed.read()[1]
         frame = imutils.resize(frame, width=self.width)
         return frame
@@ -101,7 +110,7 @@ class CameraFeed(Feed):
         """
         Sets the desired fps for the CameraFeed
         """
-        self.camera_feed.set(5, fps)
+        self.fps = fps
 
     def get_fps(self):
         """
@@ -154,7 +163,7 @@ class VideoFeed(Feed):
         """
         Gets the next frame in the VideoFeed.
         """
-        frame = self.video_feed.retrieve()
+        frame = self.video_feed.read()[1]
         return frame
 
     def get_resized_next(self):

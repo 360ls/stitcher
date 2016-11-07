@@ -3,6 +3,8 @@ Module responsible for testing functionality of the inputscanner utility.
 """
 
 from __future__ import absolute_import, division, print_function
+import time
+import threading
 import imutils
 import cv2
 from ..util.feed import CameraFeed
@@ -37,19 +39,26 @@ def test_frame_get_resized_next():
 
 def test_feed_fps_set():
     """
-    Tests to see if setting a custom FPS works. FPS is referenced by the
-    index 5 in the enumeration of opencv camera properties.
-    """
-    feed = cv2.VideoCapture(0)
-    fps_value = feed.get(5)
-    feed.set(5, 30)
-    fps_value_2 = feed.get(5)
-    assert fps_value == fps_value_2
+    Tests to see if setting a custom FPS works.
+    """ 
+    stop_event = threading.Event()
+    thread = threading.Thread(target=add_frames_to_list, args=())
+    thread.start()
+    time.sleep(10)
+    stop_event.set()
+    assert len(frame_list)/duration == 30
 
 def test_feed_default_fps_is_30():
     """
     Tests to make sure fps of the default CameraFeed is 30.
     """
     feed = CameraFeed(0)
-    fps_value = feed.get_fps()
-    assert fps_value == 30
+    assert feed.get_fps() == 30
+
+def add_frames_to_list():
+        feed = CameraFeed(0)
+    frame_list = []
+    while not stop_event.is_set():
+        frame = feed.get_resized_next()
+        frame_list.appen(frame)
+    return frame_list
