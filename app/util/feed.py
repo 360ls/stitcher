@@ -56,6 +56,10 @@ class CameraFeed(Feed):
         """
         Declares whether or not the CameraFeed instance is a valid feed.
         Similar in meaning to has_next(self), but with output.
+
+
+        What is coming: checking if the frame is all black or close to all black.
+        If it isn't, return true (in addition to the current feed validity test)
         """
         frame = self.camera_feed.grab()
         self.camera_feed.release()
