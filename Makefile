@@ -3,6 +3,7 @@ PACKAGE_DIR=app
 CONFIGURATION_DIR=config
 SNAPPER_DIR=app.snapper
 UTILITY_DIR=app.util
+STITCHER_DIR=app.stitcher
 
 # Ensures clean and run are not interpreted as files
 all: clean install run
@@ -34,6 +35,12 @@ push:
 	git push origin; git push 360;
 
 ### =============  Utilities  ============= ###
+
+single-corrected:
+	python -m $(STITCHER_DIR).stitch
+
+single-corrected-better:
+	python -m $(STITCHER_DIR).stitch2
 
 camera-setup:
 	python -m $(UTILITY_DIR).validatefeeds

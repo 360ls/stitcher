@@ -39,7 +39,6 @@ def show_camera_feed(feed_index):
             title = "Camera Feed %s" % feed_index
             cv2.imshow(title, frame)
             key = cv2.waitKey(1) & 0xFF
-
             if key == ord("q"):
                 break
         TextFormatter.print_info("Cleaning up the camera feed.")
