@@ -45,19 +45,22 @@ class CameraFeed(Feed):
     """
     Wrapper class for incoming camera feed.
     """
-    def __init__(self, feed_index, width=400):
+    def __init__(self, feed_index, width=400, fps=30):
         self.feed_index = feed_index
         self.camera_feed = cv2.VideoCapture(feed_index)
         self.width = width
+        self.fps = fps
+        self.set_fps(fps)
 
     def is_valid(self):
         """
-        Declares whether or not the CameraStream instance is a valid stream.
+        Declares whether or not the CameraFeed instance is a valid feed.
         Similar in meaning to has_next(self), but with output.
         """
         frame = self.camera_feed.grab()
         self.camera_feed.release()
         self.camera_feed = cv2.VideoCapture(self.feed_index)
+        self.set_fps(self.fps)
 
         # If a frame is read, print message and return True.
         if frame:
@@ -83,9 +86,28 @@ class CameraFeed(Feed):
         """
         Gets the next frame in the CameraFeed.
         """
-        frame = self.camera_feed.retrieve()
+        frame = self.camera_feed.read()[1]
+        return frame
+
+    def get_resized_next(self):
+        """
+        Gets a resized version of the next frame in the CameraFeed.
+        """
+        frame = self.camera_feed.read()[1]
         frame = imutils.resize(frame, width=self.width)
         return frame
+
+    def set_fps(self, fps):
+        """
+        Sets the desired fps for the CameraFeed
+        """
+        self.camera_feed.set(5, fps)
+
+    def get_fps(self):
+        """
+        Gets the fps of the CameraFeed.
+        """
+        return self.camera_feed.get(5)
 
     def close(self):
         """
@@ -102,7 +124,7 @@ class VideoFeed(Feed):
 
     def is_valid(self):
         """
-        Declares whether or not the VideoStream instance is a valid stream.
+        Declares whether or not the VideoFeed instance is a valid feed.
         Similar in meaning to has_next(self), but with output.
         """
         frame = self.video_feed.grab()
@@ -131,6 +153,13 @@ class VideoFeed(Feed):
     def get_next(self):
         """
         Gets the next frame in the VideoFeed.
+        """
+        frame = self.video_feed.retrieve()
+        return frame
+
+    def get_resized_next(self):
+        """
+        Gets a resized version of the next frame in the VideoFeed.
         """
         frame = self.video_feed.retrieve()
         frame = imutils.resize(frame, width=self.width)

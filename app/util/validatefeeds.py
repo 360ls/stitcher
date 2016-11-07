@@ -11,9 +11,11 @@ def view_valid_camera_feeds():
     Shows all valid feed views, one after another. The next feed shows when the current is closed.
     """
     valid_feeds = []
+    TextFormatter.print_heading("Checking for valid streams.")
     for index in range(6):
         if check_feed(index):
             valid_feeds.append(index)
+    TextFormatter.print_heading("Valid Streams:")
     for feed in valid_feeds:
         show_camera_feed(feed)
 
@@ -31,8 +33,9 @@ def show_camera_feed(feed_index):
     camera_feed = CameraFeed(feed_index)
     if camera_feed.is_valid():
         while camera_feed.has_next():
-            frame = camera_feed.get_next()
-            cv2.imshow("Camera Feed %d" % feed_index, frame)
+            frame = camera_feed.get_resized_next()
+            title = "Camera Feed %s" % feed_index
+            cv2.imshow(title, frame)
             key = cv2.waitKey(1) & 0xFF
 
             if key == ord("q"):

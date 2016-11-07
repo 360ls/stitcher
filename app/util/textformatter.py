@@ -30,15 +30,17 @@ class TextFormatter(object):
         title = colored(title_text, "blue", attrs=['bold'])
         TextFormatter.print_new_line()
         TextFormatter.print_box(title, "=")
-        TextFormatter.print_new_line()
 
     @staticmethod
     def print_heading(heading_text):
         """
         Prints a green, bold heading.
         """
+
         heading = colored(heading_text, "green", attrs=['bold'])
+        TextFormatter.print_new_line()
         TextFormatter.print_box(heading)
+        TextFormatter.print_new_line()
 
     @staticmethod
     def print_error(msg):
