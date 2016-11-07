@@ -55,13 +55,13 @@ def stitching_and_streaming(non_interactive_selected_option=None):
 
     # Responds to user-provided option selection
     if selected_option == 1:
-        pass
+        TextFormatter.print_title("Show Corrected Image - Single Image")
     elif selected_option == 2:
-        pass
+        TextFormatter.print_title("Show Corrected Live Feed - Single Camera")
     elif selected_option == 3:
-        pass
+        TextFormatter.print_title("Show Corrected Live Feed - Two Stiched Cameras")
     elif selected_option == 4:
-        pass
+        TextFormatter.print_title("Show Corrected Live Feed - Four Stitched Cameras")
     elif selected_option == 0:
         exit_python()
     else:
