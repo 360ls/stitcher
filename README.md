@@ -24,21 +24,43 @@ OR
 make
 ```
 
-to clean the package, do a fresh install of dependencies, and then run the app.
+to clean the package, do a fresh (but not brand new) install of dependencies, and then run the app.
+
+### To run the cli:
+```bash
+make cli
+```
+
+## Demoing
+
+### To set up the camera streams
+```bash
+make camera-setup
+```
+
+### To demonstrate threading through taking snapshots
+```bash
+make snap
+```
 
 ## Development
-
-### To test the application:
-
-```bash
-make test
-```
 
 ### To lint the application:
 
 For JS files:
 ```bash
 eslint nameoffile.js
+```
+
+For Python files;
+```bash
+make lint-py
+```
+
+### To run tests against the application:
+
+```bash
+make test
 ```
 
 You can also install packages in a text editor like Sublime Text 3 to show linting in real-time. This can be done for both eslint (JS) and pylint (Python)
@@ -48,6 +70,7 @@ You can also install packages in a text editor like Sublime Text 3 to show linti
 stitch-flex/
     .eslintrc.json
     .gitignore
+    .travis.yml
     LICENSE
     main.js
     Makefile
@@ -56,12 +79,37 @@ stitch-flex/
     yarn.lock
     app/
         __init__.py
-        app.py
-        snapstreams.py
-        streamsnapper.py
-        output/
+        cli.py
+        electronapp.py
+        snapper/
+            __init__.py
+            snapstreams.py
+            streamsnapper.py
+        stitcher/
+            __init__.py
+            stitch.py
+            core/
+                stitcher.py
+            correction/
+            flex/
+                __init__.py
+        storage/
+        templates/
+            cli.html
+            index.html
+        test/
+            __init__.py
+            test_feed.py
+            test_inputscanner.py
         util/
+            __init__.py
+            feed.py
+            inputscanner.py
             listfiles.py
+            textformatter.py
+            validatefeeds.py
     config/
+        .pylintrc
         requirements.txt
+    out/
 ```

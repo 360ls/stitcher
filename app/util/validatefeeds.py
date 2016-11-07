@@ -31,7 +31,7 @@ def show_camera_feed(feed_index):
     Shows the camera feed pointed to by the provided feed_index.
     """
     camera_feed = CameraFeed(feed_index)
-    camera_feed.set_fps()
+    # camera_feed.set_fps()
     print("Camera FPS: %s" % camera_feed.get_fps())
     if camera_feed.is_valid():
         while camera_feed.has_next():
