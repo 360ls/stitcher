@@ -97,5 +97,8 @@ node_modules/
 # Output files
 out/
 
+# Input files
+app/storage/
+
 # Yarn
 yarn.lock

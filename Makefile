@@ -42,6 +42,9 @@ single-corrected:
 single-corrected-better:
 	python -m $(STITCHER_DIR).stitch2
 
+flex-naive:
+	python -m $(UTILITY_DIR).threadedflex
+
 camera-setup:
 	python -m $(UTILITY_DIR).validatefeeds
 
