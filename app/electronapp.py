@@ -5,8 +5,6 @@ Primary handler for python output as input to the electron application.
 from __future__ import absolute_import, division, print_function
 import sys
 from flask import Flask, render_template
-from .util.validatefeeds import view_valid_camera_feeds
-
 
 def run_cli():
     """ Runs the command line interface for displaying stitching and streaming functionality. """
