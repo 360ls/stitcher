@@ -1,5 +1,6 @@
 # stitch-flex
 Demonstrates flexible stitching for an incoming array of cameras.
+[![Build Status](https://travis-ci.org/360ls/stitch-flex.svg?branch=master)](https://travis-ci.org/360ls/stitch-flex)
 
 ## Production
 
