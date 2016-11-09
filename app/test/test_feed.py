@@ -3,10 +3,7 @@ Module responsible for testing functionality of the inputscanner utility.
 """
 
 from __future__ import absolute_import, division, print_function
-import time
-import threading
 import imutils
-import cv2
 from ..util.feed import CameraFeed
 
 def test_frame_resize():
