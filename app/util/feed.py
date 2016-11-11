@@ -110,6 +110,15 @@ class CameraFeed(Feed):
         frame = imutils.resize(frame, width=self.width)
         return frame
 
+    def ramp(self, num_frames=30):
+        """ Ramps the camera feed to prepare for capture and data relay. """
+        try:
+            for _ in xrange(num_frames):
+                self.get_next()
+        except NameError:
+            for _ in xrange(num_frames):
+                self.get_next()
+
     def set_fps(self, fps):
         """
         Sets the desired fps for the CameraFeed

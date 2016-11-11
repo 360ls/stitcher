@@ -3,7 +3,12 @@ Utility module responsible for capturing photos and videos for testing and manip
 """
 from __future__ import absolute_import, division, print_function
 import argparse
+import datetime
+import time
+import os
+import cv2
 from .textformatter import TextFormatter
+from .feed import CameraFeed
 
 
 def main():
@@ -19,17 +24,70 @@ def main():
     else:
         TextFormatter.print_error("Please provide a proper capture argument.")
 
-def capture_frame():
+def capture_frame(feed_index=0):
     """
-    Ramps up available cameras and captures a single frame for testing.
+    Ramps up available camera and captures a single frame for testing.
     """
+    camera_feed = CameraFeed(feed_index)
+    camera_feed.ramp(fps * 2)
+    frame = camera_feed.get_next()
+
+    output_folder_path = "out/captured_frames/"
+    timestamp = datetime.datetime.now()
+    filename = "{}.jpg".format(timestamp.strftime("%Y-%m%d_%H-%M-%S"))
+    filepath = os.path.sep.join((output_folder_path, filename))
+
+    cv2.imwrite(filepath, frame)
     TextFormatter.print_info("Frame was captured.")
 
-def capture_video(capture_duration=10):
+    camera_feed.close()
+
+def capture_video(feed_index=0, capture_duration=5, fps=30, filepath="out/"):
     """
-    Ramps up available cameras and captures video for provided capture_duration.
+    Ramps up available camera and captures video for provided capture_duration (in sec).
     """
+    camera_feed = CameraFeed(feed_index)
+    camera_feed.ramp(fps * 2)
+    start_time = time.time()
+
+    output_folder_path = "out/captured_videos/"
+    timestamp = datetime.datetime.now()
+    filename = "{}.jpg".format(timestamp.strftime("%Y-%m%d_%H-%M-%S"))
+    filepath = os.path.sep.join((output_folder_path, filename))
+
+    writer = None
+    (height, width) = (None, None)
+
+    while time.time() < start_time + capture_duration:
+        frame = camera_feed.get_next()
+        if writer is None:
+            (height, width) = frame.shape[:2]
+            writer = cv2.VideoWriter(filepath, cv2.VideoWriter_fourcc('X', 'V', 'I', 'D'),
+                                     fps, (width, height))
+        writer.write(frame)
+
+    writer.release()
+
+    camera_feed.close()
+
     TextFormatter.print_info("Video was captured for %s seconds." % capture_duration)
+
+def capture_four_camera_frames(first_feed_index=1, second_feed_index=2, third_feed_index=3, fourth_feed_index=4):
+    """
+    Rampus up available cameras and captures a single frame from each for testing. 
+    """
+
+    # Creates CameraFeeds for the provided indices. 
+    camera_feed_1 = CameraFeed(first_feed_index)
+    camera_feed_2 
+
+    success0 = cameraCapture0.grab()
+    success1 = cameraCapture1.grab()
+    if success0 and success1:
+        frame0 = cameraCapture0.retrieve()
+        frame1 = cameraCapture1.retrieve()
+
+
 
 def parse_args():
     """
