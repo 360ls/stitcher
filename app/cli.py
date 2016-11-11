@@ -5,7 +5,7 @@ import sys
 from .util.textformatter import TextFormatter
 from .util.inputscanner import InputScanner
 from .util.validatefeeds import view_valid_camera_feeds
-from .util.threadedflex import video_naive_flex
+# from .util.threadedflex import video_naive_flex
 
 def main():
     """
@@ -105,7 +105,7 @@ def utilities():
         TextFormatter.print_title("Take Photos - Four Cameras")
     elif selected_option == 7:
         TextFormatter.print_title("Show Threaded Flex")
-        video_naive_flex()
+        # video_naive_flex()
     elif selected_option == 0:
         exit_python()
     else:
