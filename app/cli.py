@@ -5,6 +5,8 @@ import sys
 from .util.textformatter import TextFormatter
 from .util.inputscanner import InputScanner
 from .util.validatefeeds import view_valid_camera_feeds
+from .stitcher.stitch import (correct_single_camera,
+                              correct_single_video, example_correct_single_frame)
 # from .util.threadedflex import video_naive_flex
 
 def main():
@@ -47,6 +49,7 @@ def stitching_and_streaming(non_interactive_selected_option=None):
         TextFormatter.print_option(2, "Show Corrected Live Feed - Single Camera")
         TextFormatter.print_option(3, "Show Corrected Live Feed - Two Stiched Cameras")
         TextFormatter.print_option(4, "Show Corrected Live Feed - Four Stitched Cameras")
+        TextFormatter.print_option(5, "Show Corrected Live Feed - Single Video")
         TextFormatter.print_option(0, "Quit")
 
         scanner = InputScanner()
@@ -57,12 +60,17 @@ def stitching_and_streaming(non_interactive_selected_option=None):
     # Responds to user-provided option selection
     if selected_option == 1:
         TextFormatter.print_title("Show Corrected Image - Single Image")
+        example_correct_single_frame()
     elif selected_option == 2:
         TextFormatter.print_title("Show Corrected Live Feed - Single Camera")
+        correct_single_camera(0)
     elif selected_option == 3:
         TextFormatter.print_title("Show Corrected Live Feed - Two Stiched Cameras")
     elif selected_option == 4:
         TextFormatter.print_title("Show Corrected Live Feed - Four Stitched Cameras")
+    elif selected_option == 5:
+        TextFormatter.print_title("Show Corrected Live Feed - Single Video")
+        correct_single_video()
     elif selected_option == 0:
         exit_python()
     else:

@@ -7,6 +7,7 @@ import time
 import imutils
 import cv2
 from .textformatter import TextFormatter
+from app.stitcher.correction.corrector import correct_distortion
 
 class Feed(object):
     """
@@ -110,6 +111,25 @@ class CameraFeed(Feed):
         frame = imutils.resize(frame, width=self.width)
         return frame
 
+    def get_corrected_next(self):
+        """
+        Gets a corrected version of the next frame in the CameraFeed.
+        """
+        self.fps_wait()
+        frame = self.camera_feed.read()[1]
+        frame = correct_distortion(frame)
+        return frame
+
+    def get_corrected_resized_next(self):
+        """
+        Gets a corrected version of the next frame in the CameraFeed.
+        """
+        self.fps_wait()
+        frame = self.camera_feed.read()[1]
+        frame = correct_distortion(frame)
+        frame = imutils.resize(frame, width=self.width)
+        return frame
+
     def ramp(self, num_frames=30):
         """ Ramps the camera feed to prepare for capture and data relay. """
         try:
@@ -183,7 +203,24 @@ class VideoFeed(Feed):
         """
         Gets a resized version of the next frame in the VideoFeed.
         """
-        frame = self.video_feed.retrieve()
+        frame = self.video_feed.read()[1]
+        frame = imutils.resize(frame, width=self.width)
+        return frame
+
+    def get_corrected_next(self):
+        """
+        Gets a corrected version of the next frame in the CameraFeed.
+        """
+        frame = self.video_feed.read()[1]
+        frame = correct_distortion(frame)
+        return frame
+
+    def get_corrected_resized_next(self):
+        """
+        Gets a corrected version of the next frame in the CameraFeed.
+        """
+        frame = self.video_feed.read()[1]
+        frame = correct_distortion(frame)
         frame = imutils.resize(frame, width=self.width)
         return frame
 
