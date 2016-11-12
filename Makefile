@@ -4,6 +4,7 @@ CONFIGURATION_DIR=config
 SNAPPER_DIR=app.snapper
 UTILITY_DIR=app.util
 STITCHER_DIR=app.stitcher
+TEST_DIR=app/test
 
 # Ensures clean and run are not interpreted as files
 all: clean install run
@@ -30,6 +31,9 @@ lint-py:
 
 test:
 	pytest
+
+test-travis:
+	pytest $(TEST_DIR)/nocv
 
 push:
 	git push origin; git push 360;
