@@ -116,7 +116,7 @@ class CameraFeed(Feed):
             for _ in xrange(num_frames):
                 self.get_next()
         except NameError:
-            for _ in xrange(num_frames):
+            for _ in range(num_frames):
                 self.get_next()
 
     def set_fps(self, fps):
