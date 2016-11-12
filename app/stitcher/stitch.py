@@ -16,9 +16,8 @@ def main():
     """
     Main function of the stitch module. Currently simply corrects a single provided frame.
     """
-    cube_frame = cv2.imread("app/storage/uncorrected.png")
-    resized_cube_frame = imutils.resize(cube_frame, 300)
-    cubemap(resized_cube_frame)
+    example_correct_single_frame()
+    example_cubemap()
 
 def example_correct_single_frame():
     """
@@ -26,6 +25,14 @@ def example_correct_single_frame():
     """
     frame = cv2.imread("app/storage/uncorrected_checker.jpg")
     correct_single_frame(frame)
+
+def example_cubemap():
+    """
+    Creates a cubemap from a series of images.
+    """ 
+    cube_frame = cv2.imread("app/storage/uncorrected.png")
+    resized_cube_frame = imutils.resize(cube_frame, 300)
+    cubemap(resized_cube_frame)
 
 def correct_single_frame(frame):
     """

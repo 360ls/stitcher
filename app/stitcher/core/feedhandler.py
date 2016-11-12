@@ -32,7 +32,7 @@ class FeedHandler(object):
     @abstractmethod
     def stream_rtmp(self):
         """
-        Streams frames to RTMP
+        Streams frames to RTMP.
         """
         pass
 
@@ -40,46 +40,46 @@ class SingleFeedHandler(FeedHandler):
     """
     Handler for generating a stream from a single feed.
     """
-    def __init__(self, stream):
-        self.stream = stream
+    def __init__(self, feed):
+        self.feed = feed
 
     def stitch_streams(self):
-        stitch([self.stream], identity, stitch_frame, False)
+        stitch([self.feed], identity, stitch_frame, False)
 
     def stitch_corrected_streams(self):
-        stitch([self.stream], correct_distortion, stitch_frame, False)
+        stitch([self.feed], correct_distortion, stitch_frame, False)
 
     def stream_rtmp(self):
-        stitch([self.stream], identity, stitch_frame, True)
+        stitch([self.feed], identity, stitch_frame, True)
 
 class MultiFeedHandler(FeedHandler):
     """
     Handler for generating a stream from multiple feeds.
     """
-    def __init__(self, streams):
-        self.streams = streams
+    def __init__(self, feeds):
+        self.feeds = feeds
 
     def stitch_streams(self):
-        stream_count = len(self.streams)
+        stream_count = len(self.feeds)
         if stream_count < 4:
-            stitch(self.streams, identity, stitch_two_frames, False)
+            stitch(self.feeds, identity, stitch_two_frames, False)
         else:
-            stitch(self.streams, identity, stitch_four_frames, False)
+            stitch(self.feeds, identity, stitch_four_frames, False)
 
     def stitch_corrected_streams(self):
-        stream_count = len(self.streams)
+        stream_count = len(self.feeds)
         if stream_count < 4:
-            stitch(self.streams, correct_distortion, stitch_two_frames, False)
+            stitch(self.feeds, correct_distortion, stitch_two_frames, False)
         else:
-            stitch(self.streams, correct_distortion, stitch_four_frames, False)
+            stitch(self.feeds, correct_distortion, stitch_four_frames, False)
 
     def stream_rtmp(self):
-        stitch(self.streams, identity, stitch_frame, True)
+        stitch(self.feeds, identity, stitch_frame, True)
 
 
-def stitch(streams, correction_func, stitcher_func, should_stream):
+def stitch(feeds, correction_func, stitcher_func, should_stream):
     """
-    Generic stitching function
+    Main stitching function for stitching feeds together.
     """
     left_stitcher = Stitcher()
     right_stitcher = Stitcher()
@@ -93,9 +93,9 @@ def stitch(streams, correction_func, stitcher_func, should_stream):
                                 , stdin=subprocess.PIPE)
 
 
-    if all([stream.validate for stream in streams]):
-        while all([stream.has_next() for stream in streams]):
-            frames = [correction_func(stream.next()) for stream in streams]
+    if all([feed.validate for feed in feeds]):
+        while all([feed.has_next() for feed in feeds]):
+            frames = [correction_func(feed.next()) for feed in feeds]
             stitched_frame = stitcher_func(frames,
                                            [left_stitcher, right_stitcher, combined_stitcher])
 
@@ -111,14 +111,14 @@ def stitch(streams, correction_func, stitcher_func, should_stream):
 
         TextFormatter.print_status("[INFO] cleaning up...")
 
-        for stream in streams:
-            stream.close()
+        for feed in feeds:
+            feed.close()
         cv2.destroyAllWindows()
         cv2.waitKey(1)
 
 def identity(frame):
     """
-    Identity function
+    Identity function to return an input frame.
     """
     return frame
 

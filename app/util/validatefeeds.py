@@ -12,9 +12,16 @@ def view_valid_camera_feeds():
     """
     valid_feeds = []
     TextFormatter.print_heading("Checking for valid streams.")
-    for index in range(6):
-        if check_feed(index):
-            valid_feeds.append(index)
+    
+    try:
+        for index in xrange(6):
+            if check_feed(index):
+                valid_feeds.append(index)
+    except NameError:
+        for index in range(6):
+            if check_feed(index):
+                valid_feeds.append(index)
+
     TextFormatter.print_heading("Valid Streams:")
     for feed in valid_feeds:
         show_camera_feed(feed)
