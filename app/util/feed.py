@@ -6,8 +6,8 @@ from abc import ABCMeta, abstractmethod
 import time
 import imutils
 import cv2
-from .textformatter import TextFormatter
 from app.stitcher.correction.corrector import correct_distortion
+from .textformatter import TextFormatter
 
 class Feed(object):
     """

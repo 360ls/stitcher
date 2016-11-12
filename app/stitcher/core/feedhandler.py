@@ -43,10 +43,10 @@ class SingleFeedHandler(FeedHandler):
     def __init__(self, feed):
         self.feed = feed
 
-    def stitch_streams(self):
+    def stitch_feeds(self):
         stitch([self.feed], identity, stitch_frame, False)
 
-    def stitch_corrected_streams(self):
+    def stitch_corrected_feeds(self):
         stitch([self.feed], correct_distortion, stitch_frame, False)
 
     def stream_rtmp(self):
@@ -59,16 +59,16 @@ class MultiFeedHandler(FeedHandler):
     def __init__(self, feeds):
         self.feeds = feeds
 
-    def stitch_streams(self):
-        stream_count = len(self.feeds)
-        if stream_count < 4:
+    def stitch_feeds(self):
+        feed_count = len(self.feeds)
+        if feed_count < 4:
             stitch(self.feeds, identity, stitch_two_frames, False)
         else:
             stitch(self.feeds, identity, stitch_four_frames, False)
 
     def stitch_corrected_streams(self):
-        stream_count = len(self.feeds)
-        if stream_count < 4:
+        feed_count = len(self.feeds)
+        if feed_count < 4:
             stitch(self.feeds, correct_distortion, stitch_two_frames, False)
         else:
             stitch(self.feeds, correct_distortion, stitch_four_frames, False)

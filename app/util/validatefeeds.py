@@ -12,7 +12,6 @@ def view_valid_camera_feeds():
     """
     valid_feeds = []
     TextFormatter.print_heading("Checking for valid streams.")
-    
     try:
         for index in xrange(6):
             if check_feed(index):
