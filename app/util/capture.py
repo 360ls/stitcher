@@ -17,14 +17,22 @@ def main():
     """
     parsed_args = parse_args()
     capture_type = parsed_args.capture_type
+    num_cameras = parsed_args.num_cameras
+
     if capture_type == "frame":
-        capture_frame()
+        if num_cameras == 1:
+            capture_single_frame()
+        else:
+            TextFormatter.print_info("You chose to capture frames for %s cameras." % num_cameras)
     elif capture_type == "video":
-        capture_video()
+        if num_cameras == 1:
+            capture_single_video()
+        else:
+            TextFormatter.print_info("You chose to capture video for %s cameras." % num_cameras)
     else:
         TextFormatter.print_error("Please provide a proper capture argument.")
 
-def capture_frame(index=0, output_dir="out/captured_frames", filetype="jpg"):
+def capture_single_frame(index=0, output_dir="out/captured_frames", filetype="jpg"):
     """
     Ramps up camera provided by index and captures a single frame for testing.
     """
@@ -39,7 +47,8 @@ def capture_frame(index=0, output_dir="out/captured_frames", filetype="jpg"):
 
     camera_feed.close()
 
-def capture_video(index=0, duration=5, fps=30, output_dir="out/captured_videos", filetype="avi"):
+def capture_single_video(index=0, duration=5, fps=30, output_dir="out/captured_videos",
+                         filetype="avi"):
     """
     Ramps up camera provided by index and captures video for provided capture_duration (in sec).
     """
@@ -115,6 +124,10 @@ def parse_args():
                         type=str,
                         dest="capture_type",
                         help="Type of capture.")
+    parser.add_argument("--cameras", action="store", default=1,
+                        type=int,
+                        dest="num_cameras",
+                        help="Number of cameras.")
     return parser.parse_args()
 
 if __name__ == "__main__":

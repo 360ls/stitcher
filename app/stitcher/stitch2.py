@@ -38,7 +38,6 @@ def cubemap(frame):
     cv2.imshow("Cube Map", full)
     key = cv2.waitKey(0) & 0xFF
     if key == ord("q"):
-        print("this happened")
         cv2.destroyAllWindows()
         cv2.waitKey(1)
 
