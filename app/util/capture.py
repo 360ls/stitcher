@@ -26,7 +26,7 @@ def main():
 
 def capture_frame(feed_index=0):
     """
-    Ramps up available camera and captures a single frame for testing.
+    Ramps up camera provided by index and captures a single frame for testing.
     """
     camera_feed = CameraFeed(feed_index)
     camera_feed.ramp()
@@ -44,7 +44,7 @@ def capture_frame(feed_index=0):
 
 def capture_video(feed_index=0, capture_duration=5, fps=30, filepath="out/"):
     """
-    Ramps up available camera and captures video for provided capture_duration (in sec).
+    Ramps up camera provided by index and captures video for provided capture_duration (in sec).
     """
     camera_feed = CameraFeed(feed_index)
     camera_feed.ramp(fps)
@@ -62,26 +62,25 @@ def capture_video(feed_index=0, capture_duration=5, fps=30, filepath="out/"):
         frame = camera_feed.get_next()
         if writer is None:
             (height, width) = frame.shape[:2]
-            writer = cv2.VideoWriter(filepath, cv2.VideoWriter_fourcc('I', '4', '2', '0'),
+            writer = cv2.VideoWriter(filepath, cv2.VideoWriter_fourcc(*"MJPG"),
                                      fps, (width, height))
         writer.write(frame)
 
     writer.release()
-
     camera_feed.close()
 
     TextFormatter.print_info("Video was captured for %s seconds." % capture_duration)
 
-def capture_four_camera_frames():
+def capture_four_camera_frames(*feed_indices):
     """
-    Ramps up available cameras and captures a single frame from each for testing.
+    Ramps up cameras provided by index and captures a single frame from each for testing.
     """
 
     # Creates CameraFeeds for the provided indices and adds them to a list.
     camera_feed_list = []
 
     try:
-        for feed_index in xrange(1, 4): # Makes sure that the xrange function is available
+        for feed_index in feed_indices: # Makes sure that the xrange function is available
             camera_feed = CameraFeed(feed_index)
             camera_feed_list.append(camera_feed)
     except NameError:
