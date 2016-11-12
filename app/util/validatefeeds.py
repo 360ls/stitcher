@@ -3,7 +3,7 @@
 from __future__ import absolute_import, division, print_function
 import cv2
 from .textformatter import TextFormatter
-from .feed import CameraFeed, VideoFeed
+from .feed import CameraFeed
 
 
 def view_valid_camera_feeds():
@@ -38,7 +38,7 @@ def show_camera_feed(feed_index):
     Shows the camera feed pointed to by the provided feed_index.
     """
     camera_feed = CameraFeed(feed_index)
-    camera_feed.show()
+    camera_feed.show(False)
 
 if __name__ == "__main__":
     view_valid_camera_feeds()

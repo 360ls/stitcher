@@ -43,9 +43,6 @@ push:
 single-corrected:
 	python -m $(STITCHER_DIR).stitch
 
-single-corrected-better:
-	python -m $(STITCHER_DIR).stitch2
-
 flex-naive:
 	python -m $(UTILITY_DIR).threadedflex
 

@@ -20,7 +20,7 @@ def test_frame_resize():
     """
     passed = True
     feed = CameraFeed(0)
-    frame = feed.get_next()
+    frame = feed.get_next(False, False)
     try:
         imutils.resize(frame, 400)
     except AttributeError:
@@ -31,14 +31,14 @@ def test_frame_resize():
 @opencv
 def test_frame_get_resized_next():
     """
-    Checks to make sure resizing within get_resized_next method is working.
+    Checks to make sure resizing within get_next method is working.
     """
     passed = True
     feed = CameraFeed(0)
     try:
-        feed.get_resized_next()
+        feed.get_next(True, False)
     except AttributeError:
-        # This means there was an error in the resize method of get_resized_next()
+        # This means there was an error in the resize method of get__next()
         passed = False
     assert passed is True
 

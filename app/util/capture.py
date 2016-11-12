@@ -38,7 +38,7 @@ def capture_single_frame(index=0, output_dir="out/captured_frames", filetype="jp
     """
     camera_feed = CameraFeed(index)
     camera_feed.ramp()
-    frame = camera_feed.get_next()
+    frame = camera_feed.get_next(True, False)
 
     filepath = create_filepath(output_dir, filetype)
 
@@ -54,15 +54,14 @@ def capture_single_video(index=0, duration=5, fps=30, output_dir="out/captured_v
     """
     camera_feed = CameraFeed(index)
     camera_feed.ramp(fps)
-    start_time = time.time()
-
     filepath = create_filepath(output_dir, filetype)
 
     writer = None
     (height, width) = (None, None)
 
+    start_time = time.time()
     while time.time() < start_time + duration:
-        frame = camera_feed.get_next()
+        frame = camera_feed.get_next(True, False)
         if writer is None:
             (height, width) = frame.shape[:2]
             writer = cv2.VideoWriter(filepath, cv2.VideoWriter_fourcc(*"MJPG"),

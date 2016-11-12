@@ -23,7 +23,7 @@ class Feed(object):
         pass
 
     @abstractmethod
-    def get_next(self):
+    def get_next(self, resize, correct):
         """
         Returns the next frame from feed.
         """
@@ -94,40 +94,18 @@ class CameraFeed(Feed):
         frame_duration = 1.0/self.fps
         time.sleep(frame_duration)
 
-    def get_next(self):
-        """
-        Gets the next frame in the CameraFeed.
-        """
-        self.fps_wait()
-        frame = self.camera_feed.read()[1]
-        return frame
 
-    def get_resized_next(self):
+    def get_next(self, resize=True, correct=True):
         """
-        Gets a resized version of the next frame in the CameraFeed.
-        """
-        self.fps_wait()
-        frame = self.camera_feed.read()[1]
-        frame = imutils.resize(frame, width=self.width)
-        return frame
-
-    def get_corrected_next(self):
-        """
-        Gets a corrected version of the next frame in the CameraFeed.
+        Gets the next frame in the CameraFeed. If resize is True, resizes frame.
+        If correct is True, corrects distortion.
         """
         self.fps_wait()
         frame = self.camera_feed.read()[1]
-        frame = correct_distortion(frame)
-        return frame
-
-    def get_corrected_resized_next(self):
-        """
-        Gets a corrected version of the next frame in the CameraFeed.
-        """
-        self.fps_wait()
-        frame = self.camera_feed.read()[1]
-        frame = correct_distortion(frame)
-        frame = imutils.resize(frame, width=self.width)
+        if correct:
+            frame = correct_distortion(frame)
+        if resize:
+            frame = imutils.resize(frame, width=self.width)
         return frame
 
     def ramp(self, num_frames=30):
@@ -151,30 +129,16 @@ class CameraFeed(Feed):
         """
         return self.camera_feed.get(5)
 
-    def show(self):
+    def show(self, correct=True):
         """
         Shows a resized version of the CameraFeed.
         """
         if self.is_valid():
             while self.has_next():
-                frame = self.get_resized_next()
-                title = "Camera Feed %s" % self.feed_index
-                cv2.imshow(title, frame)
-                key = cv2.waitKey(1) & 0xFF
-                if key == ord("q"):
-                    break
-            TextFormatter.print_info("Cleaning up the camera feed.")
-            self.close()
-            cv2.destroyAllWindows()
-            cv2.waitKey(1)
-
-    def show_corrected(self):
-        """
-        Shows a corrected and resized version of the CameraFeed.
-        """
-        if self.is_valid():
-            while self.has_next():
-                frame = self.get_corrected_resized_next()
+                if correct:
+                    frame = self.get_next()
+                else:
+                    frame = self.get_next(True, False)
                 title = "Camera Feed %s" % self.feed_index
                 cv2.imshow(title, frame)
                 key = cv2.waitKey(1) & 0xFF
@@ -226,36 +190,16 @@ class VideoFeed(Feed):
         """
         return self.video_feed.grab()
 
-    def get_next(self):
+    def get_next(self, resize=True, correct=True):
         """
-        Gets the next frame in the VideoFeed.
-        """
-        frame = self.video_feed.read()[1]
-        return frame
-
-    def get_resized_next(self):
-        """
-        Gets a resized version of the next frame in the VideoFeed.
+        Gets the next frame in the CameraFeed. If resize is True, resizes frame.
+        If correct is True, corrects distortion.
         """
         frame = self.video_feed.read()[1]
-        frame = imutils.resize(frame, width=self.width)
-        return frame
-
-    def get_corrected_next(self):
-        """
-        Gets a corrected version of the next frame in the CameraFeed.
-        """
-        frame = self.video_feed.read()[1]
-        frame = correct_distortion(frame)
-        return frame
-
-    def get_corrected_resized_next(self):
-        """
-        Gets a corrected version of the next frame in the CameraFeed.
-        """
-        frame = self.video_feed.read()[1]
-        frame = correct_distortion(frame)
-        frame = imutils.resize(frame, width=self.width)
+        if correct:
+            frame = correct_distortion(frame)
+        if resize:
+            frame = imutils.resize(frame, width=self.width)
         return frame
 
     def show(self):
@@ -264,7 +208,7 @@ class VideoFeed(Feed):
         """
         if self.is_valid():
             while self.has_next():
-                frame = self.get_resized_next()
+                frame = self.get_next(True, False)
                 title = "Video Feed"
                 cv2.imshow(title, frame)
                 key = cv2.waitKey(1) & 0xFF
@@ -281,7 +225,7 @@ class VideoFeed(Feed):
         """
         if self.is_valid():
             while self.has_next():
-                frame = self.get_corrected_resized_next()
+                frame = self.get_next()
                 title = "Video Feed"
                 cv2.imshow(title, frame)
                 key = cv2.waitKey(1) & 0xFF
