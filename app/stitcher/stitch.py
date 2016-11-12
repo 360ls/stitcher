@@ -29,7 +29,7 @@ def example_correct_single_frame():
 def example_cubemap():
     """
     Creates a cubemap from a series of images.
-    """ 
+    """
     cube_frame = cv2.imread("app/storage/uncorrected.png")
     resized_cube_frame = imutils.resize(cube_frame, 300)
     cubemap(resized_cube_frame)
@@ -55,37 +55,14 @@ def correct_single_camera(feed_index=0):
     Function to show corrected distortion for a camera feed.
     """
     camera_feed = CameraFeed(feed_index)
-    if camera_feed.is_valid():
-        while camera_feed.has_next():
-            frame = camera_feed.get_corrected_resized_next()
-            title = "Camera Feed %s" % feed_index
-            cv2.imshow(title, frame)
-            key = cv2.waitKey(1) & 0xFF
-            if key == ord("q"):
-                break
-        camera_feed.close()
-        cv2.destroyAllWindows()
-        TextFormatter.print_info("Cleaning up the camera feed.")
-        cv2.waitKey(1)
+    camera_feed.show_corrected()
 
 def correct_single_video(video_path="app/storage/uncorrected.mp4"):
     """
     Function to show corrected distortion for a camera feed.
     """
     video_feed = VideoFeed(video_path)
-    if video_feed.is_valid():
-        while video_feed.has_next():
-            frame = video_feed.get_corrected_resized_next()
-            title = "Video Feed"
-            cv2.imshow(title, frame)
-            key = cv2.waitKey(1) & 0xFF
-            if key == ord("q"):
-                break
-
-        video_feed.close()
-        cv2.destroyAllWindows()
-        TextFormatter.print_info("Cleaned up the video feed.")
-        cv2.waitKey(1)
+    video_feed.show_corrected()
 
 def cubemap(frame):
     """

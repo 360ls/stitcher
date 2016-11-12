@@ -38,20 +38,7 @@ def show_camera_feed(feed_index):
     Shows the camera feed pointed to by the provided feed_index.
     """
     camera_feed = CameraFeed(feed_index)
-    # camera_feed.set_fps()
-    # print("Camera FPS: %s" % camera_feed.get_fps())
-    if camera_feed.is_valid():
-        while camera_feed.has_next():
-            frame = camera_feed.get_resized_next()
-            title = "Camera Feed %s" % feed_index
-            cv2.imshow(title, frame)
-            key = cv2.waitKey(1) & 0xFF
-            if key == ord("q"):
-                break
-        TextFormatter.print_info("Cleaning up the camera feed.")
-        camera_feed.close()
-        cv2.destroyAllWindows()
-        cv2.waitKey(1)
+    camera_feed.show()
 
 if __name__ == "__main__":
     view_valid_camera_feeds()

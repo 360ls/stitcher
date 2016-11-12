@@ -151,6 +151,40 @@ class CameraFeed(Feed):
         """
         return self.camera_feed.get(5)
 
+    def show(self):
+        """
+        Shows a resized version of the CameraFeed.
+        """
+        if self.is_valid():
+            while self.has_next():
+                frame = self.get_resized_next()
+                title = "Camera Feed %s" % self.feed_index
+                cv2.imshow(title, frame)
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord("q"):
+                    break
+            TextFormatter.print_info("Cleaning up the camera feed.")
+            self.close()
+            cv2.destroyAllWindows()
+            cv2.waitKey(1)
+
+    def show_corrected(self):
+        """
+        Shows a resized version of the CameraFeed.
+        """
+        if self.is_valid():
+            while self.has_next():
+                frame = self.get_corrected_resized_next()
+                title = "Camera Feed %s" % self.feed_index
+                cv2.imshow(title, frame)
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord("q"):
+                    break
+            TextFormatter.print_info("Cleaning up the camera feed.")
+            self.close()
+            cv2.destroyAllWindows()
+            cv2.waitKey(1)
+
     def close(self):
         """
         Closes the CameraFeed.
@@ -223,6 +257,40 @@ class VideoFeed(Feed):
         frame = correct_distortion(frame)
         frame = imutils.resize(frame, width=self.width)
         return frame
+
+    def show(self):
+        """
+        Shows a resized version of the VideoFeed.
+        """
+        if self.is_valid():
+            while self.has_next():
+                frame = self.get_resized_next()
+                title = "Video Feed"
+                cv2.imshow(title, frame)
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord("q"):
+                    break
+            TextFormatter.print_info("Cleaning up the video feed.")
+            self.close()
+            cv2.destroyAllWindows()
+            cv2.waitKey(1)
+
+    def show_corrected(self):
+        """
+        Shows a resized version of the VideoFeed.
+        """
+        if self.is_valid():
+            while self.has_next():
+                frame = self.get_corrected_resized_next()
+                title = "Video Feed"
+                cv2.imshow(title, frame)
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord("q"):
+                    break
+            TextFormatter.print_info("Cleaning up the video feed.")
+            self.close()
+            cv2.destroyAllWindows()
+            cv2.waitKey(1)
 
     def close(self):
         """
