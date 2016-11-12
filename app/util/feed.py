@@ -170,7 +170,7 @@ class CameraFeed(Feed):
 
     def show_corrected(self):
         """
-        Shows a resized version of the CameraFeed.
+        Shows a corrected and resized version of the CameraFeed.
         """
         if self.is_valid():
             while self.has_next():
@@ -277,7 +277,7 @@ class VideoFeed(Feed):
 
     def show_corrected(self):
         """
-        Shows a resized version of the VideoFeed.
+        Shows a corrected and resized version of the VideoFeed.
         """
         if self.is_valid():
             while self.has_next():
