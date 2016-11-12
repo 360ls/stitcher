@@ -24,41 +24,35 @@ def main():
     else:
         TextFormatter.print_error("Please provide a proper capture argument.")
 
-def capture_frame(feed_index=0):
+def capture_frame(index=0, output_dir="out/captured_frames", filetype="jpg"):
     """
     Ramps up camera provided by index and captures a single frame for testing.
     """
-    camera_feed = CameraFeed(feed_index)
+    camera_feed = CameraFeed(index)
     camera_feed.ramp()
     frame = camera_feed.get_next()
 
-    output_folder_path = "out/captured_frames/"
-    timestamp = datetime.datetime.now()
-    filename = "{}.jpg".format(timestamp.strftime("%Y-%m-%d-%H-%M-%S"))
-    filepath = os.path.sep.join((output_folder_path, filename))
+    filepath = create_filepath(output_dir, filetype)
 
     cv2.imwrite(filepath, frame)
     TextFormatter.print_info("Frame was captured.")
 
     camera_feed.close()
 
-def capture_video(feed_index=0, capture_duration=5, fps=30, filepath="out/"):
+def capture_video(index=0, duration=5, fps=30, output_dir="out/captured_videos", filetype="avi"):
     """
     Ramps up camera provided by index and captures video for provided capture_duration (in sec).
     """
-    camera_feed = CameraFeed(feed_index)
+    camera_feed = CameraFeed(index)
     camera_feed.ramp(fps)
     start_time = time.time()
 
-    output_folder_path = "out/captured_videos/"
-    timestamp = datetime.datetime.now()
-    filename = "{}.avi".format(timestamp.strftime("%Y-%m-%d-%H-%M-%S"))
-    filepath = os.path.sep.join((output_folder_path, filename))
+    filepath = create_filepath(output_dir, filetype)
 
     writer = None
     (height, width) = (None, None)
 
-    while time.time() < start_time + capture_duration:
+    while time.time() < start_time + duration:
         frame = camera_feed.get_next()
         if writer is None:
             (height, width) = frame.shape[:2]
@@ -69,7 +63,16 @@ def capture_video(feed_index=0, capture_duration=5, fps=30, filepath="out/"):
     writer.release()
     camera_feed.close()
 
-    TextFormatter.print_info("Video was captured for %s seconds." % capture_duration)
+    TextFormatter.print_info("Video was captured for %s seconds." % duration)
+
+def create_filepath(output_folder, filetype):
+    """
+    Creates a filepath for output of captured data based on timestamp.
+    """
+    timestamp = datetime.datetime.now()
+    filename = "{}.{}".format(timestamp.strftime("%Y-%m-%d-%H-%M-%S"), filetype)
+    filepath = os.path.sep.join((output_folder, filename))
+    return filepath
 
 def capture_four_camera_frames(*feed_indices):
     """
@@ -79,18 +82,15 @@ def capture_four_camera_frames(*feed_indices):
     # Creates CameraFeeds for the provided indices and adds them to a list.
     camera_feed_list = []
 
-    try:
-        for feed_index in feed_indices: # Makes sure that the xrange function is available
-            camera_feed = CameraFeed(feed_index)
-            camera_feed_list.append(camera_feed)
-    except NameError:
-        for feed_index in range(1, 4):
-            camera_feed = CameraFeed(feed_index)
-            camera_feed_list.append(camera_feed)
+    for feed_index in feed_indices: # Makes sure that the xrange function is available
+        camera_feed = CameraFeed(feed_index)
+        camera_feed_list.append(camera_feed)
 
     # Ramps up the available cameras.
     for camera_feed in camera_feed_list:
         camera_feed.ramp()
+
+
 
 
 

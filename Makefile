@@ -52,10 +52,10 @@ flex-naive:
 camera-setup:
 	python -m $(UTILITY_DIR).validatefeeds
 
-capture-frame:
+capture-single-frame:
 	python -m $(UTILITY_DIR).capture
 
-capture-video:
+capture-single-video:
 	python -m $(UTILITY_DIR).capture --type=video
 
 snap:
