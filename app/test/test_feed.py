@@ -4,8 +4,16 @@ Module responsible for testing functionality of the inputscanner utility.
 
 from __future__ import absolute_import, division, print_function
 import imutils
+import pytest
 from ..util.feed import CameraFeed
 
+
+opencv = pytest.mark.skipif(
+    not pytest.config.getoption("--opencv"),
+    reason="Need --opencv option to run."
+)
+
+@opencv
 def test_frame_resize():
     """
     Checks to make sure resize of a frame is working correcly.
@@ -20,7 +28,7 @@ def test_frame_resize():
         passed = False
     assert passed is True
 
-
+@opencv
 def test_frame_get_resized_next():
     """
     Checks to make sure resizing within get_resized_next method is working.
@@ -45,7 +53,7 @@ def test_feed_fps_set():
     # stop_event.set()
     # assert len(frame_list)/duration == 30
     pass
-
+    
 def test_feed_default_fps_is_30():
     """
     Tests to make sure fps of the default CameraFeed is 30.

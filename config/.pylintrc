@@ -81,4 +81,4 @@ notes=FIXME,TODO,XXX,YYY
 [TYPECHECK]
 
 ignored-modules=numpy,cv2,socket
-ignored-classes=numpy,cv2,socket
+ignored-classes=numpy,cv2,socket,pytest
