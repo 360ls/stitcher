@@ -56,9 +56,9 @@ def correct_single_camera(feed_index=0):
             key = cv2.waitKey(1) & 0xFF
             if key == ord("q"):
                 break
-        TextFormatter.print_info("Cleaning up the camera feed.")
         camera_feed.close()
         cv2.destroyAllWindows()
+        TextFormatter.print_info("Cleaning up the camera feed.")
         cv2.waitKey(1)
 
 def correct_single_video(video_path="app/storage/uncorrected.mp4"):
@@ -69,14 +69,15 @@ def correct_single_video(video_path="app/storage/uncorrected.mp4"):
     if video_feed.is_valid():
         while video_feed.has_next():
             frame = video_feed.get_corrected_resized_next()
-            title = "Video Feed %s" % video_feed
+            title = "Video Feed"
             cv2.imshow(title, frame)
             key = cv2.waitKey(1) & 0xFF
             if key == ord("q"):
                 break
-        TextFormatter.print_info("Cleaning up the video feed.")
+
         video_feed.close()
         cv2.destroyAllWindows()
+        TextFormatter.print_info("Cleaned up the video feed.")
         cv2.waitKey(1)
 
 def cubemap(frame):

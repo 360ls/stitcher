@@ -46,10 +46,10 @@ def stitching_and_streaming(non_interactive_selected_option=None):
         TextFormatter.print_title("View current stitching and streaming functionality below.")
         TextFormatter.print_heading("Choose an option to proceed:")
         TextFormatter.print_option(1, "Show Corrected Image - Single Image")
-        TextFormatter.print_option(2, "Show Corrected Live Feed - Single Camera")
-        TextFormatter.print_option(3, "Show Corrected Live Feed - Two Stiched Cameras")
-        TextFormatter.print_option(4, "Show Corrected Live Feed - Four Stitched Cameras")
-        TextFormatter.print_option(5, "Show Corrected Live Feed - Single Video")
+        TextFormatter.print_option(2, "Show Corrected Live Feed - Single Video")
+        TextFormatter.print_option(3, "Show Corrected Live Feed - Single Camera")
+        TextFormatter.print_option(4, "Show Corrected Live Feed - Two Stiched Cameras")
+        TextFormatter.print_option(5, "Show Corrected Live Feed - Four Stitched Cameras")
         TextFormatter.print_option(0, "Quit")
 
         scanner = InputScanner()
@@ -62,15 +62,15 @@ def stitching_and_streaming(non_interactive_selected_option=None):
         TextFormatter.print_title("Show Corrected Image - Single Image")
         example_correct_single_frame()
     elif selected_option == 2:
-        TextFormatter.print_title("Show Corrected Live Feed - Single Camera")
-        correct_single_camera(0)
-    elif selected_option == 3:
-        TextFormatter.print_title("Show Corrected Live Feed - Two Stiched Cameras")
-    elif selected_option == 4:
-        TextFormatter.print_title("Show Corrected Live Feed - Four Stitched Cameras")
-    elif selected_option == 5:
         TextFormatter.print_title("Show Corrected Live Feed - Single Video")
         correct_single_video()
+    elif selected_option == 3:
+        TextFormatter.print_title("Show Corrected Live Feed - Single Camera")
+        correct_single_camera(0)
+    elif selected_option == 4:
+        TextFormatter.print_title("Show Corrected Live Feed - Two Stiched Cameras")
+    elif selected_option == 5:
+        TextFormatter.print_title("Show Corrected Live Feed - Four Stitched Cameras")
     elif selected_option == 0:
         exit_python()
     else:
