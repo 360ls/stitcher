@@ -52,6 +52,7 @@ class CameraFeed(Feed):
         self.camera_feed = cv2.VideoCapture(feed_index)
         self.width = width
         self.fps = fps
+        self.frame_duration = 1.0 / fps
 
     def is_valid(self):
         """
@@ -93,13 +94,13 @@ class CameraFeed(Feed):
         """
         return self.camera_feed.retrieve()
 
-    def fps_wait(self):
-        """
-        Waits for the calculated frame_duration.
-        Used to ensure fps is as accurate as possible.
-        """
-        frame_duration = 1.0/self.fps
-        time.sleep(frame_duration)
+    # def fps_wait(self):
+    #     """
+    #     Waits for the calculated frame_duration.
+    #     Used to ensure fps is as accurate as possible.
+    #     """
+    #     frame_duration = 1.0/self.fps
+    #     time.sleep(frame_duration)
 
 
     def get_next(self, resize=True, correct=True):
@@ -107,12 +108,23 @@ class CameraFeed(Feed):
         Gets the next frame in the CameraFeed. If resize is True, resizes frame.
         If correct is True, corrects distortion.
         """
-        self.fps_wait()
+        start_time = time.time()
         frame = self.camera_feed.read()[1]
         if correct:
             frame = correct_distortion(frame)
         if resize:
             frame = imutils.resize(frame, width=self.width)
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        time_left = self.frame_duration - elapsed_time
+
+        """
+        This takes into account experimentally determined average time.time()
+        fps residual of 0.072906 for 30 fps.
+        """
+        time_left_adjusted = time_left - 0.072906
+        if time_left_adjusted > 0:
+            time.sleep(time_left_adjusted)
         return frame
 
     def ramp(self, num_frames=30):
