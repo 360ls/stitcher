@@ -43,14 +43,14 @@ push:
 sample-stitch:
 	python -m $(STITCHER_DIR).stitch --option=3
 
-# test-stitcher:
-# 	python -m $(STITCHER_DIR).test_stitcher
-
 single-corrected-frame:
 	python -m $(STITCHER_DIR).stitch --option=1
 
 cubemap:
 	python -m $(STITCHER_DIR).stitch --option=2
+
+calibrate:
+	python -m $(UTILITY_DIR).calibrate
 
 flex-naive:
 	python -m $(UTILITY_DIR).threadedflex

@@ -32,7 +32,7 @@ def main():
     args.setdefault('--debug', './output/')
     args.setdefault('--square_size', 1.0)
     if not img_mask:
-        img_mask = 'inputs/*'
+        img_mask = 'app/storage/calibration_inputs/*'
     else:
         img_mask = img_mask[0]
 
@@ -77,7 +77,6 @@ def main():
                                                                img_points,
                                                                (width, height),
                                                                None, None)
-
     print("\nRMS:", rms)
     print("camera matrix:\n", camera_matrix)
     print("distortion coefficients: ", dist_coefs.ravel())
@@ -98,9 +97,6 @@ def splitfilename(filename):
     name, ext = os.path.splitext(filename)
     return path, name, ext
 
-if __name__ == "__main__":
-    main()
-
 def verify_calibration(camera_matrix, distortion_coefficients):
     """
     Verifies calibration of a test image
@@ -109,7 +105,7 @@ def verify_calibration(camera_matrix, distortion_coefficients):
     """
 
     # Read in the image for correction
-    src = cv2.imread("inputs/104_0009.JPG")
+    src = cv2.imread("app/storage/calibration_inputs/104_0009.JPG")
     height, width = src.shape[:2]
 
     # Correct the radial distortion
@@ -123,3 +119,6 @@ def verify_calibration(camera_matrix, distortion_coefficients):
     cv2.imshow("corrected", imutils.resize(newimg, width=720))
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    main()
