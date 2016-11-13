@@ -25,6 +25,12 @@ import imutils
 # pylint: disable=R0914
 def main():
     """
+    Responsible for run of calibration from the command line.
+    """
+    calibrate()
+
+def calibrate():
+    """
     Calibration routine
     """
     args, img_mask = getopt.getopt(sys.argv[1:], '', ['debug=', 'square_size='])

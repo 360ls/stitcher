@@ -5,6 +5,7 @@ import sys
 from .util.textformatter import TextFormatter
 from .util.inputscanner import InputScanner
 from .util.validatefeeds import view_valid_camera_feeds
+from .util.calibrate import calibrate
 from .stitcher.stitch import (correct_single_camera,
                               correct_single_video, example_correct_single_frame)
 # from .util.threadedflex import video_naive_flex
@@ -99,7 +100,7 @@ def utilities():
     # Responds to user-provided option selection
     if selected_option == 1:
         TextFormatter.print_title("Calibrate Camera - Single Camera")
-
+        # calibrate()
     elif selected_option == 2:
         TextFormatter.print_title("Check Camera Views - All Available Cameras")
         view_valid_camera_feeds()
