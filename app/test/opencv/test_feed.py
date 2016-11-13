@@ -42,18 +42,6 @@ def test_frame_get_resized_next():
         passed = False
     assert passed is True
 
-def test_feed_fps_set():
-    """
-    Tests to see if setting a custom FPS works.
-    """ 
-    # stop_event = threading.Event()
-    # thread = threading.Thread(target=add_frames_to_list, args=())
-    # thread.start()
-    # time.sleep(10)
-    # stop_event.set()
-    # assert len(frame_list)/duration == 30
-    pass
-    
 def test_feed_default_fps_is_30():
     """
     Tests to make sure fps of the default CameraFeed is 30.
