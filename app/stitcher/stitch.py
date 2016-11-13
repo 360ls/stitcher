@@ -6,7 +6,9 @@ from __future__ import absolute_import, division, print_function
 import cv2
 import imutils
 import numpy as np
+import argparse
 from .correction.corrector import correct_distortion
+from .core.stitcher import Stitcher
 from app.util.feed import CameraFeed, VideoFeed
 from app.util.validatefeeds import show_camera_feed
 from app.util.textformatter import TextFormatter
@@ -14,10 +16,19 @@ from app.util.textformatter import TextFormatter
 
 def main():
     """
-    Main function of the stitch module. Currently simply corrects a single provided frame.
+    Main function of the stitch module. Responsible for handling command line options.
     """
-    example_correct_single_frame()
-    example_cubemap()
+    parsed_args = parse_args()
+    option = parsed_args.option_num
+
+    if option == 1:
+        example_correct_single_frame()
+    elif option == 2:
+        example_cubemap()
+    elif option == 3:
+        example_double_stitch()
+    else:
+        TextFormatter.print_error("Please enter an option argument.")
 
 def example_correct_single_frame():
     """
@@ -33,6 +44,23 @@ def example_cubemap():
     cube_frame = cv2.imread("app/storage/uncorrected.png")
     resized_cube_frame = imutils.resize(cube_frame, 300)
     cubemap(resized_cube_frame)
+
+def example_double_stitch():
+    """
+    Runs an example double stitch.
+    """
+    img1 = cv2.imread("app/storage/stitch_tester/yard1.jpg")
+    img2 = cv2.imread("app/storage/stitch_tester/yard2.jpg")
+    img3 = cv2.imread("app/storage/stitch_tester/yard3.jpg")
+    img4 = cv2.imread("app/storage/stitch_tester/yard4.jpg")
+    img1 = imutils.resize(img1, 400)
+    img2 = imutils.resize(img2, 400)
+    img3 = imutils.resize(img3, 400)
+    img4 = imutils.resize(img4, 400)
+
+    stitcher = Stitcher()
+    stitcher.double_stitch(img1, img2, img3)
+
 
 def correct_single_frame(frame):
     """
@@ -76,6 +104,20 @@ def cubemap(frame):
     if key == ord("q"):
         cv2.destroyAllWindows()
         cv2.waitKey(1)
+
+def parse_args():
+    """
+    Returns parsed arguments from command line input.
+    """
+
+    # Opens up an argument parser.
+    parser = argparse.ArgumentParser(description="Determines type of capture.")
+
+    parser.add_argument('--option', action='store',
+                        type=int,
+                        dest='option_num',
+                        help='Option number for selected stitching and streaming option.')
+    return parser.parse_args()
 
 if __name__ == "__main__":
     main()

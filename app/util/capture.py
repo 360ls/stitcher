@@ -115,7 +115,6 @@ def parse_args():
     # Opens up an argument parser.
     parser = argparse.ArgumentParser(description="Determines type of capture.")
 
-    # Adds arguments to the parser for interactive mode and options.
     parser.add_argument("--type", action="store", default="frame",
                         type=str,
                         dest="capture_type",

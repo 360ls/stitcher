@@ -8,111 +8,95 @@ import imutils
 import cv2
 
 class Stitcher(object):
-    
     """ Creates a single stitched frame from two frames """
-    def __init__(self):
-        """ Initializes homography matrix and opencv version """
 
-        # determine if we are using OpenCV v3.X and initialize the
-        # cached homography matrix
+    def __init__(self):
+        """ Initializes homography matrix and checks opencv version """
         self.isv3 = imutils.is_cv3()
         self.cached_homography = None
 
-    def stitch(self, images, ratio=0.75, reproj_thresh=4.0):
-        """ Primary method for stitching images together within the Stitcher class. """
-        # unpack the images
-        (image_b, image_a) = images
+    def stitch(self, frame1, frame2):
+        """
+        Responsible for computing homography for and warping images.
+        Returns a stitched composition of frame1 and frame2.
+        """
+        homography = self.compute_homography(frame1, frame2)
 
-        # if the cached homography matrix is None, then we need to
-        # apply keypoint matching to construct it
-        if self.cached_homography is None:
-            # detect keypoints and extract
-            (kps_a, features_a) = self.detect_and_describe(image_a)
-            (kps_b, features_b) = self.detect_and_describe(image_b)
+        if homography is not False:
+            result = self.warpImages(frame2, frame1, homography)
+            return result
 
-            # match features between the two images
-            match = self.match_keypoints(kps_a, kps_b,
-                                         features_a, features_b, ratio, reproj_thresh)
-
-            # if the match is None, then there aren't enough matched
-            # keypoints to create a panorama
-            if match is None:
-                return None
-
-            # cache the homography matrix
-            self.cached_homography = match[1]
-
-        # apply a perspective transform to stitch the images together
-        # using the cached homography matrix
-        result = cv2.warpPerspective(image_a, self.cached_homography,
-                                     (image_a.shape[1] + image_b.shape[1], image_a.shape[0]))
-        result[0:image_b.shape[0], 0:image_b.shape[1]] = image_b
-
-        # return the stitched image
-        return result
-
-    def detect_and_describe(self, image):
-        """ Detects keypoints from image and extracts features from the keypoints """
-
-        # convert the image to grayscale
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-        # check to see if we are using OpenCV 3.X
-        if self.isv3:
-            # detect and extract features from the image
-            descriptor = cv2.xfeatures2d.SIFT_create()
-            (kps, features) = descriptor.detectAndCompute(image, None)
-
-        # otherwise, we are using OpenCV 2.4.X
-        else:
-            # detect keypoints in the image
-            detector = cv2.FeatureDetector_create("SIFT")
-            kps = detector.detect(gray)
-
-            # extract features from the image
-            extractor = cv2.DescriptorExtractor_create("SIFT")
-            (kps, features) = extractor.compute(gray, kps)
-
-        # convert the keypoints from KeyPoint objects to NumPy
-        # arrays
-        kps = np.float32([kp.pt for kp in kps])
-
-        # return a tuple of keypoints and features
-        return (kps, features)
-
-    # pylint: disable=too-many-arguments
-    # pylint: disable=R0914
-    @staticmethod
-    def match_keypoints(kps_a, kps_b, features_a, features_b,
-                        ratio, reproj_thresh):
-        """ Computes keypoint matches and homography matrix based on those matches. """
-
-        # compute the raw matches and initialize the list of actual
-        # matches
-        matcher = cv2.DescriptorMatcher_create("BruteForce")
-        raw_matches = matcher.knnMatch(features_a, features_b, 2)
-        matches = []
-
-        # loop over the raw matches
-        for match in raw_matches:
-            # ensure the distance is within a certain ratio of each
-            # other (i.e. Lowe's ratio test)
-            if len(match) == 2 and match[0].distance < match[1].distance * ratio:
-                matches.append((match[0].trainIdx, match[0].queryIdx))
-
-        # computing a homography requires at least 4 matches
-        if len(matches) > 4:
-            # construct the two sets of points
-            pts_a = np.float32([kps_a[i] for (_, i) in matches])
-            pts_b = np.float32([kps_b[i] for (i, _) in matches])
-
-            # compute the homography between the two sets of points
-            (homography, status) = cv2.findHomography(pts_a, pts_b, cv2.RANSAC,
-                                                      reproj_thresh)
-
-            # return the matches along with the homograpy matrix
-            # and status of each matched point
-            return (matches, homography, status)
-
-        # otherwise, no homograpy could be computed
         return None
+
+    def double_stitch(self, frame1, frame2, frame3):
+        """
+        Responsible for computing homography for and warping images.
+        """
+        first_stitch = self.stitch(frame1, frame2)
+        second_stitch = self.stitch(first_stitch, frame3)
+
+        cv2.imshow('Stitched output', second_stitch)
+        cv2.waitKey()
+
+    def compute_homography(self, frame1, frame2):
+        """
+        Computes the homography based on the provided frames.
+        """
+
+        # Initialize the SURF detector
+        min_match_count = 60
+        surf = cv2.xfeatures2d.SURF_create()
+
+        # Extract the keypoints and descriptors
+        keypoints1, descriptors1 = surf.detectAndCompute(frame1, None)
+        keypoints2, descriptors2 = surf.detectAndCompute(frame2, None)
+
+        # Initialize parameters for Flann based matcher
+        FLANN_INDEX_KDTREE = 0
+        index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+        search_params = dict(checks = 50)
+
+        # Initialize the Flann based matcher object
+        flann = cv2.FlannBasedMatcher(index_params, search_params)
+
+        # Compute the matches
+        matches = flann.knnMatch(descriptors1, descriptors2, k=2)
+
+        # Store all the good matches as per Lowe's ratio test
+        good_matches = []
+        for match1,match2 in matches:
+            if match1.distance < 0.7 * match2.distance:
+                good_matches.append(match1)
+
+        if len(good_matches) > min_match_count:
+            src_pts = np.float32([keypoints1[good_match.queryIdx].pt for good_match in good_matches]).reshape(-1,1,2)
+            dst_pts = np.float32([keypoints2[good_match.trainIdx].pt for good_match in good_matches]).reshape(-1,1,2)
+
+            homography, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
+
+            return homography
+        else:
+            print("We don't have enough number of matches between the two images.")
+            print("Found only %d matches. We need at least %d matches." % (len(good_matches), min_match_count))
+            return False
+
+
+    # Warp img2 to img1 using the homography matrix
+    def warpImages(self, img1, img2, homography):
+        rows1, cols1 = img1.shape[:2]
+        rows2, cols2 = img2.shape[:2]
+
+        list_of_points_1 = np.float32([[0,0], [0,rows1], [cols1,rows1], [cols1,0]]).reshape(-1,1,2)
+        temp_points = np.float32([[0,0], [0,rows2], [cols2,rows2], [cols2,0]]).reshape(-1,1,2)
+        list_of_points_2 = cv2.perspectiveTransform(temp_points, homography)
+        list_of_points = np.concatenate((list_of_points_1, list_of_points_2), axis=0)
+
+        [x_min, y_min] = np.int32(list_of_points.min(axis=0).ravel() - 0.5)
+        [x_max, y_max] = np.int32(list_of_points.max(axis=0).ravel() + 0.5)
+        translation_dist = [-x_min,-y_min]
+        H_translation = np.array([[1, 0, translation_dist[0]], [0, 1, translation_dist[1]], [0,0,1]])
+
+        output_img = cv2.warpPerspective(img2, H_translation.dot(homography), (x_max-x_min, y_max-y_min))
+        output_img[translation_dist[1]:rows1+translation_dist[1], translation_dist[0]:cols1+translation_dist[0]] = img1
+        
+        return output_img
