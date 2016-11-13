@@ -1,5 +1,5 @@
 """
-Module for demonstrating stitch of two images using a Flann-based keypoint matcher
+Module for demonstrating stitch of two images using a Flann-based SURF keypoint matcher
 and homography-driven image warp.
 """
 
@@ -11,32 +11,50 @@ def main():
     """
     Responsible for 
     """
-    img1 = cv2.imread("app/storage/earth1.jpg")
-    img2 = cv2.imread("app/storage/earth2.jpg")
+    img1 = cv2.imread("app/storage/stitch_tester/yard1.jpg")
+    img2 = cv2.imread("app/storage/stitch_tester/yard2.jpg")
+    img3 = cv2.imread("app/storage/stitch_tester/yard3.jpg")
+    img4 = cv2.imread("app/storage/stitch_tester/yard4.jpg")
     img1 = imutils.resize(img1, 400)
     img2 = imutils.resize(img2, 400)
+    img3 = imutils.resize(img3, 400)
+    img4 = imutils.resize(img4, 400)
+    
+    double_stitch(img1, img2, img3)
 
-    cv2.imshow('Image 1', img1)
-    cv2.imshow('Image 2', img2)
-
-    homography = compute_homography(img1, img2)
+def stitch(frame1, frame2):
+    """
+    Responsible for computing homography for and warping images.
+    Returns a stitched composition of frame1 and frame2.
+    """
+    homography = compute_homography(frame1, frame2)
 
     if homography is not False:
-        result = warpImages(img2, img1, homography)
-        cv2.imshow('Stitched output', result)
-        cv2.waitKey()
+        result = warpImages(frame2, frame1, homography)
+        return result
 
+    return None
+
+def double_stitch(frame1, frame2, frame3):
+    """
+    Responsible for computing homography for and warping images.
+    """
+    first_stitch = stitch(frame1, frame2)
+    second_stitch = stitch(first_stitch, frame3)
+
+    cv2.imshow('Stitched output', second_stitch)
+    cv2.waitKey()
 
 def compute_homography(frame1, frame2):
     """ Computes the homography based on the provided frames. """
 
-    # Initialize the SIFT detector
+    # Initialize the SURF detector
     min_match_count = 60
-    sift = cv2.xfeatures2d.SIFT_create()
+    surf = cv2.xfeatures2d.SURF_create()
 
     # Extract the keypoints and descriptors
-    keypoints1, descriptors1 = sift.detectAndCompute(frame1, None)
-    keypoints2, descriptors2 = sift.detectAndCompute(frame2, None)
+    keypoints1, descriptors1 = surf.detectAndCompute(frame1, None)
+    keypoints2, descriptors2 = surf.detectAndCompute(frame2, None)
 
     # Initialize parameters for Flann based matcher
     FLANN_INDEX_KDTREE = 0
@@ -52,7 +70,7 @@ def compute_homography(frame1, frame2):
     # Store all the good matches as per Lowe's ratio test
     good_matches = []
     for m1,m2 in matches:
-        if m1.distance < 0.7*m2.distance:
+        if m1.distance < 0.7 * m2.distance:
             good_matches.append(m1)
 
     if len(good_matches) > min_match_count:

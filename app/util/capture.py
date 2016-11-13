@@ -21,7 +21,7 @@ def main():
 
     if capture_type == "frame":
         if num_cameras == 1:
-            capture_single_frame()
+            capture_multiple_camera_frames("out/captured_frames", "jpg", 0)
         else:
             TextFormatter.print_info("You chose to capture frames for %s cameras." % num_cameras)
     elif capture_type == "video":
@@ -73,6 +73,16 @@ def capture_single_video(index=0, duration=5, fps=30, output_dir="out/captured_v
 
     TextFormatter.print_info("Video was captured for %s seconds." % duration)
 
+def capture_multiple_camera_frames(output_dir="out/captured_frames", filetype="jpg", *feed_indices):
+    """
+    Ramps up cameras provided by index and captures a single frame from each for testing.
+    """
+
+    for feed_index in feed_indices:
+        capture_single_frame(feed_index, output_dir, filetype)
+
+    TextFormatter.print_info("Frames were captured and saved.")
+
 def create_filepath(output_folder, filetype):
     """
     Creates a filepath for output of captured data based on timestamp.
@@ -81,33 +91,6 @@ def create_filepath(output_folder, filetype):
     filename = "{}.{}".format(timestamp.strftime("%Y-%m-%d-%H-%M-%S"), filetype)
     filepath = os.path.sep.join((output_folder, filename))
     return filepath
-
-def capture_four_camera_frames(*feed_indices):
-    """
-    Ramps up cameras provided by index and captures a single frame from each for testing.
-    """
-
-    # Creates CameraFeeds for the provided indices and adds them to a list.
-    camera_feed_list = []
-
-    for feed_index in feed_indices: # Makes sure that the xrange function is available
-        camera_feed = CameraFeed(feed_index)
-        camera_feed_list.append(camera_feed)
-
-    # Ramps up the available cameras.
-    for camera_feed in camera_feed_list:
-        camera_feed.ramp()
-
-
-
-
-
-    # success0 = cameraCapture0.grab()
-    # success1 = cameraCapture1.grab()
-    # if success0 and success1:
-    #     frame0 = cameraCapture0.retrieve()
-    #     frame1 = cameraCapture1.retrieve()
-
 
 
 def parse_args():

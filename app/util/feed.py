@@ -86,6 +86,13 @@ class CameraFeed(Feed):
         """
         return self.camera_feed.grab()
 
+    def retrieve_next(self):
+        """
+        Retrieves the previously grabbed frame.
+        Usually called after has_next()
+        """
+        return self.camera_feed.retrieve()
+
     def fps_wait(self):
         """
         Waits for the calculated frame_duration.

@@ -40,11 +40,11 @@ push:
 
 ### =============  Utilities  ============= ###
 
-keypoints:
-	python -m $(STITCHER_DIR).match_keypoints
-
 sample-stitch:
 	python -m $(STITCHER_DIR).sample_stitch
+
+test-stitcher:
+	python -m $(STITCHER_DIR).test_stitcher
 
 single-corrected:
 	python -m $(STITCHER_DIR).stitch
