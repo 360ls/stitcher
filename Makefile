@@ -43,10 +43,10 @@ push:
 sample-stitch:
 	python -m $(STITCHER_DIR).sample_stitch
 
-test-stitcher:
-	python -m $(STITCHER_DIR).test_stitcher
+# test-stitcher:
+# 	python -m $(STITCHER_DIR).test_stitcher
 
-single-corrected:
+single-corrected-frame:
 	python -m $(STITCHER_DIR).stitch
 
 flex-naive:

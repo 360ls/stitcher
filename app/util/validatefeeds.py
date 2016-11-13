@@ -37,6 +37,7 @@ def show_camera_feed(feed_index):
     Shows the camera feed pointed to by the provided feed_index.
     """
     camera_feed = CameraFeed(feed_index)
+    # Show the uncorrected feed.
     camera_feed.show(False)
 
 if __name__ == "__main__":

@@ -28,7 +28,7 @@ def main():
             capture_camera_frames("out/captured_frames", "jpg", 1, 2, 3, 4)
     elif capture_type == "video":
         if num_cameras == 1:
-            capture_single_video()
+            capture_single_video(0, 5, 12)
         else:
             TextFormatter.print_info("You chose to capture video for %s cameras." % num_cameras)
     else:
@@ -85,7 +85,7 @@ def capture_camera_frames(output_dir="out/captured_frames", filetype="jpg", *fee
     frame_counter = 1
     for frame in frame_list:
         TextFormatter.print_info("Filepath created.")
-        filepath = create_filepath(output_dir, filetype, frame_counter)
+        filepath = create_filepath(output_dir, filetype, "%s--" % frame_counter)
         print(filepath)
         cv2.imwrite(filepath, frame)
         frame_counter += 1
@@ -98,7 +98,7 @@ def create_filepath(output_folder, filetype, prefix=""):
     """
     timestamp = datetime.datetime.now()
     filename = "{}.{}".format(timestamp.strftime("%Y-%m-%d-%H-%M-%S"), filetype)
-    filename = "%s--%s" % (prefix, filename)
+    filename = "%s%s" % (prefix, filename)
     filepath = os.path.sep.join((output_folder, filename))
     return filepath
 

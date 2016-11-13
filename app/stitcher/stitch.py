@@ -55,7 +55,7 @@ def correct_single_camera(feed_index=0):
     Function to show corrected distortion for a camera feed.
     """
     camera_feed = CameraFeed(feed_index)
-    camera_feed.show_corrected()
+    camera_feed.show(True)
 
 def correct_single_video(video_path="app/storage/uncorrected.mp4"):
     """

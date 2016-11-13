@@ -66,7 +66,7 @@ def stitching_and_streaming(non_interactive_selected_option=None):
         correct_single_video()
     elif selected_option == 3:
         TextFormatter.print_title("Show Corrected Live Feed - Single Camera")
-        correct_single_camera(0)
+        correct_single_camera(1)
     elif selected_option == 4:
         TextFormatter.print_title("Show Corrected Live Feed - Two Stiched Cameras")
     elif selected_option == 5:
