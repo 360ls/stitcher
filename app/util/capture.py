@@ -78,17 +78,40 @@ def capture_multiple_camera_frames(output_dir="out/captured_frames", filetype="j
     Ramps up cameras provided by index and captures a single frame from each for testing.
     """
 
-    for feed_index in feed_indices:
-        capture_single_frame(feed_index, output_dir, filetype)
+    # Creates CameraFeeds for the provided indices and adds them to a list.
+    camera_feed_list = []
+    frame_list = []
+
+    for feed_index in feed_indices: # Makes sure that the xrange function is available
+        camera_feed = CameraFeed(feed_index)
+        camera_feed_list.append(camera_feed)
+
+    # Ramps up the available cameras.
+    for camera_feed in camera_feed_list:
+        TextFormatter.print_info("Camera feed ramped and read.")
+        camera_feed.ramp()
+        if camera_feed.has_next():
+            frame = camera_feed.get_next(True, False)
+        camera_feed.close()
+        frame_list.append(frame)
+
+    frame_counter = 1
+    for frame in frame_list:
+        TextFormatter.print_info("Filepath created.")
+        filepath = create_filepath(output_dir, filetype, frame_counter)
+        print(filepath)
+        cv2.imwrite(filepath, frame)
+        frame_counter += 1
 
     TextFormatter.print_info("Frames were captured and saved.")
 
-def create_filepath(output_folder, filetype):
+def create_filepath(output_folder, filetype, prefix=""):
     """
     Creates a filepath for output of captured data based on timestamp.
     """
     timestamp = datetime.datetime.now()
     filename = "{}.{}".format(timestamp.strftime("%Y-%m-%d-%H-%M-%S"), filetype)
+    filename = "%s--%s" % (prefix, filename)
     filepath = os.path.sep.join((output_folder, filename))
     return filepath
 
