@@ -58,8 +58,11 @@ camera-setup:
 capture-single-frame:
 	python -m $(UTILITY_DIR).capture
 
-capture-single-video:
+capture-single-video-webcam:
 	python -m $(UTILITY_DIR).capture --type=video
+
+capture-single-video-cam1:
+	python -m $(UTILITY_DIR).capture --type=video --cameras=1 --index=1
 
 snap:
 	python -m $(SNAPPER_DIR).snapstreams --output out

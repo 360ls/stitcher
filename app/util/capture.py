@@ -18,6 +18,7 @@ def main():
     parsed_args = parse_args()
     capture_type = parsed_args.capture_type
     num_cameras = parsed_args.num_cameras
+    camera_index = parsed_args.camera_index
 
     if capture_type == "frame":
         if num_cameras == 1:
@@ -28,7 +29,10 @@ def main():
             capture_camera_frames("out/captured_frames", "jpg", 1, 2, 3, 4)
     elif capture_type == "video":
         if num_cameras == 1:
-            capture_single_video(0, 5, 12)
+            if camera_index is not 0:
+                capture_single_video(camera_index, 5)
+            else:
+                capture_single_video(camera_index, 5, 12)
         else:
             TextFormatter.print_info("You chose to capture video for %s cameras." % num_cameras)
     else:
@@ -120,6 +124,10 @@ def parse_args():
                         type=int,
                         dest="num_cameras",
                         help="Number of cameras.")
+    parser.add_argument("--index", action="store", default=0,
+                        type=int,
+                        dest="camera_index",
+                        help="Index of camera.")
     return parser.parse_args()
 
 if __name__ == "__main__":
