@@ -21,9 +21,11 @@ def main():
 
     if capture_type == "frame":
         if num_cameras == 1:
-            capture_multiple_camera_frames("out/captured_frames", "jpg", 0)
-        else:
-            TextFormatter.print_info("You chose to capture frames for %s cameras." % num_cameras)
+            capture_camera_frames("out/captured_frames", "jpg", 0)
+        elif num_cameras == 2:
+            capture_camera_frames("out/captured_frames", "jpg", 1, 2)
+        elif num_cameras == 4:
+            capture_camera_frames("out/captured_frames", "jpg", 1, 2, 3, 4)
     elif capture_type == "video":
         if num_cameras == 1:
             capture_single_video()
@@ -31,21 +33,6 @@ def main():
             TextFormatter.print_info("You chose to capture video for %s cameras." % num_cameras)
     else:
         TextFormatter.print_error("Please provide a proper capture argument.")
-
-def capture_single_frame(index=0, output_dir="out/captured_frames", filetype="jpg"):
-    """
-    Ramps up camera provided by index and captures a single frame for testing.
-    """
-    camera_feed = CameraFeed(index)
-    camera_feed.ramp()
-    frame = camera_feed.get_next(True, False)
-
-    filepath = create_filepath(output_dir, filetype)
-
-    cv2.imwrite(filepath, frame)
-    TextFormatter.print_info("Frame was captured.")
-
-    camera_feed.close()
 
 def capture_single_video(index=0, duration=5, fps=30, output_dir="out/captured_videos",
                          filetype="avi"):
@@ -73,7 +60,7 @@ def capture_single_video(index=0, duration=5, fps=30, output_dir="out/captured_v
 
     TextFormatter.print_info("Video was captured for %s seconds." % duration)
 
-def capture_multiple_camera_frames(output_dir="out/captured_frames", filetype="jpg", *feed_indices):
+def capture_camera_frames(output_dir="out/captured_frames", filetype="jpg", *feed_indices):
     """
     Ramps up cameras provided by index and captures a single frame from each for testing.
     """
