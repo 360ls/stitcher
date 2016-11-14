@@ -17,14 +17,14 @@ class FeedHandler(object):
     @abstractmethod
     def stitch_feeds(self):
         """
-        Takes in a list of feeds and stitches them into one stream
+        Takes in a list of feeds and stitches them into one outgoing stream
         """
         pass
 
     @abstractmethod
     def stitch_corrected_feeds(self):
         """
-        Takes in a list of feeds and stitches them into one stream
+        Takes in a list of feeds and stitches them into one outgoing stream
         after applying distortion correction
         """
         pass
@@ -66,7 +66,7 @@ class MultiFeedHandler(FeedHandler):
         else:
             stitch(self.feeds, identity, stitch_four_frames, False)
 
-    def stitch_corrected_streams(self):
+    def stitch_corrected_feeds(self):
         feed_count = len(self.feeds)
         if feed_count < 4:
             stitch(self.feeds, correct_distortion, stitch_two_frames, False)
@@ -77,7 +77,7 @@ class MultiFeedHandler(FeedHandler):
         stitch(self.feeds, identity, stitch_frame, True)
 
 
-def stitch(feeds, correction_func, stitcher_func, should_stream):
+def stitch(feeds, stitcher_func, should_stream):
     """
     Main stitching function for stitching feeds together.
     """
@@ -89,13 +89,13 @@ def stitch(feeds, correction_func, stitcher_func, should_stream):
         proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo', '-vcodec',
                                  'rawvideo', '-s', '800x250', '-pix_fmt', 'bgr24',
                                  '-r', '5', '-i', '-', '-an', '-f',
-                                 'flv', 'rtmp://54.208.55.156:1935/live/myStream']
+                                 'flv', 'rtmp://54.208.55.156:1935/live/360ls']
                                 , stdin=subprocess.PIPE)
 
 
     if all([feed.validate for feed in feeds]):
         while all([feed.has_next() for feed in feeds]):
-            frames = [correction_func(feed.next()) for feed in feeds]
+            frames = [feed.next() for feed in feeds]
             stitched_frame = stitcher_func(frames,
                                            [left_stitcher, right_stitcher, combined_stitcher])
 

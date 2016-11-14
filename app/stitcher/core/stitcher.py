@@ -86,8 +86,8 @@ class Stitcher(object):
         rows1, cols1 = img1.shape[:2]
         rows2, cols2 = img2.shape[:2]
 
-        list_of_points_1 = np.float32([[0,0], [0,rows1], [cols1,rows1], [cols1,0]]).reshape(-1,1,2)
-        temp_points = np.float32([[0,0], [0,rows2], [cols2,rows2], [cols2,0]]).reshape(-1,1,2)
+        list_of_points_1 = np.float32([[0, 0], [0,rows1], [cols1,rows1], [cols1, 0]]).reshape(-1, 1, 2)
+        temp_points = np.float32([[0, 0], [0, rows2], [cols2, rows2], [cols2, 0]]).reshape(-1, 1, 2)
         list_of_points_2 = cv2.perspectiveTransform(temp_points, homography)
         list_of_points = np.concatenate((list_of_points_1, list_of_points_2), axis=0)
 
