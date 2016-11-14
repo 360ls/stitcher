@@ -24,7 +24,7 @@ def main():
         if num_cameras == 1:
             capture_camera_frames("out/captured_frames", "jpg", 0)
         elif num_cameras == 2:
-            capture_camera_frames("out/captured_frames", "jpg", 1, 2)
+            capture_camera_frames("out/captured_frames", "jpg", 0, 1)
         elif num_cameras == 4:
             capture_camera_frames("out/captured_frames", "jpg", 1, 2, 3, 4)
     elif capture_type == "video":
@@ -33,6 +33,9 @@ def main():
                 capture_single_video(camera_index, 5)
             else:
                 capture_single_video(camera_index, 5, 12)
+        elif num_cameras == 2:
+            capture_camera_videos(5, 30, "out/captured_videos",
+                                  "avi", 0, 1)
         else:
             TextFormatter.print_info("You chose to capture video for %s cameras." % num_cameras)
     else:
@@ -48,7 +51,6 @@ def capture_single_video(index=0, duration=5, fps=30, output_dir="out/captured_v
     filepath = create_filepath(output_dir, filetype)
 
     writer = None
-    (height, width) = (None, None)
 
     start_time = time.time()
     while time.time() < start_time + duration:
@@ -95,6 +97,47 @@ def capture_camera_frames(output_dir="out/captured_frames", filetype="jpg", *fee
         frame_counter += 1
 
     TextFormatter.print_info("Frames were captured and saved.")
+
+def capture_camera_videos(duration=5, fps=30, output_dir="out/captured_videos",
+                          filetype="avi", *feed_indices):
+    """
+    Ramps up cameras provided by index and captures a single frame from each for testing.
+    """
+
+    # Creates CameraFeeds for the provided indices and adds them to a list.
+    camera_feed_list = []
+    writer_list = []
+    filepath_list = []
+
+    for feed_index in feed_indices: # Makes sure that the xrange function is available
+        camera_feed = CameraFeed(feed_index)
+        camera_feed_list.append(camera_feed)
+
+    # Ramps up the available cameras.
+    for camera_feed in camera_feed_list:
+        TextFormatter.print_info("Camera feed ramped and read.")
+        camera_feed.ramp()
+        filepath = create_filepath(output_dir, filetype)
+        filepath_list.append(filepath)
+        writer = None
+        writer_list.append(writer)
+
+    start_time = time.time()
+    while time.time() < start_time + duration:
+        for camera_feed in camera_feed_list:
+            frame = camera_feed.get_next(True, False)
+            writer = writer_list[camera_feed_list.index(camera_feed)]
+            filepath = filepath_list[camera_feed_list.index(camera_feed)]
+            if writer is None:
+                (height, width) = frame.shape[:2]
+                writer = cv2.VideoWriter(filepath, cv2.VideoWriter_fourcc(*"MJPG"),
+                                         fps, (width, height))
+            writer.write(frame)
+
+    for camera_feed in camera_feed_list:
+        camera_feed.close()
+
+    TextFormatter.print_info("Videos were captured and saved.")
 
 def create_filepath(output_folder, filetype, prefix=""):
     """
