@@ -4,6 +4,7 @@ CONFIGURATION_DIR=config
 SNAPPER_DIR=app.snapper
 UTILITY_DIR=app.util
 STITCHER_DIR=app.stitcher
+FLEX_DIR=app.stitcher.flex
 TEST_DIR=app/test
 
 # Ensures clean and run are not interpreted as files
@@ -53,7 +54,7 @@ calibrate:
 	python -m $(UTILITY_DIR).calibrate
 
 flex-naive:
-	python -m $(UTILITY_DIR).threadedflex
+	python -m $(FLEX_DIR).flexor
 
 camera-setup:
 	python -m $(UTILITY_DIR).validatefeeds
