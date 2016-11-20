@@ -1,7 +1,6 @@
 """ Utility module for validating camera feeds. """
 
 from __future__ import absolute_import, division, print_function
-import cv2
 from .textformatter import TextFormatter
 from .feed import CameraFeed
 

@@ -4,7 +4,7 @@ Module for reading user input from the command line.
 
 from __future__ import absolute_import, division, print_function
 import os
-from future.builtins import input # pylint: disable=import-error
+from future.builtins import input
 from .textformatter import TextFormatter
 
 class InputScanner(object):

@@ -3,16 +3,14 @@ Module for correcting and stitching frames and feeds.
 """
 
 from __future__ import absolute_import, division, print_function
-import cv2
+import argparse
 import imutils
 import numpy as np
-import argparse
+import cv2
+from app.util.feed import CameraFeed, VideoFeed
+from app.util.textformatter import TextFormatter
 from .correction.corrector import correct_distortion
 from .core.stitcher import Stitcher
-from app.util.feed import CameraFeed, VideoFeed
-from app.util.validatefeeds import show_camera_feed
-from app.util.textformatter import TextFormatter
-
 
 def main():
     """

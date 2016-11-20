@@ -39,11 +39,11 @@ def main():
         TextFormatter.print_error("Please retry and enter a valid number.")
         main()
 
-def stitching_and_streaming(non_interactive_selected_option=None):
+def stitching_and_streaming(selected_option=None):
     """
     Provides interaction with application stitching and streaming functionality.
     """
-    if non_interactive_selected_option is None:
+    if selected_option is None:
         TextFormatter.print_title("View current stitching and streaming functionality below.")
         TextFormatter.print_heading("Choose an option to proceed:")
         TextFormatter.print_option(1, "Show Corrected Image - Single Image")
@@ -55,8 +55,6 @@ def stitching_and_streaming(non_interactive_selected_option=None):
 
         scanner = InputScanner()
         selected_option = scanner.read_int('Enter option number: ')
-    else:
-        selected_option = non_interactive_selected_option
 
     # Responds to user-provided option selection
     if selected_option == 1:
@@ -100,7 +98,7 @@ def utilities():
     # Responds to user-provided option selection
     if selected_option == 1:
         TextFormatter.print_title("Calibrate Camera - Single Camera")
-        # calibrate()
+        calibrate()
     elif selected_option == 2:
         TextFormatter.print_title("Check Camera Views - All Available Cameras")
         view_valid_camera_feeds()
