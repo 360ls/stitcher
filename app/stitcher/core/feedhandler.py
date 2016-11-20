@@ -26,7 +26,7 @@ class FeedHandler(object):
     def stitch_corrected_feeds(self):
         """
         Takes in a list of feeds and stitches them into one outgoing stream
-        after applying distortion correction
+        after applying distortion correction.
         """
         pass
 
