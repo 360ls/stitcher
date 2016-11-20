@@ -14,17 +14,18 @@ class Stitcher(object):
     def __init__(self):
         """ Initializes homography matrix and checks opencv version """
         self.isv3 = imutils.is_cv3()
-        self.cached_homography = None
+        self.homography = None
 
     def stitch(self, frame1, frame2):
         """
         Responsible for computing homography for and warping images.
         Returns a stitched composition of frame1 and frame2.
         """
-        homography = self.compute_homography(frame1, frame2)
+        if self.homography is None:
+            self.homography = compute_homography(frame1, frame2)
 
-        if homography is not False:
-            result = self.warp_images(frame2, frame1, homography)
+        if self.homography is not False:
+            result = warp_images(frame2, frame1, self.homography)
             return result
 
         return None
@@ -48,14 +49,18 @@ class Stitcher(object):
         cv2.imshow('Stitched output', second_stitch)
         cv2.waitKey()
 
+    def reset(self):
+        """
+        Resets the homography of the stitcher to None for stitcher reuse.
+        """
+        self.homography = None
 
-def compute_homography(frame1, frame2):
+def compute_matches(frame1, frame2):
     """
-    Computes the homography based on the provided frames.
+    Computes the keypoint matches between the provided frames.
     """
 
     # Initialize the SURF detector
-    min_match_count = 60
     surf = cv2.xfeatures2d.SURF_create()
 
     # Extract the keypoints and descriptors
@@ -73,15 +78,26 @@ def compute_homography(frame1, frame2):
     # Compute the matches
     matches = flann.knnMatch(descriptors1, descriptors2, k=2)
 
+    return matches, keypoints1, keypoints2
+
+def compute_homography(frame1, frame2):
+    """
+    Computes the homography based on the provided frames.
+    """
+    min_match_count = 60
+    matches, keypoints1, keypoints2 = compute_matches(frame1, frame2)
+
     # Store all the good matches as per Lowe's ratio test
     good_matches = []
-    for match1,match2 in matches:
+    for match1, match2 in matches:
         if match1.distance < 0.7 * match2.distance:
             good_matches.append(match1)
 
     if len(good_matches) > min_match_count:
-        src_pts = np.float32([keypoints1[good_match.queryIdx].pt for good_match in good_matches]).reshape(-1,1,2)
-        dst_pts = np.float32([keypoints2[good_match.trainIdx].pt for good_match in good_matches]).reshape(-1,1,2)
+        src_pts = np.float32([keypoints1[good_match.queryIdx].pt
+                              for good_match in good_matches]).reshape(-1, 1, 2)
+        dst_pts = np.float32([keypoints2[good_match.trainIdx].pt
+                              for good_match in good_matches]).reshape(-1, 1, 2)
 
         homography, _ = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
 

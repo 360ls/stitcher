@@ -60,6 +60,7 @@ def example_single_stitch():
 
     stitcher = Stitcher()
     stitcher.show_stitch(img1, img2)
+    stitcher.reset()
     stitcher.show_stitch(img1, img4)
 
 def example_double_stitch():
