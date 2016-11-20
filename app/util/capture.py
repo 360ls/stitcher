@@ -42,7 +42,7 @@ def main():
         TextFormatter.print_error("Please provide a proper capture argument.")
 
 def capture_single_video(index=0, duration=5, fps=30, output_dir="out/captured_videos",
-                         filetype="avi"):
+                         filetype="mp4"):
     """
     Ramps up camera provided by index and captures video for provided capture_duration (in sec).
     """
@@ -57,7 +57,7 @@ def capture_single_video(index=0, duration=5, fps=30, output_dir="out/captured_v
         frame = camera_feed.get_next(True, False)
         if writer is None:
             (height, width) = frame.shape[:2]
-            writer = cv2.VideoWriter(filepath, cv2.VideoWriter_fourcc(*"MJPG"),
+            writer = cv2.VideoWriter(filepath, cv2.VideoWriter_fourcc(*"MP4V"),
                                      fps, (width, height))
         writer.write(frame)
 

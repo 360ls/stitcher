@@ -125,20 +125,23 @@ def identity(frame):
 
 def stitch_frame(frames, _):
     """
-    Stitching for single frame
+    Stitching for single frame.
+    Simple returns the frame of the first index in the frames list.
     """
     return frames[0]
 
 def stitch_two_frames(frames, stitchers):
     """
-    Stitching for two frames
+    Stitches two frames together via the first stitcerh in the stitcher array.
     """
     return stitchers[0].stitch([frames[0], frames[1]])
 
 def stitch_four_frames(frames, stitchers):
     """
-    Stitching for four frames
+    Stitches four frames together.
     """
     left_stitch = stitch_two_frames([frames[0], frames[1]], [stitchers[0]])
     right_stitch = stitch_two_frames([frames[2], frames[3]], [stitchers[1]])
+
+    # Stitches the first two stitched images together with the third stitcher in the stitcher list.
     return stitch_two_frames([left_stitch, right_stitch], [stitchers[2]])

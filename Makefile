@@ -71,6 +71,9 @@ capture-single-video-webcam:
 capture-single-video-cam1:
 	python -m $(UTILITY_DIR).capture --type=video --cameras=1 --index=1
 
+capture-single-video-cam0:
+	python -m $(UTILITY_DIR).capture --type=video --cameras=1 --index=0
+
 capture-video-cams0and1:
 	python -m $(UTILITY_DIR).capture --type=video --cameras=2
 

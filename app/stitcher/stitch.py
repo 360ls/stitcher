@@ -26,7 +26,7 @@ def main():
     elif option == 2:
         example_cubemap()
     elif option == 3:
-        example_double_stitch()
+        example_single_stitch()
     else:
         TextFormatter.print_error("Please enter an option argument.")
 
@@ -44,6 +44,23 @@ def example_cubemap():
     cube_frame = cv2.imread("app/storage/uncorrected.png")
     resized_cube_frame = imutils.resize(cube_frame, 300)
     cubemap(resized_cube_frame)
+
+def example_single_stitch():
+    """
+    Runs an example double stitch.
+    """
+    img1 = cv2.imread("app/storage/stitch_tester/yard1.jpg")
+    img2 = cv2.imread("app/storage/stitch_tester/yard2.jpg")
+    img3 = cv2.imread("app/storage/stitch_tester/yard3.jpg")
+    img4 = cv2.imread("app/storage/stitch_tester/yard4.jpg")
+    img1 = imutils.resize(img1, 400)
+    img2 = imutils.resize(img2, 400)
+    img3 = imutils.resize(img3, 400)
+    img4 = imutils.resize(img4, 400)
+
+    stitcher = Stitcher()
+    stitcher.show_stitch(img1, img2)
+    stitcher.show_stitch(img1, img4)
 
 def example_double_stitch():
     """
