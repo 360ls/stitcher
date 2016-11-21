@@ -103,6 +103,7 @@ def stitch(feeds, stitcher_func, should_stream):
                 proc.stdin.write(stitched_frame.tostring())
 
             cv2.imshow("Result", stitched_frame)
+            print(type(stitched_frame))
 
             key = cv2.waitKey(1) & 0xFF
 
@@ -131,9 +132,9 @@ def stitch_frame(frames, _):
 
 def stitch_two_frames(frames, stitchers):
     """
-    Stitches two frames together via the first stitcerh in the stitcher array.
+    Stitches two frames together via the first stitcher in the stitcher array.
     """
-    return stitchers[0].stitch([frames[0], frames[1]])
+    return stitchers[0].stitch(frames[0], frames[1])
 
 def stitch_four_frames(frames, stitchers):
     """

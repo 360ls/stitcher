@@ -26,6 +26,8 @@ def main():
         example_cubemap()
     elif option == 3:
         example_single_stitch_frames()
+    elif option == 4:
+        example_two_feed_stitch()
     else:
         TextFormatter.print_error("Please enter an option argument.")
 
@@ -62,12 +64,21 @@ def example_single_stitch_frames():
     stitcher.reset()
     stitcher.show_stitch(img1, img4)
 
-def example_single_feed_stitched():
+def example_single_feed_stitch():
     """
     Shows "stitched" single feed handled by feed handler.
     """
     feed = CameraFeed(0)
     handler = SingleFeedHandler(feed)
+    handler.stitch_feeds()
+
+def example_two_feed_stitch():
+    """
+    Shows two stitched feeds handled by feed handler.
+    """
+    feed1 = CameraFeed(0)
+    feed2 = CameraFeed(1)
+    handler = MultiFeedHandler([feed1, feed2])
     handler.stitch_feeds()
 
 def example_double_stitch():

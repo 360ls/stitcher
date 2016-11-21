@@ -44,6 +44,9 @@ push:
 sample-stitch:
 	python -m $(STITCHER_DIR).stitch --option=3
 
+sample-feed-stitch:
+	python -m $(STITCHER_DIR).stitch --option=4	
+
 single-corrected-frame:
 	python -m $(STITCHER_DIR).stitch --option=1
 

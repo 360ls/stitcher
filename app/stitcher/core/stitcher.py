@@ -6,21 +6,21 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 import argparse
 import subprocess
-import signal, os
+import signal
 import imutils
 import sys
 import cv2
 from app.util.textformatter import TextFormatter
-from .feedhandler import SingleFeedHandler, MultiFeedHandler
+from app.util.feed import CameraFeed
 
 
 def main():
 
     def cleanup(signal_num, frame):
         """
-        Handles release of capture after electron application is done with it.
+        Handles release of feed after electron application is done with it.
         """
-        capture.release()
+        feed.close
         video_output.release()
         cv2.destroyAllWindows()
         sys.exit(0)
@@ -42,7 +42,7 @@ def main():
     extension = ''
 
     destination = output_path + extension
-    capture = cv2.VideoCapture(camera_index)
+    feed = CameraFeed(camera_index)
     codec = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
     video_output = cv2.VideoWriter(destination, codec, 20.0, (width, height))
     dimensions = str(width) + 'x' + str(height)
@@ -54,11 +54,9 @@ def main():
             'libx264','-pix_fmt','uyvy422','-r','28','-an', '-f','flv',
             rtmp_url], stdin=subprocess.PIPE)
 
-    
     while True:
-        _, frame = capture.read()
 
-        frame = cv2.resize(frame, (width, height))
+        frame = feed.get_next(True, False)
 
         if not just_preview:
             video_output.write(frame)
@@ -146,7 +144,7 @@ def compute_homography(frame1, frame2):
     """
     Computes homography based on the provided frames.
     """
-    min_match_count = 60
+    min_match_count = 10
     matches, keypoints1, keypoints2 = compute_matches(frame1, frame2)
 
     # Store all the good matches based on Lowes ratio test
@@ -213,10 +211,10 @@ def parse_args():
                         type=int,
                         dest='camera_index',
                         help='Index of camera feed to be captured.')
-    parser.add_argument('-p', action='store', default=False,
+    parser.add_argument('-p', action='store_true', default=False,
                         dest='just_preview',
                         help='Preview camera feed without writing to file or streaming.')
-    parser.add_argument('-s', default=False, action='store',
+    parser.add_argument('-s', action='store_true', default=False,
                         dest='should_stream',
                         help='Indicates whether result should be streamed.')
     parser.add_argument('--width', action='store', default=640,
@@ -227,7 +225,7 @@ def parse_args():
                         type=int,
                         dest='height',
                         help='Height dimension of output video')
-    parser.add_argument('--url', action='store',
+    parser.add_argument('--url', action='store', default="rtmp://152.23.133.52:1935/live/myStream",
                         type=str,
                         dest='rtmp_url',
                         help='RTMP url to stream to.')

@@ -47,10 +47,11 @@ class CameraFeed(Feed):
     """
     Wrapper class for incoming camera feed.
     """
-    def __init__(self, feed_index, width=400, fps=30):
+    def __init__(self, feed_index, width=640, height=480, fps=30):
         self.feed_index = feed_index
         self.camera_feed = cv2.VideoCapture(feed_index)
         self.width = width
+        self.height = height
         self.fps = fps
         self.frame_duration = 1.0 / fps
 
