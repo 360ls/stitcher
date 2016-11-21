@@ -76,8 +76,8 @@ def example_two_feed_stitch():
     """
     Shows two stitched feeds handled by feed handler.
     """
-    feed1 = CameraFeed(0)
-    feed2 = CameraFeed(1)
+    feed1 = CameraFeed(2, 400)
+    feed2 = CameraFeed(1, 400)
     handler = MultiFeedHandler([feed1, feed2])
     handler.stitch_feeds()
 

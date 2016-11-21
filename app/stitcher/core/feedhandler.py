@@ -103,8 +103,6 @@ def stitch(feeds, stitcher_func, should_stream):
                 proc.stdin.write(stitched_frame.tostring())
 
             cv2.imshow("Result", stitched_frame)
-            print(type(stitched_frame))
-
             key = cv2.waitKey(1) & 0xFF
 
             if key == ord("q"):
