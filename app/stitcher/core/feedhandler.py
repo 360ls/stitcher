@@ -6,7 +6,6 @@ from abc import ABCMeta, abstractmethod
 import subprocess
 import cv2
 from app.util.textformatter import TextFormatter
-from ..correction.corrector import correct_distortion
 from .stitcher import Stitcher
 
 class FeedHandler(object):
@@ -45,13 +44,13 @@ class SingleFeedHandler(FeedHandler):
         self.feed = feed
 
     def stitch_feeds(self):
-        stitch([self.feed], identity, stitch_frame, False)
+        stitch([self.feed], stitch_frame, False)
 
     def stitch_corrected_feeds(self):
-        stitch([self.feed], correct_distortion, stitch_frame, False)
+        stitch([self.feed], stitch_frame, False)
 
     def stream_rtmp(self):
-        stitch([self.feed], identity, stitch_frame, True)
+        stitch([self.feed], stitch_frame, True)
 
 class MultiFeedHandler(FeedHandler):
     """
@@ -63,19 +62,19 @@ class MultiFeedHandler(FeedHandler):
     def stitch_feeds(self):
         feed_count = len(self.feeds)
         if feed_count < 4:
-            stitch(self.feeds, identity, stitch_two_frames, False)
+            stitch(self.feeds, stitch_two_frames, False)
         else:
-            stitch(self.feeds, identity, stitch_four_frames, False)
+            stitch(self.feeds, stitch_four_frames, False)
 
     def stitch_corrected_feeds(self):
         feed_count = len(self.feeds)
         if feed_count < 4:
-            stitch(self.feeds, correct_distortion, stitch_two_frames, False)
+            stitch(self.feeds, stitch_two_frames, False)
         else:
-            stitch(self.feeds, correct_distortion, stitch_four_frames, False)
+            stitch(self.feeds, stitch_four_frames, False)
 
     def stream_rtmp(self):
-        stitch(self.feeds, identity, stitch_frame, True)
+        stitch(self.feeds, stitch_frame, True)
 
 
 def stitch(feeds, stitcher_func, should_stream):
@@ -94,9 +93,9 @@ def stitch(feeds, stitcher_func, should_stream):
                                 , stdin=subprocess.PIPE)
 
 
-    if all([feed.validate for feed in feeds]):
+    if all([feed.is_valid() for feed in feeds]):
         while all([feed.has_next() for feed in feeds]):
-            frames = [feed.next() for feed in feeds]
+            frames = [feed.get_next(True, False) for feed in feeds]
             stitched_frame = stitcher_func(frames,
                                            [left_stitcher, right_stitcher, combined_stitcher])
 

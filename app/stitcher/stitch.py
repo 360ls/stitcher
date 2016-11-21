@@ -11,6 +11,7 @@ from app.util.feed import CameraFeed, VideoFeed
 from app.util.textformatter import TextFormatter
 from .correction.corrector import correct_distortion
 from .core.stitcher import Stitcher
+from .core.feedhandler import SingleFeedHandler, MultiFeedHandler
 
 def main():
     """
@@ -24,7 +25,7 @@ def main():
     elif option == 2:
         example_cubemap()
     elif option == 3:
-        example_single_stitch()
+        example_single_stitch_frames()
     else:
         TextFormatter.print_error("Please enter an option argument.")
 
@@ -43,7 +44,7 @@ def example_cubemap():
     resized_cube_frame = imutils.resize(cube_frame, 300)
     cubemap(resized_cube_frame)
 
-def example_single_stitch():
+def example_single_stitch_frames():
     """
     Runs an example double stitch.
     """
@@ -60,6 +61,14 @@ def example_single_stitch():
     stitcher.show_stitch(img1, img2)
     stitcher.reset()
     stitcher.show_stitch(img1, img4)
+
+def example_single_feed_stitched():
+    """
+    Shows "stitched" single feed handled by feed handler.
+    """
+    feed = CameraFeed(0)
+    handler = SingleFeedHandler(feed)
+    handler.stitch_feeds()
 
 def example_double_stitch():
     """
