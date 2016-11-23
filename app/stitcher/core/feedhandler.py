@@ -59,12 +59,12 @@ class MultiFeedHandler(FeedHandler):
     def __init__(self, feeds):
         self.feeds = feeds
 
-    def stitch_feeds(self):
+    def stitch_feeds(self, should_stream=False):
         feed_count = len(self.feeds)
         if feed_count < 4:
-            stitch(self.feeds, stitch_two_frames, False)
+            stitch(self.feeds, stitch_two_frames, should_stream)
         else:
-            stitch(self.feeds, stitch_four_frames, False)
+            stitch(self.feeds, stitch_four_frames, should_stream)
 
     def stitch_corrected_feeds(self):
         feed_count = len(self.feeds)

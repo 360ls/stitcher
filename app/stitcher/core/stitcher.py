@@ -12,6 +12,7 @@ import sys
 import cv2
 from app.util.textformatter import TextFormatter
 from app.util.feed import CameraFeed
+from .feedhandler import MultiFeedHandler
 
 
 def main():
@@ -34,13 +35,28 @@ def main():
     width = parsed_args.width
     height = parsed_args.height
     rtmp_url = parsed_args.rtmp_url
+    left_index = parsed_args.left_index
+    right_index = parsed_args.right_index
+    should_stitch = parsed_args.should_stitch
+
+    if should_stitch:
+        feed1 = CameraFeed(left_index)
+        feed2 = CameraFeed(right_index)
+        handler = MultiFeedHandler
+
+        if should_stream:
+            handler.stitch_feeds([feed1, feed2], True)
+        else:
+            handler.stitch_feeds([feed1, feed2])
 
 
+    # What is this exactly?
     signal.signal(signal.SIGINT, cleanup)
     signal.signal(signal.SIGTERM, cleanup)
 
     extension = ''
 
+    # Sets up the writing for writing data from camera feed.
     destination = output_path + extension
     feed = CameraFeed(camera_index)
     codec = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
@@ -229,6 +245,18 @@ def parse_args():
                         type=str,
                         dest='rtmp_url',
                         help='RTMP url to stream to.')
+    parser.add_argument('--leftIndex', action='store', default=1,
+                        type=int,
+                        dest='left_index',
+                        help='Left camera index for stitching.')
+    parser.add_argument('--rightIndex', action='store', default=1,
+                        type=int,
+                        dest='right_index',
+                        help='Right camera index for stitching.')
+    parser.add_argument('--stitch', action='store_true', default=False,
+                        dest='should_stitch',
+                        help='Indicates whether stitching should occur.')
+
     return parser.parse_args()
 
 if __name__ == "__main__":

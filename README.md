@@ -114,3 +114,14 @@ stitch-flex/
         requirements.txt
     out/
 ```
+
+## Future Target Functionality
+1. The ability to add different car configurations for adaptive stitching
+
+2. Ability to add and remove cameras to and from stitch on the go
+
+3. Add and remove a camera seamlessly when cameras are in a row
+
+4. Be able to determine camera order via homography
+
+5. Addition of better frame error handling
