@@ -14,7 +14,7 @@ class Configuration(object):
     The Configuration class creates a configuration instance from a profile yaml file.
     """
 
-    def __init__(self, config_profile="config/profile.yml"):
+    def __init__(self, config_profile):
         """ The Configuration class constructor instantiates the Configuration class. """
 
         self.config_profile = config_profile

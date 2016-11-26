@@ -6,8 +6,8 @@ from .util.textformatter import TextFormatter
 from .util.inputscanner import InputScanner
 from .util.validatefeeds import view_valid_camera_feeds
 from .util.calibrate import calibrate
-from .stitcher.stitch import (correct_single_camera,
-                              correct_single_video, example_correct_single_frame)
+from .stitcher.stitchexamples import (correct_single_camera,
+                                      correct_single_video, example_correct_single_frame)
 # from .util.threadedflex import video_naive_flex
 
 def main():

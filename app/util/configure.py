@@ -13,12 +13,12 @@ def main():
     """
     get_configuration()
 
-def get_configuration():
+def get_configuration(config_profile="config/profile.yml"):
     """
     Loads profile.yml to get configuration parameters.
     """
     try:
-        configuration = Configuration()
+        configuration = Configuration(config_profile)
         TextFormatter.print_info("Profile is valid and parsed properly.")
         return configuration.get()
     except ValueError:

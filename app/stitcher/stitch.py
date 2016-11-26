@@ -1,19 +1,41 @@
 """
-Module for correcting and stitching frames and feeds. Can be used as a driver from the electron app.
+Module for correcting and stitching frames and feeds. Used as a driver from the electron app.
 """
 
 from __future__ import absolute_import, division, print_function
+
 import argparse
-import imutils
-import numpy as np
+import sys
+import subprocess
 import cv2
+
 from app.util.feed import CameraFeed, VideoFeed
-from app.util.textformatter import TextFormatter
-from .correction.corrector import correct_distortion
-from .core.stitcher import Stitcher
-from .core.feedhandler import SingleFeedHandler, MultiFeedHandler
+from app.util.configure import get_configuration
+
+from .core.feedhandler import MultiFeedHandler
+
+
 
 def main():
+
+    stitch_two_videos()
+
+def stitch_two_videos(config_profile="config/profile.yml"):
+    """
+    Stitches two videos together based on settings in the configuration profile.
+    """
+
+    # Retrieves configuration and sets left and right feeds.
+    config = get_configuration(config_profile)
+    left_feed = VideoFeed(config['left-video'])
+    right_feed = VideoFeed(config['right-video'])
+
+    handler = MultiFeedHandler([left_feed, right_feed])
+    handler.stitch_feeds()
+
+
+
+def electron_driver():
 
     def cleanup(signal_num, frame):
         """
@@ -80,3 +102,57 @@ def main():
         cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+
+
+
+def parse_args():
+    """
+    Returns parsed arguments from command line.
+    """
+
+    # Opens up an argument parser.
+    parser = argparse.ArgumentParser(description="Facilitates command line stitching interaction.")
+
+    # Adds arguments to the parser for interactive mode and options.
+    parser.add_argument('-f', action='store', required=True,
+                        type=str,
+                        dest='output_path',
+                        help='File path for stream output (excluding extension).')
+    parser.add_argument('-i', default=0, action='store',
+                        type=int,
+                        dest='camera_index',
+                        help='Index of camera feed to be captured.')
+    parser.add_argument('-p', action='store_true', default=False,
+                        dest='just_preview',
+                        help='Preview camera feed without writing to file or streaming.')
+    parser.add_argument('-s', action='store_true', default=False,
+                        dest='should_stream',
+                        help='Indicates whether result should be streamed.')
+    parser.add_argument('--width', action='store', default=640,
+                        type=int,
+                        dest='width',
+                        help='Width dimension of output video')
+    parser.add_argument('--height', action='store', default=480,
+                        type=int,
+                        dest='height',
+                        help='Height dimension of output video')
+    parser.add_argument('--url', action='store', default="rtmp://152.23.133.52:1935/live/myStream",
+                        type=str,
+                        dest='rtmp_url',
+                        help='RTMP url to stream to.')
+    parser.add_argument('--leftIndex', action='store', default=1,
+                        type=int,
+                        dest='left_index',
+                        help='Left camera index for stitching.')
+    parser.add_argument('--rightIndex', action='store', default=1,
+                        type=int,
+                        dest='right_index',
+                        help='Right camera index for stitching.')
+    parser.add_argument('--stitch', action='store_true', default=False,
+                        dest='should_stitch',
+                        help='Indicates whether stitching should occur.')
+
+    return parser.parse_args()
+
+if __name__ == "__main__":
+    main()

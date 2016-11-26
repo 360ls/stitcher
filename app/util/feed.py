@@ -177,10 +177,11 @@ class CameraFeed(Feed):
 
 class VideoFeed(Feed):
     """ Wrapper class for video feed. """
-    def __init__(self, path, width=400):
+    def __init__(self, path, width=640, height=480):
         self.path = path
         self.video_feed = cv2.VideoCapture(path)
         self.width = width
+        self.height = height
 
     def is_valid(self):
         """
@@ -222,36 +223,22 @@ class VideoFeed(Feed):
             frame = imutils.resize(frame, width=self.width)
         return frame
 
-    def show(self):
+    def show(self, correct=True):
         """
-        Shows a resized version of the VideoFeed.
+        Shows a resized version of the CameraFeed.
         """
         if self.is_valid():
             while self.has_next():
-                frame = self.get_next(True, False)
+                if correct:
+                    frame = self.get_next()
+                else:
+                    frame = self.get_next(True, False)
                 title = "Video Feed"
                 cv2.imshow(title, frame)
                 key = cv2.waitKey(1) & 0xFF
                 if key == ord("q"):
                     break
-            TextFormatter.print_info("Cleaning up the video feed.")
-            self.close()
-            cv2.destroyAllWindows()
-            cv2.waitKey(1)
-
-    def show_corrected(self):
-        """
-        Shows a corrected and resized version of the VideoFeed.
-        """
-        if self.is_valid():
-            while self.has_next():
-                frame = self.get_next()
-                title = "Video Feed"
-                cv2.imshow(title, frame)
-                key = cv2.waitKey(1) & 0xFF
-                if key == ord("q"):
-                    break
-            TextFormatter.print_info("Cleaning up the video feed.")
+            TextFormatter.print_info("Cleaning up the camera feed.")
             self.close()
             cv2.destroyAllWindows()
             cv2.waitKey(1)
