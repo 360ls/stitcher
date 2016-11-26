@@ -1,5 +1,5 @@
 """
-Module for correcting and stitching frames and feeds. Can be used as a driver from the electron application.
+Module for correcting and stitching frames and feeds. Can be used as a driver from the electron app.
 """
 
 from __future__ import absolute_import, division, print_function

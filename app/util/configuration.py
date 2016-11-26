@@ -14,31 +14,36 @@ class Configuration(object):
     The Configuration class creates a configuration instance from a profile yaml file.
     """
 
-    def __init__(self, config_profile="config/profile.yml"):
+    def __init__(self, config_profile="../../config/profile.yml"):
         """ The Configuration class constructor instantiates the Configuration class. """
 
-        self.config_file = config_profile
+        self.config_profile = config_profile
         self.check_config_file()
-
-    def get_fields(self):
-        """ Returns generator of instance key value pairs """
-        for attr, value in self.__dict__.iteritems():
-            if attr == "config_file":
-                continue
-            yield value
+        self.get_configuration()
 
     def check_config_file(self):
-        """ Checks for an existing yml configuration file. """
+        """ Checks for an existing yaml configuration profile. """
 
-        if not os.path.isfile(self.config_file):
-            raise ValueError('Configuration file does not exist.')
+        if not os.path.isfile(self.config_profile):
+            raise ValueError('The provided configuration profile does not exist.')
+
+    def get_configuration(self):
+        """
+        Maps configuration from profile to object.
+        """
+
+        # Opens up configuration profile and gets configuration, then cleans up.
+        with open(self.config_profile, 'r') as config_profile:
+            configuration = yaml.load(config_profile)
+        # self.configuration_name = configuration.configuration-name
+        print(configuration)
 
     def print_configuration(self):
         """
-        Displays configuration file contents
+        Displays contents of configuration profile.
         """
-
-        with open(self.config_file, 'r') as config_file:
-            config_dict = yaml.load(config_file)
-        for key in sorted(config_dict.keys()):
-            TextFormatter.print_pair(key, config_dict[key])
+        TextFormatter.print_heading("Current Configuration")
+        with open(self.config_profile, 'r') as config_profile:
+            configuration = yaml.load(config_profile)
+        for key in sorted(configuration.keys()):
+            TextFormatter.print_pair(key, configuration[key])

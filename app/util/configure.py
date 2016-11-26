@@ -3,8 +3,6 @@ Module responsible for configuration based on instructions in the profile.yml co
 """
 from __future__ import absolute_import, division, print_function
 
-import sys
-
 from .configuration import Configuration
 from .textformatter import TextFormatter
 
@@ -13,29 +11,24 @@ def main():
     """
     Responsible for handling configuration call from the command line.
     """
-    configuration = load_profile()
-    configure_stitching(configuration)
+    configure_stitching()
 
-def configure_stitching(configuration):
-  """
-  Responsible for core functionality of configuration from profile.yml.
-  """
-  pass
+def configure_stitching():
+    """
+    Responsible for core functionality of configuration from profile.yml.
+    """
+    configuration = load_profile()
 
 def load_profile():
     """
     Loads profile.yml to get configuration parameters.
     """
     try:
-        config = Configuration()
-        print("%s %s" % ("Profile is valid and parsed properly.", TextFormatter.get_check()))
-        return config
+        configuration = Configuration()
+        TextFormatter.print_info("Profile is valid and parsed properly.")
+        return configuration
     except:
-        print("{0} {1}"
-              .format("Profile parsed. Invalid configuration. Please reconfigure.",
-                      TextFormatter.get_xmark()))
-        sys.exit(-1)
-
+        TextFormatter.print_error("Profile was parsed, but it was invalid.")
 
 if __name__ == "__main__":
-  main()
+    main()

@@ -21,6 +21,9 @@ install:
 electron:
 	electron . ; python -m $(PACKAGE_DIR).cli -n
 
+configure:
+	python -m $(UTILITY_DIR).configure
+
 run:
 	python -m $(STITCHER_DIR).stitch --option=0
 
