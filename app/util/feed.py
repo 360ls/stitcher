@@ -95,14 +95,6 @@ class CameraFeed(Feed):
         """
         return self.camera_feed.retrieve()
 
-    # def fps_wait(self):
-    #     """
-    #     Waits for the calculated frame_duration.
-    #     Used to ensure fps is as accurate as possible.
-    #     """
-    #     frame_duration = 1.0/self.fps
-    #     time.sleep(frame_duration)
-
 
     def get_next(self, resize=True, correct=True):
         """

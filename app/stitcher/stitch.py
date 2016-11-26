@@ -12,7 +12,7 @@ import cv2
 from app.util.feed import CameraFeed, VideoFeed
 from app.util.configure import get_configuration
 
-from .core.feedhandler import MultiFeedHandler
+from .core.feedhandler import SingleFeedHandler, MultiFeedHandler
 
 
 
@@ -27,10 +27,14 @@ def stitch_two_videos(config_profile="config/profile.yml"):
 
     # Retrieves configuration and sets left and right feeds.
     config = get_configuration(config_profile)
-    left_feed = VideoFeed(config['left-video'])
-    right_feed = VideoFeed(config['right-video'])
+    left_feed = VideoFeed(config['left-video-path'])
+    right_feed = VideoFeed(config['right-video-path'])
 
-    handler = MultiFeedHandler([left_feed, right_feed])
+    # handler = MultiFeedHandler([left_feed, right_feed])
+    # print("got here")
+    # handler.stitch_feeds()
+
+    handler = SingleFeedHandler(left_feed)
     handler.stitch_feeds()
 
 
