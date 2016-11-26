@@ -1,9 +1,12 @@
+# Configuration metadata
+configuration-name: Standard Configuration 
+
 # For the case of stitching two cameras:
 left-index: 1
 right-index: 2
 
 # For the case of stitching two videos:
-left-video-path: 
+left-video-path: /Users/lukefernandez/Projects/360ls-stitcher/data/videos/2.mp4
 right-video-path: /Users/lukefernandez/Projects/360ls-stitcher/data/videos/2.mp4
 
 # For the case of stitching between two and four cameras:
@@ -13,11 +16,11 @@ third-index: 3
 fourth-index: 4
 
 # For the case of stitching between two and four videos:
-first-video-path:
-second-video-path:
-third-video-path:
-fourth-video-path:
+first-video-path: /Users/lukefernandez/Projects/360ls-stitcher/data/videos/2.mp4
+second-video-path: /Users/lukefernandez/Projects/360ls-stitcher/data/videos/2.mp4
+third-video-path: /Users/lukefernandez/Projects/360ls-stitcher/data/videos/2.mp4
+fourth-video-path: /Users/lukefernandez/Projects/360ls-stitcher/data/videos/2.mp4
 
 # Default values for width, height, etc.
-width: 
-height: 
+width: 640
+height: 480 

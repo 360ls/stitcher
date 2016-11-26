@@ -18,8 +18,11 @@ clean-install:
 install:
 	pip install -r $(CONFIGURATION_DIR)/requirements.txt ; yarn install
 
-run:
+electron:
 	electron . ; python -m $(PACKAGE_DIR).cli -n
+
+run:
+	python -m $(STITCHER_DIR).stitch --option=0
 
 cli:
 	python -m $(PACKAGE_DIR).cli -n

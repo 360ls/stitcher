@@ -1,5 +1,5 @@
 """
-Module for correcting and stitching frames and feeds.
+Module for correcting and stitching frames and feeds. Can be used as a driver from the electron application.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -20,7 +20,9 @@ def main():
     parsed_args = parse_args()
     option = parsed_args.option_num
 
-    if option == 1:
+    if option == 0:
+        pass
+    elif option == 1:
         example_correct_single_frame()
     elif option == 2:
         example_cubemap()
@@ -147,7 +149,7 @@ def parse_args():
     """
 
     # Opens up an argument parser.
-    parser = argparse.ArgumentParser(description="Determines type of capture.")
+    parser = argparse.ArgumentParser(description="Determines stitching mode.")
 
     parser.add_argument('--option', action='store',
                         type=int,
