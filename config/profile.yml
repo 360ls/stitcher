@@ -1,0 +1,23 @@
+# For the case of stitching two cameras:
+left-index: 1
+right-index: 2
+
+# For the case of stitching two videos:
+left-video-path: 
+right-video-path: /Users/lukefernandez/Projects/360ls-stitcher/data/videos/2.mp4
+
+# For the case of stitching between two and four cameras:
+first-index: 1
+second-index: 2
+third-index: 3
+fourth-index: 4
+
+# For the case of stitching between two and four videos:
+first-video-path:
+second-video-path:
+third-video-path:
+fourth-video-path:
+
+# Default values for width, height, etc.
+width: 
+height: 

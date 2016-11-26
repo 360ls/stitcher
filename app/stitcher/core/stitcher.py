@@ -3,6 +3,7 @@
 This module encapsulates the Stitcher class to enable stitching of images/frames.
 """
 from __future__ import absolute_import, division, print_function
+
 import numpy as np
 import argparse
 import subprocess
@@ -10,6 +11,7 @@ import signal
 import imutils
 import sys
 import cv2
+
 from app.util.textformatter import TextFormatter
 from app.util.feed import CameraFeed
 from .feedhandler import MultiFeedHandler
