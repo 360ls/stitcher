@@ -14,148 +14,69 @@ from .core.stitcher import Stitcher
 from .core.feedhandler import SingleFeedHandler, MultiFeedHandler
 
 def main():
-    """
-    Main function of the stitch module. Responsible for handling command line options.
-    """
+
+    def cleanup(signal_num, frame):
+        """
+        Handles release of feed after electron application is done with it.
+        """
+        feed.close
+        video_output.release()
+        cv2.destroyAllWindows()
+        sys.exit(0)
+
     parsed_args = parse_args()
-    option = parsed_args.option_num
 
-    if option == 0:
-        pass
-    elif option == 1:
-        example_correct_single_frame()
-    elif option == 2:
-        example_cubemap()
-    elif option == 3:
-        example_single_stitch_frames()
-    elif option == 4:
-        example_two_feed_stitch()
-    else:
-        TextFormatter.print_error("Please enter an option argument.")
+    output_path = parsed_args.output_path
+    camera_index = parsed_args.camera_index
+    just_preview = parsed_args.just_preview
+    should_stream = parsed_args.should_stream
+    width = parsed_args.width
+    height = parsed_args.height
+    rtmp_url = parsed_args.rtmp_url
+    left_index = parsed_args.left_index
+    right_index = parsed_args.right_index
+    should_stitch = parsed_args.should_stitch
 
-def example_correct_single_frame():
-    """
-    Runs an example of correction of a single frame.
-    """
-    frame = cv2.imread("app/storage/uncorrected_checker.jpg")
-    correct_single_frame(frame)
+    if should_stitch:
+        feed1 = CameraFeed(left_index)
+        feed2 = CameraFeed(right_index)
+        handler = MultiFeedHandler
 
-def example_cubemap():
-    """
-    Creates a cubemap from a series of images.
-    """
-    cube_frame = cv2.imread("app/storage/uncorrected.png")
-    resized_cube_frame = imutils.resize(cube_frame, 300)
-    cubemap(resized_cube_frame)
-
-def example_single_stitch_frames():
-    """
-    Runs an example double stitch.
-    """
-    img1 = cv2.imread("app/storage/stitch_tester/yard1.jpg")
-    img2 = cv2.imread("app/storage/stitch_tester/yard2.jpg")
-    img3 = cv2.imread("app/storage/stitch_tester/yard3.jpg")
-    img4 = cv2.imread("app/storage/stitch_tester/yard4.jpg")
-    img1 = imutils.resize(img1, 400)
-    img2 = imutils.resize(img2, 400)
-    img3 = imutils.resize(img3, 400)
-    img4 = imutils.resize(img4, 400)
-
-    stitcher = Stitcher()
-    stitcher.show_stitch(img1, img2)
-    stitcher.reset()
-    stitcher.show_stitch(img1, img4)
-
-def example_single_feed_stitch():
-    """
-    Shows "stitched" single feed handled by feed handler.
-    """
-    feed = CameraFeed(0)
-    handler = SingleFeedHandler(feed)
-    handler.stitch_feeds()
-
-def example_two_feed_stitch():
-    """
-    Shows two stitched feeds handled by feed handler.
-    """
-    feed1 = CameraFeed(0, 400)
-    feed2 = CameraFeed(1, 400)
-    handler = MultiFeedHandler([feed1, feed2])
-    handler.stitch_feeds()
-
-def example_double_stitch():
-    """
-    Runs an example double stitch.
-    """
-    img1 = cv2.imread("app/storage/stitch_tester/yard1.jpg")
-    img2 = cv2.imread("app/storage/stitch_tester/yard2.jpg")
-    img3 = cv2.imread("app/storage/stitch_tester/yard3.jpg")
-    img4 = cv2.imread("app/storage/stitch_tester/yard4.jpg")
-    img1 = imutils.resize(img1, 400)
-    img2 = imutils.resize(img2, 400)
-    img3 = imutils.resize(img3, 400)
-    img4 = imutils.resize(img4, 400)
-
-    stitcher = Stitcher()
-    stitcher.double_stitch(img1, img2, img3)
+        if should_stream:
+            handler.stitch_feeds([feed1, feed2], True)
+        else:
+            handler.stitch_feeds([feed1, feed2])
 
 
-def correct_single_frame(frame):
-    """
-    Function to correct distortion on a single frame/image.
-    """
-    corrected_frame = correct_distortion(frame)
-    resized_frame = imutils.resize(frame, 400)
-    resized_corrected_frame = imutils.resize(corrected_frame, 400)
-    title = "Corrected Image"
-    cv2.imshow("Uncorrected Image", resized_frame)
-    cv2.imshow(title, resized_corrected_frame)
-    key = cv2.waitKey(0) & 0xFF
-    if key == ord("q"):
-        print("this happened")
-        cv2.destroyAllWindows()
-        cv2.waitKey(1)
+    # What is this exactly?
+    signal.signal(signal.SIGINT, cleanup)
+    signal.signal(signal.SIGTERM, cleanup)
 
-def correct_single_camera(feed_index=0):
-    """
-    Function to show corrected distortion for a camera feed.
-    """
-    camera_feed = CameraFeed(feed_index)
-    camera_feed.show(True)
+    extension = ''
 
-def correct_single_video(video_path="app/storage/uncorrected.mp4"):
-    """
-    Function to show corrected distortion for a camera feed.
-    """
-    video_feed = VideoFeed(video_path)
-    video_feed.show_corrected()
+    # Sets up the writing for writing data from camera feed.
+    destination = output_path + extension
+    feed = CameraFeed(camera_index)
+    codec = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
+    video_output = cv2.VideoWriter(destination, codec, 20.0, (width, height))
+    dimensions = str(width) + 'x' + str(height)
 
-def cubemap(frame):
-    """
-    Function to create an example cubemap from a single image.
-    """
-    left_half = np.concatenate((frame, frame), axis=1)
-    right_half = np.concatenate((frame, frame), axis=1)
-    full = np.concatenate((left_half, right_half), axis=1)
-    cv2.imshow("Cube Map", full)
-    key = cv2.waitKey(0) & 0xFF
-    if key == ord("q"):
-        cv2.destroyAllWindows()
-        cv2.waitKey(1)
+    if should_stream:
+        proc = subprocess.Popen([
+            'ffmpeg', '-y', '-f', 'rawvideo',
+            '-s', dimensions, '-pix_fmt', 'bgr24', '-i','pipe:0','-vcodec',
+            'libx264','-pix_fmt','uyvy422','-r','28','-an', '-f','flv',
+            rtmp_url], stdin=subprocess.PIPE)
 
-def parse_args():
-    """
-    Returns parsed arguments from command line input.
-    """
+    while True:
 
-    # Opens up an argument parser.
-    parser = argparse.ArgumentParser(description="Determines stitching mode.")
+        frame = feed.get_next(True, False)
 
-    parser.add_argument('--option', action='store',
-                        type=int,
-                        dest='option_num',
-                        help='Option number for selected stitching and streaming option.')
-    return parser.parse_args()
+        if not just_preview:
+            video_output.write(frame)
+        if should_stream:
+            proc.stdin.write(frame.toString())
 
-if __name__ == "__main__":
-    main()
+        cv2.imshow('frame', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break

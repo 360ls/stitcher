@@ -25,7 +25,7 @@ configure:
 	python -m $(UTILITY_DIR).configure
 
 run:
-	python -m $(STITCHER_DIR).stitch --option=0
+	python -m $(STITCHER_DIR).stitch
 
 cli:
 	python -m $(PACKAGE_DIR).cli -n
@@ -48,16 +48,16 @@ push:
 ### =============  Utilities  ============= ###
 
 sample-stitch:
-	python -m $(STITCHER_DIR).stitch --option=3
+	python -m $(STITCHER_DIR).stitchexamples --option=3
 
 sample-feed-stitch:
-	python -m $(STITCHER_DIR).stitch --option=4	
+	python -m $(STITCHER_DIR).stitchexamples --option=4	
 
 single-corrected-frame:
-	python -m $(STITCHER_DIR).stitch --option=1
+	python -m $(STITCHER_DIR).stitchexamples --option=1
 
 cubemap:
-	python -m $(STITCHER_DIR).stitch --option=2
+	python -m $(STITCHER_DIR).stitchexamples --option=2
 
 calibrate:
 	python -m $(UTILITY_DIR).calibrate
