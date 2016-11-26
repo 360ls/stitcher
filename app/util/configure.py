@@ -9,25 +9,19 @@ from .textformatter import TextFormatter
 
 def main():
     """
-    Responsible for handling configuration call from the command line.
+    Responsible for loading and printing standard configuration.
     """
-    configure_stitching()
+    get_configuration()
 
-def configure_stitching():
-    """
-    Responsible for core functionality of configuration from profile.yml.
-    """
-    configuration = load_profile()
-
-def load_profile():
+def get_configuration():
     """
     Loads profile.yml to get configuration parameters.
     """
     try:
         configuration = Configuration()
         TextFormatter.print_info("Profile is valid and parsed properly.")
-        return configuration
-    except:
+        return configuration.get()
+    except ValueError:
         TextFormatter.print_error("Profile was parsed, but it was invalid.")
 
 if __name__ == "__main__":

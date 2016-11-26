@@ -14,12 +14,11 @@ class Configuration(object):
     The Configuration class creates a configuration instance from a profile yaml file.
     """
 
-    def __init__(self, config_profile="../../config/profile.yml"):
+    def __init__(self, config_profile="config/profile.yml"):
         """ The Configuration class constructor instantiates the Configuration class. """
 
         self.config_profile = config_profile
         self.check_config_file()
-        self.get_configuration()
 
     def check_config_file(self):
         """ Checks for an existing yaml configuration profile. """
@@ -27,7 +26,7 @@ class Configuration(object):
         if not os.path.isfile(self.config_profile):
             raise ValueError('The provided configuration profile does not exist.')
 
-    def get_configuration(self):
+    def get(self):
         """
         Maps configuration from profile to object.
         """
@@ -35,10 +34,10 @@ class Configuration(object):
         # Opens up configuration profile and gets configuration, then cleans up.
         with open(self.config_profile, 'r') as config_profile:
             configuration = yaml.load(config_profile)
-        # self.configuration_name = configuration.configuration-name
-        print(configuration)
 
-    def print_configuration(self):
+        return configuration
+
+    def print(self):
         """
         Displays contents of configuration profile.
         """
