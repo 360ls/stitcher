@@ -48,6 +48,7 @@ class TextFormatter(object):
         Prints error message.
         """
         error_msg = colored("[ERROR] %s" % msg, "red", attrs=['bold'])
+        TextFormatter.print_new_line()
         print(error_msg)
 
     @staticmethod
@@ -64,6 +65,7 @@ class TextFormatter(object):
         Prints information message.
         """
         info_msg = colored("[INFO] %s" % msg, "white", attrs=['bold'])
+        TextFormatter.print_new_line()
         print(info_msg)
 
     @staticmethod

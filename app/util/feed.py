@@ -64,16 +64,16 @@ class CameraFeed(Feed):
         What is coming: checking if the frame is all black or close to all black.
         If it isn't, return true (in addition to the current feed validity test)
         """
-        frame = self.camera_feed.grab()
-        self.camera_feed.release()
-        self.camera_feed = cv2.VideoCapture(self.feed_index)
+        frame_indicator = self.camera_feed.grab()
 
         # If a frame is read, print message and return True.
-        if frame:
+        if frame_indicator:
             msg = "Index {0} is valid {1}".format(
                 TextFormatter.color_text(str(self.feed_index), "magenta"),
                 TextFormatter.get_check())
             print(msg)
+            self.camera_feed.release()
+            self.camera_feed = cv2.VideoCapture(self.feed_index)
             return True
         else:
             msg = "Index {0} is invalid {1}".format(
@@ -187,15 +187,15 @@ class VideoFeed(Feed):
         Declares whether or not the VideoFeed instance is a valid feed.
         Similar in meaning to has_next(self), but with output.
         """
-        frame = self.video_feed.grab()
-        self.video_feed.release()
-        self.video_feed = cv2.VideoCapture(self.path)
+        frame_indicator = self.video_feed.grab()
 
-        if frame:
+        if frame_indicator:
             msg = "Video file {0} is valid {1}".format(
                 TextFormatter.color_text(str(self.path), "magenta"),
                 TextFormatter.get_check())
             print(msg)
+            self.video_feed.release()
+            self.video_feed = cv2.VideoCapture(self.path)
             return True
         else:
             msg = "Video file {0} is invalid {1}".format(

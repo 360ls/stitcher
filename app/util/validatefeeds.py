@@ -10,19 +10,22 @@ def view_valid_camera_feeds():
     Shows all valid feed views, one after another. The next feed shows when the current is closed.
     """
     valid_feeds = []
-    TextFormatter.print_heading("Checking for valid streams.")
+    TextFormatter.print_heading("Checking for valid feeds.")
     try:
-        for index in xrange(6):
+        for index in xrange(1, 5):
             if check_feed(index):
                 valid_feeds.append(index)
     except NameError:
-        for index in range(6):
+        for index in range(1, 5):
             if check_feed(index):
                 valid_feeds.append(index)
 
-    TextFormatter.print_heading("Valid Streams:")
-    for feed in valid_feeds:
-        show_camera_feed(feed)
+    if len(valid_feeds) > 0:
+        TextFormatter.print_heading("Valid Feeds:")
+        for feed in valid_feeds:
+            show_camera_feed(feed)
+    else:
+        TextFormatter.print_info("No Valid Feeds")
 
 def check_feed(feed_index):
     """
