@@ -34,7 +34,7 @@ class Configuration(object):
         # Opens up configuration profile and gets configuration, then cleans up.
         with open(self.config_profile, 'r') as config_profile:
             configuration = yaml.load(config_profile)
-
+        TextFormatter.print_info("You have imported the %s configuration." % configuration['name'])
         return configuration
 
     def print(self):

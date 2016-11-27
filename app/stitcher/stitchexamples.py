@@ -11,7 +11,7 @@ from app.util.feed import CameraFeed, VideoFeed
 from app.util.textformatter import TextFormatter
 from .correction.corrector import correct_distortion
 from .core.stitcher import Stitcher
-from .core.feedhandler import SingleFeedHandler, MultiFeedHandler
+from .core.feedhandler import MultiFeedHandler
 
 def main():
     """
@@ -71,7 +71,7 @@ def example_single_feed_stitch():
     Shows "stitched" single feed handled by feed handler.
     """
     feed = CameraFeed(0)
-    handler = SingleFeedHandler(feed)
+    handler = MultiFeedHandler([feed])
     handler.stitch_feeds()
 
 def example_two_feed_stitch():

@@ -19,7 +19,38 @@ from .core.feedhandler import MultiFeedHandler
 def main():
 
     stitch_single_video()
-    stitch_two_videos()
+    # stitch_two_videos()
+    # stitch_two_corrected_videos()
+
+    # handle_arguments()
+
+# def handle_arguments():
+#     """
+#     Handles command line arguments and drive corresponding stitching tasks.
+#     """
+#     parsed_args = parse_args()
+
+#     camera_index = parsed_args.camera_index
+#     width = parsed_args.width
+#     height = parsed_args.height
+#     just_preview = parsed_args.just_preview
+
+#     output_path = parsed_args.output_path
+
+#     should_stream = parsed_args.should_stream
+#     rtmp_url = parsed_args.rtmp_url
+
+#     left_index = parsed_args.left_index
+#     right_index = parsed_args.right_index
+#     should_stitch = parsed_args.should_stitch
+
+#     if just_preview is True:
+#         if right_index is not None:
+#             MultiFeedHandler()
+#         else:
+
+
+
 
 def stitch_single_video(config_profile="config/profiles/standard.yml"):
     """
@@ -27,7 +58,7 @@ def stitch_single_video(config_profile="config/profiles/standard.yml"):
     """
 
     config = get_configuration(config_profile)
-    feed = VideoFeed(config['left-video-path'])
+    feed = VideoFeed(config['left-video-path'], 400, 300)
     handler = MultiFeedHandler([feed])
     handler.stitch_feeds()
 
@@ -38,13 +69,26 @@ def stitch_two_videos(config_profile="config/profiles/standard.yml"):
 
     # Retrieves configuration and sets left and right feeds.
     config = get_configuration(config_profile)
-    left_feed = VideoFeed(config['left-video-path'])
-    right_feed = VideoFeed(config['right-video-path'])
+    left_feed = VideoFeed(config['left-video-path'], 400, 300)
+    right_feed = VideoFeed(config['right-video-path'], 400, 300)
 
     handler = MultiFeedHandler([left_feed, right_feed])
     print("got here")
     handler.stitch_feeds()
 
+def stitch_two_corrected_videos(config_profile="config/profiles/standard.yml"):
+    """
+    Stitches two corredted videos together based on settings in the config profile.
+    """
+
+    # Retrieves configuration and sets left and right feeds.
+    config = get_configuration(config_profile)
+    left_feed = VideoFeed(config['left-video-path'], 400, 300)
+    right_feed = VideoFeed(config['right-video-path'], 400, 300)
+
+    handler = MultiFeedHandler([left_feed, right_feed])
+    print("got here")
+    handler.stitch_feeds(True, False)
 
 
 def electron_driver():
