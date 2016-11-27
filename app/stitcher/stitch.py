@@ -18,11 +18,22 @@ from .core.feedhandler import SingleFeedHandler, MultiFeedHandler
 
 def main():
 
+    stitch_single_video()
     stitch_two_videos()
 
-def stitch_two_videos(config_profile="config/profile.yml"):
+def stitch_single_video(config_profile="config/profiles/standard.yml"):
     """
-    Stitches two videos together based on settings in the configuration profile.
+    Stitches (sorta) one video based on settings in the config profile.
+    """
+
+    config = get_configuration(config_profile)
+    feed = VideoFeed(config['left-video-path'])
+    handler = SingleFeedHandler(feed)
+    handler.stitch_feeds()
+
+def stitch_two_videos(config_profile="config/profiles/standard.yml"):
+    """
+    Stitches two videos together based on settings in the config profile.
     """
 
     # Retrieves configuration and sets left and right feeds.
@@ -30,11 +41,8 @@ def stitch_two_videos(config_profile="config/profile.yml"):
     left_feed = VideoFeed(config['left-video-path'])
     right_feed = VideoFeed(config['right-video-path'])
 
-    # handler = MultiFeedHandler([left_feed, right_feed])
-    # print("got here")
-    # handler.stitch_feeds()
-
-    handler = SingleFeedHandler(left_feed)
+    handler = MultiFeedHandler([left_feed, right_feed])
+    print("got here")
     handler.stitch_feeds()
 
 

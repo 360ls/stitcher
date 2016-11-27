@@ -13,7 +13,7 @@ def main():
     """
     get_configuration()
 
-def get_configuration(config_profile="config/profile.yml"):
+def get_configuration(config_profile="config/profiles/standard.yml"):
     """
     Loads profile.yml to get configuration parameters.
     """
