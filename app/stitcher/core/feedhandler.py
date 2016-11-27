@@ -15,42 +15,12 @@ class FeedHandler(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def stitch_feeds(self):
+    def stitch_feeds(self, correct, should_stream):
         """
-        Takes in a list of feeds and stitches them into one outgoing stream
-        """
-        pass
-
-    @abstractmethod
-    def stitch_corrected_feeds(self):
-        """
-        Takes in a list of feeds and stitches them into one outgoing stream
-        after applying distortion correction.
+        Takes in a list of feeds and stitches them into one outgoing stream.
         """
         pass
 
-    @abstractmethod
-    def stream_rtmp(self):
-        """
-        Streams frames to RTMP.
-        """
-        pass
-
-class SingleFeedHandler(FeedHandler):
-    """
-    Handler for generating a stream from a single feed.
-    """
-    def __init__(self, feed):
-        self.feed = feed
-
-    def stitch_feeds(self):
-        stitch([self.feed], stitch_frame, False)
-
-    def stitch_corrected_feeds(self):
-        stitch([self.feed], stitch_frame, False)
-
-    def stream_rtmp(self):
-        stitch([self.feed], stitch_frame, True)
 
 class MultiFeedHandler(FeedHandler):
     """
@@ -59,25 +29,19 @@ class MultiFeedHandler(FeedHandler):
     def __init__(self, feeds):
         self.feeds = feeds
 
-    def stitch_feeds(self, should_stream=False):
+    def stitch_feeds(self, correct=False, should_stream=False):
         feed_count = len(self.feeds)
-        if feed_count < 4:
-            stitch(self.feeds, stitch_two_frames, should_stream)
+        if feed_count == 1:
+            stitch(self.feeds, stitch_frame, correct, should_stream)
+        elif feed_count == 2:
+            stitch(self.feeds, stitch_two_frames, correct, should_stream)
+        elif feed_count == 3:
+            stitch(self.feeds, stitch_three_frames, correct, should_stream)
         else:
-            stitch(self.feeds, stitch_four_frames, should_stream)
-
-    def stitch_corrected_feeds(self):
-        feed_count = len(self.feeds)
-        if feed_count < 4:
-            stitch(self.feeds, stitch_two_frames, False)
-        else:
-            stitch(self.feeds, stitch_four_frames, False)
-
-    def stream_rtmp(self):
-        stitch(self.feeds, stitch_frame, True)
+            stitch(self.feeds, stitch_four_frames, correct, should_stream)
 
 
-def stitch(feeds, stitcher_func, should_stream):
+def stitch(feeds, stitcher_func, correct, should_stream):
     """
     Main stitching function for stitching feeds together.
     """
@@ -95,7 +59,10 @@ def stitch(feeds, stitcher_func, should_stream):
 
     if all([feed.is_valid() for feed in feeds]):
         while all([feed.has_next() for feed in feeds]):
-            frames = [feed.get_next(True, False) for feed in feeds]
+            if correct is False:
+                frames = [feed.get_next(True, False) for feed in feeds]
+            else:
+                frames = [feed.get_next(True, True) for feed in feeds]
             stitched_frame = stitcher_func(frames,
                                            [left_stitcher, right_stitcher, combined_stitcher])
 
@@ -124,7 +91,7 @@ def identity(frame):
 def stitch_frame(frames, _):
     """
     Stitching for single frame.
-    Simple returns the frame of the first index in the frames list.
+    Simply returns the frame of the first index in the frames list.
     """
     return frames[0]
 
@@ -133,6 +100,14 @@ def stitch_two_frames(frames, stitchers):
     Stitches two frames together via the first stitcher in the stitcher array.
     """
     return stitchers[0].stitch(frames[0], frames[1])
+
+def stitch_three_frames(frames, stitchers):
+    """
+    Stitches three frames together via the first and second stitcher in the stitcher array.
+    """
+    first_stitch = stitchers[0].stitch(frames[0], frames[1])
+
+    return stitchers[1].stitch(first_stitch, frames[2])
 
 def stitch_four_frames(frames, stitchers):
     """
