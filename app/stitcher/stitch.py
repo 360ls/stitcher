@@ -18,36 +18,55 @@ from .core.feedhandler import MultiFeedHandler
 
 def main():
 
-    stitch_single_video()
+    # stitch_single_video()
     # stitch_two_videos()
     # stitch_two_corrected_videos()
 
-    # handle_arguments()
+    handle_arguments()
 
-# def handle_arguments():
-#     """
-#     Handles command line arguments and drive corresponding stitching tasks.
-#     """
-#     parsed_args = parse_args()
+def handle_arguments():
+    """
+    Handles command line arguments and drive corresponding stitching tasks.
+    """
+    parsed_args = parse_args()
 
-#     camera_index = parsed_args.camera_index
-#     width = parsed_args.width
-#     height = parsed_args.height
-#     just_preview = parsed_args.just_preview
+    camera_index = parsed_args.camera_index
+    width = parsed_args.width
+    height = parsed_args.height
+    just_preview = parsed_args.just_preview
 
-#     output_path = parsed_args.output_path
+    output_path = parsed_args.output_path
 
-#     should_stream = parsed_args.should_stream
-#     rtmp_url = parsed_args.rtmp_url
+    should_stream = parsed_args.should_stream
+    rtmp_url = parsed_args.rtmp_url
 
-#     left_index = parsed_args.left_index
-#     right_index = parsed_args.right_index
-#     should_stitch = parsed_args.should_stitch
+    left_index = parsed_args.left_index
+    right_index = parsed_args.right_index
 
-#     if just_preview is True:
-#         if right_index is not None:
-#             MultiFeedHandler()
-#         else:
+
+    if right_index is not None:
+        left_feed = CameraFeed(left_index, width, height)
+        right_feed = CameraFeed(right_index, width, height)
+
+        # Creates a handler for left and right feeds
+        handler = MultiFeedHandler([left_feed, right_feed])
+    else:
+        feed = CameraFeed(camera_index, width, height)
+
+        # Creates a handler for single feed
+        handler = MultiFeedHandler([feed])
+
+    if just_preview is True:
+        handler.stitch_feeds()
+    else:
+        if should_stream:
+            # Save video and stream
+            pass
+        else:
+            # Save video but do not stream
+            pass
+
+
 
 
 
