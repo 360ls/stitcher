@@ -29,19 +29,23 @@ class MultiFeedHandler(FeedHandler):
     def __init__(self, feeds):
         self.feeds = feeds
 
-    def stitch_feeds(self, correct=False, should_stream=False):
+    def stitch_feeds(self, correct=False, should_stream=False, output_path=None):
         feed_count = len(self.feeds)
         if feed_count == 1:
-            stitch(self.feeds, stitch_frame, correct, should_stream)
+            stitch(self.feeds, stitch_frame, correct, should_stream, output_path)
         elif feed_count == 2:
-            stitch(self.feeds, stitch_two_frames, correct, should_stream)
+            stitch(self.feeds, stitch_two_frames, correct, should_stream, output_path)
         elif feed_count == 3:
-            stitch(self.feeds, stitch_three_frames, correct, should_stream)
+            stitch(self.feeds, stitch_three_frames, correct, should_stream, output_path)
         else:
-            stitch(self.feeds, stitch_four_frames, correct, should_stream)
+            stitch(self.feeds, stitch_four_frames, correct, should_stream, output_path)
+
+    def clear_feeds(self):
+        for feed in self.feeds:
+            feed.close()
 
 
-def stitch(feeds, stitcher_func, correct, should_stream):
+def stitch(feeds, stitcher_func, correct, should_stream, output_path):
     """
     Main stitching function for stitching feeds together.
     """
@@ -49,13 +53,9 @@ def stitch(feeds, stitcher_func, correct, should_stream):
     right_stitcher = Stitcher()
     combined_stitcher = Stitcher()
 
-    if should_stream:
-        proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo', '-vcodec',
-                                 'rawvideo', '-s', '800x250', '-pix_fmt', 'bgr24',
-                                 '-r', '5', '-i', '-', '-an', '-f',
-                                 'flv', 'rtmp://54.208.55.156:1935/live/360ls']
-                                , stdin=subprocess.PIPE)
-
+    if output_path is not None:
+        # handle saving of video
+        pass
 
     if all([feed.is_valid() for feed in feeds]):
         while all([feed.has_next() for feed in feeds]):
@@ -67,7 +67,7 @@ def stitch(feeds, stitcher_func, correct, should_stream):
                                            [left_stitcher, right_stitcher, combined_stitcher])
 
             if should_stream:
-                proc.stdin.write(stitched_frame.tostring())
+                print(stitched_frame.tostring())
 
             cv2.imshow("Result", stitched_frame)
             key = cv2.waitKey(1) & 0xFF
