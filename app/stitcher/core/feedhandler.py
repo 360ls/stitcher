@@ -54,7 +54,7 @@ def stitch(feeds, stitcher_func, correct, should_stream, output_path):
     combined_stitcher = Stitcher()
 
     if output_path is not None:
-        # handle saving of video
+        # Handle saving of video
         pass
 
     if all([feed.is_valid() for feed in feeds]):
@@ -75,7 +75,7 @@ def stitch(feeds, stitcher_func, correct, should_stream, output_path):
             if key == ord("q"):
                 break
 
-        TextFormatter.print_status("[INFO] cleaning up...")
+        # TextFormatter.print_status("[INFO] cleaning up...")
 
         for feed in feeds:
             feed.close()

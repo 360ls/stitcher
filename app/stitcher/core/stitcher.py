@@ -97,8 +97,8 @@ def compute_homography(frame1, frame2):
             good_matches.append(match1)
 
     if len(good_matches) > min_match_count:
-        TextFormatter.print_info("Found %d matches. We need at least %d matches."
-                                 % (len(good_matches), min_match_count))
+        # TextFormatter.print_info("Found %d matches. We need at least %d matches."
+        #                          % (len(good_matches), min_match_count))
         src_pts = np.float32([keypoints1[good_match.queryIdx].pt
                               for good_match in good_matches]).reshape(-1, 1, 2)
         dst_pts = np.float32([keypoints2[good_match.trainIdx].pt
@@ -108,9 +108,9 @@ def compute_homography(frame1, frame2):
 
         return homography
     else:
-        TextFormatter.print_error("Images do not have enough matches to produce homography.")
-        TextFormatter.print_info("Found %d matches. We need at least %d matches."
-                                 % (len(good_matches), min_match_count))
+        # TextFormatter.print_error("Images do not have enough matches to produce homography.")
+        # TextFormatter.print_info("Found %d matches. We need at least %d matches."
+        #                          % (len(good_matches), min_match_count))
         return False
 
 def warp_images(img1, img2, homography):
