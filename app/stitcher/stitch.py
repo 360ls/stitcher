@@ -17,6 +17,7 @@ def main():
     Responsible for handling stitch call from the command line.
     """
     handle_arguments()
+    # stitch_two_videos()
 
 def handle_arguments():
     """
