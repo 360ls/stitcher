@@ -6,11 +6,14 @@ from __future__ import absolute_import, division, print_function
 
 import argparse
 import cv2
+import signal
 
 from app.util.feed import CameraFeed, VideoFeed
 from app.util.configure import get_configuration
 
 from .core.feedhandler import MultiFeedHandler
+
+feedhandler = None
 
 def main():
     """
@@ -37,6 +40,9 @@ def handle_arguments():
     should_stream = parsed_args.should_stream
     should_stitch = parsed_args.should_stitch
 
+    signal.signal(signal.SIGINT, electron_handler)
+    signal.signal(signal.SIGTERM, electron_handler)
+
     """
     If a right index value is provided, we know to instantiate the left and right feeds.
     Otherwise, a single feed is instantiated from the camera index value.
@@ -50,18 +56,25 @@ def handle_arguments():
             right_feed = CameraFeed(parsed_args.right_index, width, height)
 
             # Creates a handler for left and right feeds
-            handler = MultiFeedHandler([left_feed, right_feed])
+            global feedhandler
+            feedhandler = MultiFeedHandler([left_feed, right_feed])
         else:
             feed = CameraFeed(parsed_args.camera_index, width, height)
 
             # Creates a handler for single feed
-            handler = MultiFeedHandler([feed])
+            global feedhandler
+            feedhandler = MultiFeedHandler([feed])
 
         if just_preview is True:
-            handler.stitch_feeds(True, False, None)
+            feedhandler.stitch_feeds(True, False, None)
         else:
             # Stream will be saved to output_path, also streaming if should_stream is True
-            handler.stitch_feeds(True, should_stream, output_path)
+            feedhandler.stitch_feeds(True, should_stream, output_path)
+
+def electron_handler(signum, frame):
+    # When everything is done, release the capture and close all windows.
+    if feedhandler:
+        feedhandler.kill()
 
 
 def stitch_single_video(config_profile="config/profiles/standard.yml"):

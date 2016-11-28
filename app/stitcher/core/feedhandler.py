@@ -7,6 +7,7 @@ from abc import ABCMeta, abstractmethod
 import subprocess
 import cv2
 import imutils
+import sys
 
 from app.util.textformatter import TextFormatter
 from .stitcher import Stitcher
@@ -43,9 +44,11 @@ class MultiFeedHandler(FeedHandler):
         else:
             stitch(self.feeds, stitch_four_frames, correct, should_stream, output_path, width, height)
 
-    def clear_feeds(self):
+    def kill(self):
         for feed in self.feeds:
             feed.close()
+        cv2.destroyAllWindows()
+        sys.exit(0)
 
 
 def stitch(feeds, stitcher_func, correct, should_stream, output_path, width, height):

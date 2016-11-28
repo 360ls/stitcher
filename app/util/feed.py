@@ -4,6 +4,7 @@ Module for defining wrappers to OpenCV incoming feeds.
 from __future__ import absolute_import, division, print_function
 from abc import ABCMeta, abstractmethod
 import time
+import sys
 import imutils
 import cv2
 from app.stitcher.correction.corrector import correct_distortion
@@ -186,7 +187,8 @@ class VideoFeed(Feed):
             msg = "Video file {0} is valid {1}".format(
                 TextFormatter.color_text(str(self.path), "magenta"),
                 TextFormatter.get_check())
-            print(msg)
+            # print(msg)
+            sys.stderr.write(msg)
             self.video_feed.release()
             self.video_feed = cv2.VideoCapture(self.path)
             return True
@@ -194,7 +196,8 @@ class VideoFeed(Feed):
             msg = "Video file {0} is invalid {1}".format(
                 TextFormatter.color_text(str(self.path), "magenta"),
                 TextFormatter.get_xmark())
-            print(msg)
+            # print(msg)
+            sys.stderr.write(msg)
             return False
 
     def has_next(self):
