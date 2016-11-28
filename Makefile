@@ -43,7 +43,7 @@ test-travis:
 	pytest $(TEST_DIR)/nocv
 
 push:
-	git push origin; git push 360;
+	git push 360;
 
 ### =============  Utilities  ============= ###
 
