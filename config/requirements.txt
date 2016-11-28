@@ -1,0 +1,6 @@
+Flask
+imutils
+pytest
+termcolor
+future
+pylint

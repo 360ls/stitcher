@@ -1,4 +1,5 @@
-*# Byte-compiled / optimized / DLL files
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -104,3 +105,18 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Node package management
+node_modules/
+
+# Mac directory metadata files
+.DS_Store
+
+# Output files
+out/
+
+# Input files
+app/storage/
+
+# Yarn
+yarn.lock
