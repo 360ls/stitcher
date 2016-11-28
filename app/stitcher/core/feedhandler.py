@@ -65,7 +65,7 @@ def stitch(feeds, stitcher_func, correct, should_stream, output_path):
                 frames = [feed.get_next(True, True) for feed in feeds]
             stitched_frame = stitcher_func(frames,
                                            [left_stitcher, right_stitcher, combined_stitcher])
-
+            stitched_frame = cv2.resize(stitched_frame, (400, 200))
             if should_stream:
                 print(stitched_frame.tostring())
 

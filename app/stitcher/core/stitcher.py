@@ -42,16 +42,6 @@ class Stitcher(object):
             cv2.imshow('Stitched output', result)
             cv2.waitKey()
 
-    def double_stitch(self, frame1, frame2, frame3):
-        """
-        Responsible for computing homography for and warping images.
-        """
-        first_stitch = self.stitch(frame1, frame2)
-        second_stitch = self.stitch(first_stitch, frame3)
-
-        cv2.imshow('Stitched output', second_stitch)
-        cv2.waitKey()
-
     def reset(self):
         """
         Resets the homography of the stitcher to None for stitcher reuse.

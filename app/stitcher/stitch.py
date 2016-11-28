@@ -16,6 +16,7 @@ def main():
     """
     Responsible for handling stitch call from the command line.
     """
+    # stitch_two_videos()
     handle_arguments()
 
 def handle_arguments():
@@ -23,6 +24,8 @@ def handle_arguments():
     Handles command line arguments and drive corresponding stitching tasks.
     """
     parsed_args = parse_args()
+
+    config_profile = parsed_args.config_profile
 
     width = parsed_args.width
     height = parsed_args.height
@@ -37,23 +40,27 @@ def handle_arguments():
     If a right index value is provided, we know to instantiate the left and right feeds.
     Otherwise, a single feed is instantiated from the camera index value.
     """
-    if parsed_args.right_index is not None and should_stitch is not False:
-        left_feed = CameraFeed(parsed_args.left_index, width, height)
-        right_feed = CameraFeed(parsed_args.right_index, width, height)
 
-        # Creates a handler for left and right feeds
-        handler = MultiFeedHandler([left_feed, right_feed])
+    if config_profile is not None:
+        pass
     else:
-        feed = CameraFeed(parsed_args.camera_index, width, height)
+        if parsed_args.right_index is not None and should_stitch is not False:
+            left_feed = CameraFeed(parsed_args.left_index, width, height)
+            right_feed = CameraFeed(parsed_args.right_index, width, height)
 
-        # Creates a handler for single feed
-        handler = MultiFeedHandler([feed])
+            # Creates a handler for left and right feeds
+            handler = MultiFeedHandler([left_feed, right_feed])
+        else:
+            feed = CameraFeed(parsed_args.camera_index, width, height)
 
-    if just_preview is True:
-        handler.stitch_feeds(True, False, None)
-    else:
-        # Stream will be saved to output_path, also streaming if should_stream is True
-        handler.stitch_feeds(True, should_stream, output_path)
+            # Creates a handler for single feed
+            handler = MultiFeedHandler([feed])
+
+        if just_preview is True:
+            handler.stitch_feeds(True, False, None)
+        else:
+            # Stream will be saved to output_path, also streaming if should_stream is True
+            handler.stitch_feeds(True, should_stream, output_path)
 
 
 def stitch_single_video(config_profile="config/profiles/standard.yml"):
@@ -136,6 +143,8 @@ def parse_args():
     parser.add_argument('--stitch', action='store_true',
                         dest='should_stitch',
                         help='Indicates whether stitching should occur.')
+    parser.add_argument('--profile', action='store', dest="config_profile", default=None,
+                        help='File path of configuration profile to use.')
 
     return parser.parse_args()
 
