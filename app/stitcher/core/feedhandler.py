@@ -2,9 +2,12 @@
 Module for handling feeds for stitching and streaming.
 """
 from __future__ import absolute_import, division, print_function
+
 from abc import ABCMeta, abstractmethod
 import subprocess
 import cv2
+import imutils
+
 from app.util.textformatter import TextFormatter
 from .stitcher import Stitcher
 
@@ -29,23 +32,23 @@ class MultiFeedHandler(FeedHandler):
     def __init__(self, feeds):
         self.feeds = feeds
 
-    def stitch_feeds(self, correct=False, should_stream=False, output_path=None):
+    def stitch_feeds(self, correct=False, should_stream=False, output_path=None, width=400, height=200):
         feed_count = len(self.feeds)
         if feed_count == 1:
-            stitch(self.feeds, stitch_frame, correct, should_stream, output_path)
+            stitch(self.feeds, stitch_frame, correct, should_stream, output_path, width, height)
         elif feed_count == 2:
-            stitch(self.feeds, stitch_two_frames, correct, should_stream, output_path)
+            stitch(self.feeds, stitch_two_frames, correct, should_stream, output_path, width, height)
         elif feed_count == 3:
-            stitch(self.feeds, stitch_three_frames, correct, should_stream, output_path)
+            stitch(self.feeds, stitch_three_frames, correct, should_stream, output_path, width, height)
         else:
-            stitch(self.feeds, stitch_four_frames, correct, should_stream, output_path)
+            stitch(self.feeds, stitch_four_frames, correct, should_stream, output_path, width, height)
 
     def clear_feeds(self):
         for feed in self.feeds:
             feed.close()
 
 
-def stitch(feeds, stitcher_func, correct, should_stream, output_path):
+def stitch(feeds, stitcher_func, correct, should_stream, output_path, width, height):
     """
     Main stitching function for stitching feeds together.
     """
@@ -54,8 +57,12 @@ def stitch(feeds, stitcher_func, correct, should_stream, output_path):
     combined_stitcher = Stitcher()
 
     if output_path is not None:
-        # Handle saving of video
-        pass
+        # Creates video writer for saving of videos.
+        if imutils.is_cv3():
+            codec = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
+        else:
+            codec = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
+        writer = cv2.VideoWriter(output_path, codec, 20.0, (width, height));
 
     if all([feed.is_valid() for feed in feeds]):
         while all([feed.has_next() for feed in feeds]):
@@ -65,9 +72,12 @@ def stitch(feeds, stitcher_func, correct, should_stream, output_path):
                 frames = [feed.get_next(True, True) for feed in feeds]
             stitched_frame = stitcher_func(frames,
                                            [left_stitcher, right_stitcher, combined_stitcher])
-            stitched_frame = cv2.resize(stitched_frame, (400, 200))
+            stitched_frame = cv2.resize(stitched_frame, (width, height))
             if should_stream:
                 print(stitched_frame.tostring())
+
+            if output_path is not None:
+                writer.write(stitched_frame)
 
             cv2.imshow("Result", stitched_frame)
             key = cv2.waitKey(1) & 0xFF
