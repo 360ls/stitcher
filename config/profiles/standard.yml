@@ -6,8 +6,8 @@ left-index: 1
 right-index: 2
 
 # For the case of stitching two videos:
-left-video-path: /Users/lukefernandez/Projects/stitch-flex/app/storage/synced_videos/cam1/1.mp4
-right-video-path: /Users/lukefernandez/Projects/stitch-flex/app/storage/synced_videos/cam2/1.mp4
+left-video-path: /Users/lukefernandez/Projects/stitch-flex/app/storage/synced_videos/cam1/4.mp4
+right-video-path: /Users/lukefernandez/Projects/stitch-flex/app/storage/synced_videos/cam2/4.mp4
 
 # For the case of stitching between two and four cameras:
 first-index: 1

@@ -87,7 +87,7 @@ def compute_homography(frame1, frame2):
     """
     Computes homography based on the provided frames.
     """
-    min_match_count = 10
+    min_match_count = 20
     matches, keypoints1, keypoints2 = compute_matches(frame1, frame2)
 
     # Store all the good matches based on Lowes ratio test
@@ -97,6 +97,8 @@ def compute_homography(frame1, frame2):
             good_matches.append(match1)
 
     if len(good_matches) > min_match_count:
+        TextFormatter.print_info("Found %d matches. We need at least %d matches."
+                                 % (len(good_matches), min_match_count))
         src_pts = np.float32([keypoints1[good_match.queryIdx].pt
                               for good_match in good_matches]).reshape(-1, 1, 2)
         dst_pts = np.float32([keypoints2[good_match.trainIdx].pt

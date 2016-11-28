@@ -161,7 +161,7 @@ stitch-flex
 
 6. Limit keypoint identification to a specific side of the image to limit the computation time and complexity of homography calculation.
 
-7. Resize frames during stitck to get rid of extra flang warping.
+7. Resize frames during stitch to get rid of extra flange warping.
 
 8. The ability to determine configuration based on available cameras and homographies.
 
