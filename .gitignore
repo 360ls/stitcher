@@ -1,7 +1,24 @@
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+# generated profile
+config/profile.yml
+
+# generated docs
+docs/build/*
+
+data/*
+stitcher/distortion_corrector/calibrate/inputs
+stitcher/distortion_corrector/calibrate/output
+
+
+# Vim
+*.swp
+
+.DS_Store
 
 # C extensions
 *.so
@@ -79,6 +96,7 @@ celerybeat-schedule
 .env
 
 # virtualenv
+.venv/
 venv/
 ENV/
 
