@@ -12,14 +12,10 @@ all: clean install run
 .PHONY: all 
 
 clean-install:
-	rm -rf node_modules ; pip install -r $(CONFIGURATION_DIR)/requirements.txt ; npm install ;
-		npm install -g eslint yarn electron-prebuilt
+	pip install -r $(CONFIGURATION_DIR)/requirements.txt
 
 install:
 	pip install -r $(CONFIGURATION_DIR)/requirements.txt ; yarn install
-
-electron:
-	electron . ; python -m $(PACKAGE_DIR).cli -n
 
 configure:
 	python -m $(UTILITY_DIR).configure
