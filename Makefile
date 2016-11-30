@@ -12,7 +12,7 @@ all: clean install run
 .PHONY: all 
 
 install:
-	pip install -r $(CONFIGURATION_DIR)/requirements.txt
+	pip install -r requirements.txt
 
 configure:
 	python -m $(UTILITY_DIR).configure
