@@ -11,11 +11,8 @@ TEST_DIR=app/test
 all: clean install run
 .PHONY: all 
 
-clean-install:
-	pip install -r $(CONFIGURATION_DIR)/requirements.txt
-
 install:
-	pip install -r $(CONFIGURATION_DIR)/requirements.txt ; yarn install
+	pip install -r $(CONFIGURATION_DIR)/requirements.txt
 
 configure:
 	python -m $(UTILITY_DIR).configure

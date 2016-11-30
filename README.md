@@ -7,7 +7,7 @@ Demonstrates flexible stitching for an incoming array of cameras.
 ### To install the package:
 
 ```bash
-make clean-install
+$ make install
 ```
 
 This will install package dependencies via npm (node.js) and pip (python), including the yarn package manager dependency.
@@ -15,47 +15,41 @@ This will install package dependencies via npm (node.js) and pip (python), inclu
 ### Then, to run the app, either:
 
 ```bash
-make run
+$ make run
 ```
 to simply run the app
 
 OR
 
 ```bash
-make
+$ make
 ```
 
 to clean the package, do a fresh (but not brand new) install of dependencies, and then run the app.
 
 ### To run the cli:
 ```bash
-make cli
+$ make cli
 ```
 
 ## Demoing
 
 ### To set up the camera streams
 ```bash
-make camera-setup
+$ make camera-setup
 ```
 
 ### To demonstrate threading through taking snapshots
 ```bash
-make snap
+$ make snap
 ```
 
 ## Development
 
 ### To lint the application:
 
-For JS files:
 ```bash
-eslint nameoffile.js
-```
-
-For Python files;
-```bash
-make lint-py
+$ make lint-py
 ```
 
 ### To run tests against the application:
@@ -69,16 +63,13 @@ You can also install packages in a text editor like Sublime Text 3 to show linti
 ## Package Structure
 ```bash
 stitch-flex
-    .eslintrc.json
     .gitignore
     .travis.yml
     conftest.py
     LICENSE
-    main.js
     Makefile
     package.json
     README.md
-    yarn.lock
     app/
         __init__.py
         __init__.pyc
@@ -93,8 +84,7 @@ stitch-flex
                 feedhandler.py
                 stitcher.py
             correction/
-                __init__.py
-                corrector.py
+                __init__.py corrector.py
             flex/
                 __init__.py
                 detector.py
@@ -116,9 +106,6 @@ stitch-flex
                 cam3/
                 cam4/
                     unused/
-        templates/
-            cli.html
-            index.html
         test/
             nocv/
                 __init__.py
