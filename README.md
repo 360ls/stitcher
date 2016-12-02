@@ -40,11 +40,6 @@ $ make cli
 $ make camera-setup
 ```
 
-### To demonstrate threading through taking snapshots
-```bash
-$ make snap
-```
-
 ## Development
 
 ### To lint the application:
