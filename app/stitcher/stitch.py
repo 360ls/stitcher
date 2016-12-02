@@ -166,6 +166,7 @@ def parse_args():
     parser.add_argument('--profile', action='store', dest="config_profile", default=None,
                         help='File path of configuration profile to use.')
     parser.add_argument('--url', action='store', type=str, dest='rtmp_url',
+                        default="rtmp://54.227.214.22:1935/live/myStream",
                         help='RTMP url to stream to.')
 
     return parser.parse_args()
