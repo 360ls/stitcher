@@ -59,6 +59,11 @@ def stitch(feeds, stitcher_func, correct, should_stream, output_path, width, hei
     right_stitcher = Stitcher()
     combined_stitcher = Stitcher()
 
+    proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo', '-vcodec',
+                             'rawvideo', '-s', '800x225', '-pix_fmt', 'rgb24', '-vb',
+                             '200k', '-r', '24', '-i', '-', '-an', '-f', 'flv',
+                             'rtmp://localhost:1935/live-test/myStream'], stdin=subprocess.PIPE)
+
     if output_path is not None:
         # Creates video writer for saving of videos.
         if imutils.is_cv3():
@@ -76,8 +81,9 @@ def stitch(feeds, stitcher_func, correct, should_stream, output_path, width, hei
             stitched_frame = stitcher_func(frames,
                                            [left_stitcher, right_stitcher, combined_stitcher])
             stitched_frame = cv2.resize(stitched_frame, (width, height))
+
             if should_stream:
-                print(stitched_frame.tostring())
+                proc.stdin.write(stitched_frame.tostring())
 
             if output_path is not None:
                 writer.write(stitched_frame)
