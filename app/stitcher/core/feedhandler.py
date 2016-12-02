@@ -33,16 +33,16 @@ class MultiFeedHandler(FeedHandler):
     def __init__(self, feeds):
         self.feeds = feeds
 
-    def stitch_feeds(self, correct=False, should_stream=False, output_path=None, width=400, height=200):
+    def stitch_feeds(self, correct=False, should_stream=False, output_path=None, width=400, height=200, rtmp_url=""):
         feed_count = len(self.feeds)
         if feed_count == 1:
-            stitch(self.feeds, stitch_frame, correct, should_stream, output_path, width, height)
+            stitch(self.feeds, stitch_frame, correct, should_stream, output_path, width, height, rtmp_url)
         elif feed_count == 2:
-            stitch(self.feeds, stitch_two_frames, correct, should_stream, output_path, width, height)
+            stitch(self.feeds, stitch_two_frames, correct, should_stream, output_path, width, height, rtmp_url)
         elif feed_count == 3:
-            stitch(self.feeds, stitch_three_frames, correct, should_stream, output_path, width, height)
+            stitch(self.feeds, stitch_three_frames, correct, should_stream, output_path, width, height, rtmp_url)
         else:
-            stitch(self.feeds, stitch_four_frames, correct, should_stream, output_path, width, height)
+            stitch(self.feeds, stitch_four_frames, correct, should_stream, output_path, width, height, rtmp_url)
 
     def kill(self):
         for feed in self.feeds:
@@ -51,18 +51,14 @@ class MultiFeedHandler(FeedHandler):
         sys.exit(0)
 
 
-def stitch(feeds, stitcher_func, correct, should_stream, output_path, width, height):
+def stitch(feeds, stitcher_func, correct, should_stream, output_path, width, height, rtmp_url):
     """
     Main stitching function for stitching feeds together.
     """
     left_stitcher = Stitcher()
     right_stitcher = Stitcher()
     combined_stitcher = Stitcher()
-
-    proc = subprocess.Popen(['ffmpeg', '-y', '-f', 'rawvideo', '-vcodec',
-                             'rawvideo', '-s', '800x225', '-pix_fmt', 'rgb24', '-vb',
-                             '200k', '-r', '24', '-i', '-', '-an', '-f', 'flv',
-                             'rtmp://localhost:1935/live-test/myStream'], stdin=subprocess.PIPE)
+    dimensions = str(width) + 'x' + str(height)
 
     if output_path is not None:
         # Creates video writer for saving of videos.
@@ -71,6 +67,14 @@ def stitch(feeds, stitcher_func, correct, should_stream, output_path, width, hei
         else:
             codec = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
         writer = cv2.VideoWriter(output_path, codec, 20.0, (width, height));
+        
+
+    if should_stream:
+        proc = subprocess.Popen([
+            'ffmpeg', '-y', '-f', 'rawvideo',
+            '-s', dimensions, '-pix_fmt', 'bgr24', '-i','pipe:0','-vcodec',
+            'libx264','-pix_fmt','uyvy422','-r','28','-an', '-f','flv',
+            rtmp_url], stdin=subprocess.PIPE)
 
     if all([feed.is_valid() for feed in feeds]):
         while all([feed.has_next() for feed in feeds]):

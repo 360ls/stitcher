@@ -38,6 +38,8 @@ def handle_arguments():
     output_path = parsed_args.output_path
 
     should_stream = parsed_args.should_stream
+    rtmp_url = parsed_args.rtmp_url
+
     should_stitch = parsed_args.should_stitch
 
     signal.signal(signal.SIGINT, electron_handler)
@@ -74,7 +76,7 @@ def handle_arguments():
             feedhandler.stitch_feeds(True, False, None, width, height)
         else:
             # Stream will be saved to output_path, also streaming if should_stream is True
-            feedhandler.stitch_feeds(True, should_stream, output_path, width, height)
+            feedhandler.stitch_feeds(True, should_stream, output_path, width, height, rtmp_url)
 
 def electron_handler(signum, frame):
     # When everything is done, release the capture and close all windows.
@@ -163,6 +165,8 @@ def parse_args():
                         help='Indicates whether stitching should occur.')
     parser.add_argument('--profile', action='store', dest="config_profile", default=None,
                         help='File path of configuration profile to use.')
+    parser.add_argument('--url', action='store', type=str, dest='rtmp_url',
+                        help='RTMP url to stream to.')
 
     return parser.parse_args()
 
