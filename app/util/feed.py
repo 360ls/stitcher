@@ -24,7 +24,7 @@ class Feed(object):
         pass
 
     @abstractmethod
-    def get_next(self, resize, correct):
+    def get_next(self):
         """
         Returns the next frame from feed.
         """
@@ -97,17 +97,15 @@ class CameraFeed(Feed):
         return self.camera_feed.retrieve()
 
 
-    def get_next(self, resize=True, correct=True):
+    def get_next(self):
         """
         Gets the next frame in the CameraFeed. If resize is True, resizes frame.
         If correct is True, corrects distortion.
         """
         start_time = time.time()
         frame = self.camera_feed.read()[1]
-        if correct:
-            frame = correct_distortion(frame)
-        if resize:
-            frame = imutils.resize(frame, width=self.width)
+        frame = correct_distortion(frame)
+        frame = imutils.resize(frame, width=self.width)
         end_time = time.time()
         elapsed_time = end_time - start_time
         time_left = self.frame_duration - elapsed_time
@@ -206,16 +204,14 @@ class VideoFeed(Feed):
         """
         return self.video_feed.grab()
 
-    def get_next(self, resize=True, correct=True):
+    def get_next(self):
         """
         Gets the next frame in the CameraFeed. If resize is True, resizes frame.
         If correct is True, corrects distortion.
         """
         frame = self.video_feed.read()[1]
-        if correct:
-            frame = correct_distortion(frame)
-        if resize:
-            frame = imutils.resize(frame, width=self.width)
+        frame = correct_distortion(frame)
+        frame = imutils.resize(frame, width=self.width)
         return frame
 
     def show(self, correct=True):

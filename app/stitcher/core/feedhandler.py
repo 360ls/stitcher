@@ -19,7 +19,7 @@ class FeedHandler(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def stitch_feeds(self, correct, should_stream):
+    def stitch_feeds(self, should_stream, output_path, width, height, rtmp_url):
         """
         Takes in a list of feeds and stitches them into one outgoing stream.
         """
@@ -33,16 +33,16 @@ class MultiFeedHandler(FeedHandler):
     def __init__(self, feeds):
         self.feeds = feeds
 
-    def stitch_feeds(self, correct=False, should_stream=False, output_path=None, width=400, height=200, rtmp_url=""):
+    def stitch_feeds(self, should_stream=False, output_path=None, width=400, height=200, rtmp_url=""):
         feed_count = len(self.feeds)
         if feed_count == 1:
-            stitch(self.feeds, stitch_frame, correct, should_stream, output_path, width, height, rtmp_url)
+            stitch(self.feeds, stitch_frame, should_stream, output_path, width, height, rtmp_url)
         elif feed_count == 2:
-            stitch(self.feeds, stitch_two_frames, correct, should_stream, output_path, width, height, rtmp_url)
+            stitch(self.feeds, stitch_two_frames, should_stream, output_path, width, height, rtmp_url)
         elif feed_count == 3:
-            stitch(self.feeds, stitch_three_frames, correct, should_stream, output_path, width, height, rtmp_url)
+            stitch(self.feeds, stitch_three_frames, should_stream, output_path, width, height, rtmp_url)
         else:
-            stitch(self.feeds, stitch_four_frames, correct, should_stream, output_path, width, height, rtmp_url)
+            stitch(self.feeds, stitch_four_frames, should_stream, output_path, width, height, rtmp_url)
 
     def kill(self):
         for feed in self.feeds:
@@ -51,7 +51,7 @@ class MultiFeedHandler(FeedHandler):
         sys.exit(0)
 
 
-def stitch(feeds, stitcher_func, correct, should_stream, output_path, width, height, rtmp_url):
+def stitch(feeds, stitcher_func, should_stream, output_path, width, height, rtmp_url):
     """
     Main stitching function for stitching feeds together.
     """
@@ -78,10 +78,7 @@ def stitch(feeds, stitcher_func, correct, should_stream, output_path, width, hei
 
     if all([feed.is_valid() for feed in feeds]):
         while all([feed.has_next() for feed in feeds]):
-            if correct is False:
-                frames = [feed.get_next(True, False) for feed in feeds]
-            else:
-                frames = [feed.get_next(True, True) for feed in feeds]
+            frames = [feed.get_next() for feed in feeds]
             stitched_frame = stitcher_func(frames,
                                            [left_stitcher, right_stitcher, combined_stitcher])
             stitched_frame = cv2.resize(stitched_frame, (width, height))
