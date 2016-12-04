@@ -140,16 +140,13 @@ class CameraFeed(Feed):
         """
         return self.camera_feed.get(5)
 
-    def show(self, correct=True):
+    def show(self):
         """
         Shows a resized version of the CameraFeed.
         """
         if self.is_valid():
             while self.has_next():
-                if correct:
-                    frame = self.get_next()
-                else:
-                    frame = self.get_next(True, False)
+                frame = self.get_next()
                 title = "Camera Feed %s" % self.feed_index
                 cv2.imshow(title, frame)
                 key = cv2.waitKey(1) & 0xFF
@@ -214,16 +211,13 @@ class VideoFeed(Feed):
         frame = imutils.resize(frame, width=self.width)
         return frame
 
-    def show(self, correct=True):
+    def show(self):
         """
         Shows a resized version of the CameraFeed.
         """
         if self.is_valid():
             while self.has_next():
-                if correct:
-                    frame = self.get_next()
-                else:
-                    frame = self.get_next(True, False)
+                frame = self.get_next()
                 title = "Video Feed"
                 cv2.imshow(title, frame)
                 key = cv2.waitKey(1) & 0xFF
