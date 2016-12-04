@@ -19,9 +19,7 @@ def main():
     """
     Responsible for handling stitch call from the command line.
     """
-    # stitch_two_videos()
     handle_arguments()
-    # stitch_two_videos()
 
 def handle_arguments():
     """
@@ -46,17 +44,33 @@ def handle_arguments():
     signal.signal(signal.SIGTERM, electron_handler)
 
     """
-    If a right index value is provided, we know to instantiate the left and right feeds.
-    Otherwise, a single feed is instantiated from the camera index value.
+    If a configuration profile is detected, we handle stitching based on that profile.
+    Otherwise, we handle stitching based on user-input arguments from the command line.
     """
 
     if config_profile:
         config = get_configuration(config_profile)
-        left_feed = VideoFeed(config['left-video-path'], 400, 300)
-        right_feed = VideoFeed(config['right-video-path'], 400, 300)
+        width = config['width']
+        height = config['height']
+        if config['right-index'] and config['should-stitch']:
+            left_feed = CameraFeed(config['left-index'], width, height)
+            right_feed = CameraFeed(config['right-index'], width, height)
 
-        handler = MultiFeedHandler([left_feed, right_feed])
-        handler.stitch_feeds()
+            # Creates a handler for left and right feeds
+            global feedhandler
+            feedhandler = MultiFeedHandler([left_feed, right_feed])
+        else:
+            feed = CameraFeed(config['camera-index'], width, height)
+
+            # Creates a handler for single feed
+            global feedhandler
+            feedhandler = MultiFeedHandler([feed])
+
+        if config['just-preview']:
+            feedhandler.stitch_feeds(False, None, width, height)
+        else:
+            # Stream will be saved to output_path, also streaming if should_stream is True
+            feedhandler.stitch_feeds(config['should-stream'], config['output-path'], width, height, config['rtmp_url'])
     else:
         if parsed_args.right_index and should_stitch:
             left_feed = CameraFeed(parsed_args.left_index, width, height)
@@ -163,7 +177,7 @@ def parse_args():
     parser.add_argument('--stitch', action='store_true',
                         dest='should_stitch',
                         help='Indicates whether stitching should occur.')
-    parser.add_argument('--profile', action='store', dest="config_profile", default=None,
+    parser.add_argument('--profile', action='store', dest="config_profile",
                         help='File path of configuration profile to use.')
     parser.add_argument('--url', action='store', type=str, dest='rtmp_url',
                         default="rtmp://54.227.214.22:1935/live/myStream",

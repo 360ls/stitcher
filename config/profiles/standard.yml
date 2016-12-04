@@ -1,25 +1,17 @@
 # Configuration metadata
 name: Standard Configuration 
 
+# For the case of stitching one camera:
+camera-index: 0
+
 # For the case of stitching two cameras:
+should-stitch: True
 left-index: 1
 right-index: 2
-
-# For the case of stitching two videos:
-left-video-path: /Users/lukefernandez/Projects/stitch-flex/app/storage/synced_videos/cam1/1.mp4
-right-video-path: /Users/lukefernandez/Projects/stitch-flex/app/storage/synced_videos/cam2/1.mp4
-
-# For the case of stitching between two and four cameras:
-first-index: 1
-second-index: 2
-third-index: 3
-fourth-index: 4
-
-# For the case of stitching between two and four videos:
-first-video-path: /Users/lukefernandez/Projects/360ls-stitcher/data/videos/2.mp4
-second-video-path: /Users/lukefernandez/Projects/360ls-stitcher/data/videos/2.mp4
-third-video-path: /Users/lukefernandez/Projects/360ls-stitcher/data/videos/2.mp4
-fourth-video-path: /Users/lukefernandez/Projects/360ls-stitcher/data/videos/2.mp4
+just-preview: False
+should-stream: True
+output-path: out.avi
+rtmp_url: rtmp://54.227.214.22:1935/live/myStream
 
 # Default values for width, height, etc.
 width: 640
