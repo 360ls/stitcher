@@ -58,7 +58,7 @@ def handle_arguments():
         handler = MultiFeedHandler([left_feed, right_feed])
         handler.stitch_feeds()
     else:
-        if parsed_args.right_index is not None and should_stitch is not False:
+        if parsed_args.right_index and should_stitch:
             left_feed = CameraFeed(parsed_args.left_index, width, height)
             right_feed = CameraFeed(parsed_args.right_index, width, height)
 
@@ -73,10 +73,10 @@ def handle_arguments():
             feedhandler = MultiFeedHandler([feed])
 
         if just_preview:
-            feedhandler.stitch_feeds(True, False, None, width, height)
+            feedhandler.stitch_feeds(False, False, None, width, height)
         else:
             # Stream will be saved to output_path, also streaming if should_stream is True
-            feedhandler.stitch_feeds(True, should_stream, output_path, width, height, rtmp_url)
+            feedhandler.stitch_feeds(False, should_stream, output_path, width, height, rtmp_url)
 
 def electron_handler(signum, frame):
     # When everything is done, release the capture and close all windows.

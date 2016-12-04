@@ -25,10 +25,15 @@ def correct_distortion(image):
     [-0.13851498  0.01500291  0.          0.          0.        ]
 
     """
-    camera_matrix = np.array([[6.11968871e+02,
-                               0, 1.15939403e+03],
-                              [0, 6.03873075e+02, 8.71465543e+02], [0, 0, 1]])
-    distortion_coefficients = np.array([-0.13851498, 0.01500291, 0, 0, 0])
+    # camera_matrix = np.array([[6.11968871e+02,
+    #                            0, 1.15939403e+03],
+    #                           [0, 6.03873075e+02, 8.71465543e+02], [0, 0, 1]])
+    # distortion_coefficients = np.array([-0.13851498, 0.01500291, 0, 0, 0])
+
+    camera_matrix = np.array([[857.48296979,
+                               0, 968.06224829],
+                              [0, 876.71824265, 556.37145899], [0, 0, 1]])
+    distortion_coefficients = np.array([-2.57614020e-01, 8.77086999e-02, 0, 0, 0])
 
     # Read in the image for correction
     height, width = image.shape[:2]
