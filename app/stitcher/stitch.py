@@ -72,7 +72,10 @@ def handle_arguments():
             # Stream will be saved to output_path, also streaming if should_stream is True
             feedhandler.stitch_feeds(config['should-stream'], config['output-path'], width, height, config['rtmp_url'])
     else:
-        if parsed_args.right_index and should_stitch:
+        print(parsed_args.right_index)
+        print(should_stitch)
+
+        if parsed_args.right_index is not None and should_stitch:
             left_feed = CameraFeed(parsed_args.left_index, width, height)
             right_feed = CameraFeed(parsed_args.right_index, width, height)
 
@@ -97,17 +100,6 @@ def electron_handler(signum, frame):
     if feedhandler:
         feedhandler.kill()
 
-
-def stitch_single_video(config_profile="config/profiles/standard.yml"):
-    """
-    Stitches (sorta) one video based on settings in the config profile.
-    """
-
-    config = get_configuration(config_profile)
-    feed = VideoFeed(config['left-video-path'], 400, 300)
-    handler = MultiFeedHandler([feed])
-    handler.stitch_feeds()
-
 def stitch_two_videos(config_profile="config/profiles/standard.yml"):
     """
     Stitches two videos together based on settings in the config profile.
@@ -120,20 +112,6 @@ def stitch_two_videos(config_profile="config/profiles/standard.yml"):
 
     handler = MultiFeedHandler([left_feed, right_feed])
     handler.stitch_feeds()
-
-def stitch_two_corrected_videos(config_profile="config/profiles/standard.yml"):
-    """
-    Stitches two corredted videos together based on settings in the config profile.
-    """
-
-    # Retrieves configuration and sets left and right feeds.
-    config = get_configuration(config_profile)
-    left_feed = VideoFeed(config['left-video-path'], 400, 300)
-    right_feed = VideoFeed(config['right-video-path'], 400, 300)
-
-    handler = MultiFeedHandler([left_feed, right_feed])
-    print("got here")
-    handler.stitch_feeds(True, False)
 
 def parse_args():
     """
