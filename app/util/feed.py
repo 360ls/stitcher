@@ -73,7 +73,7 @@ class CameraFeed(Feed):
                 TextFormatter.color_text(str(self.feed_index), "magenta"),
                 TextFormatter.get_check())
             print(msg)
-            self.camera_feed.release()
+            self.close()
             self.camera_feed = cv2.VideoCapture(self.feed_index)
             return True
         else:
@@ -184,7 +184,7 @@ class VideoFeed(Feed):
                 TextFormatter.get_check())
             # print(msg)
             sys.stderr.write(msg)
-            self.video_feed.release()
+            self.close()
             self.video_feed = cv2.VideoCapture(self.path)
             return True
         else:
