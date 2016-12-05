@@ -59,7 +59,6 @@ def stitch(feeds, stitcher_func, should_stream, output_path, width, height, rtmp
     right_stitcher = Stitcher()
     combined_stitcher = Stitcher()
     dimensions = str(width) + 'x' + str(height)
-    print("width: %s \nheight: %s " % (width, height))
 
     if output_path is not None:
         # Creates video writer for saving of videos.
@@ -71,7 +70,6 @@ def stitch(feeds, stitcher_func, should_stream, output_path, width, height, rtmp
         
 
     if should_stream:
-        print('marker')
         proc = subprocess.Popen([
             'ffmpeg', '-y', '-f', 'rawvideo',
             '-s', dimensions, '-pix_fmt', 'bgr24', '-i','pipe:0','-vcodec',
@@ -84,7 +82,6 @@ def stitch(feeds, stitcher_func, should_stream, output_path, width, height, rtmp
             stitched_frame = stitcher_func(frames,
                                            [left_stitcher, right_stitcher, combined_stitcher])
             stitched_frame = cv2.resize(stitched_frame, (width, height))
-            print("width: %s \nheight: %s " % (width, height))
 
             if should_stream:
                 proc.stdin.write(stitched_frame.tostring())

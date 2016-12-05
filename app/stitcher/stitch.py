@@ -72,8 +72,6 @@ def handle_arguments():
             # Stream will be saved to output_path, also streaming if should_stream is True
             feedhandler.stitch_feeds(config['should-stream'], config['output-path'], width, height, config['rtmp_url'])
     else:
-        print(parsed_args.right_index)
-        print(should_stitch)
 
         if parsed_args.right_index is not None and should_stitch:
             left_feed = CameraFeed(parsed_args.left_index, width, height)

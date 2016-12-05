@@ -6,8 +6,8 @@ camera-index: 0
 
 # For the case of stitching two cameras:
 should-stitch: True
-left-index: 1
-right-index: 2
+left-index: 0
+right-index: 0
 just-preview: False
 should-stream: True
 output-path: out.avi
