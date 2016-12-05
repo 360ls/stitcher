@@ -73,7 +73,7 @@ def stitch(feeds, stitcher_func, should_stream, output_path, width, height, rtmp
         proc = subprocess.Popen([
             'ffmpeg', '-y', '-f', 'rawvideo',
             '-s', dimensions, '-pix_fmt', 'bgr24', '-i','pipe:0','-vcodec',
-            'libx264','-pix_fmt','uyvy422','-r','28','-an', '-f','flv',
+            'libx264','-pix_fmt','yuv422p','-r','28','-an', '-f','flv',
             rtmp_url], stdin=subprocess.PIPE)
 
     if all([feed.is_valid() for feed in feeds]):
