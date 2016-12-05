@@ -98,19 +98,6 @@ def electron_handler(signum, frame):
     if feedhandler:
         feedhandler.kill()
 
-def stitch_two_videos(config_profile="config/profiles/standard.yml"):
-    """
-    Stitches two videos together based on settings in the config profile.
-    """
-
-    # Retrieves configuration and sets left and right feeds.
-    config = get_configuration(config_profile)
-    left_feed = VideoFeed(config['left-video-path'], 400, 300)
-    right_feed = VideoFeed(config['right-video-path'], 400, 300)
-
-    handler = MultiFeedHandler([left_feed, right_feed])
-    handler.stitch_feeds()
-
 def parse_args():
     """
     Returns parsed arguments from command line.
