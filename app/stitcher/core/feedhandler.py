@@ -81,15 +81,15 @@ def stitch(feeds, stitcher_func, should_stream, output_path, width, height, rtmp
             frames = [feed.get_next() for feed in feeds]
             stitched_frame = stitcher_func(frames,
                                            [left_stitcher, right_stitcher, combined_stitcher])
-            stitched_frame = cv2.resize(stitched_frame, (width, height))
+            resized_st_frame = cv2.resize(stitched_frame, (width, height))
 
             if should_stream:
-                proc.stdin.write(stitched_frame.tostring())
+                proc.stdin.write(resized_st_frame.tostring())
 
             if output_path is not None:
-                writer.write(stitched_frame)
+                writer.write(resized_st_frame)
 
-            cv2.imshow("Result", stitched_frame)
+            cv2.imshow("Result", resized_st_frame)
             key = cv2.waitKey(1) & 0xFF
 
             if key == ord("q"):
