@@ -3,3 +3,4 @@ pytest
 termcolor
 future
 pylint
+pyyaml
