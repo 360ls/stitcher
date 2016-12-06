@@ -4,15 +4,14 @@ Module for handling feeds for stitching and streaming.
 from __future__ import absolute_import, division, print_function
 
 from abc import ABCMeta, abstractmethod
+import sys
 import subprocess
 import cv2
 import imutils
-import sys
 
-from app.util.textformatter import TextFormatter
 from .stitcher import Stitcher
 
-class FeedHandler(object):
+class FeedHandler(object): # pylint: disable=too-few-public-methods
     """
     Abstract base FeedHandler class.
     """
@@ -33,18 +32,33 @@ class MultiFeedHandler(FeedHandler):
     def __init__(self, feeds):
         self.feeds = feeds
 
-    def stitch_feeds(self, should_stream=False, output_path=None, width=400, height=200, rtmp_url=""):
+    def stitch_feeds(self, should_stream, output_path, width, height, rtmp_url):
         feed_count = len(self.feeds)
         if feed_count == 1:
-            stitch(self.feeds, stitch_frame, should_stream, output_path, width, height, rtmp_url)
+            stitch(
+                self.feeds, stitch_frame,
+                should_stream, output_path,
+                width, height, rtmp_url)
         elif feed_count == 2:
-            stitch(self.feeds, stitch_two_frames, should_stream, output_path, width, height, rtmp_url)
+            stitch(
+                self.feeds, stitch_two_frames,
+                should_stream, output_path,
+                width, height, rtmp_url)
         elif feed_count == 3:
-            stitch(self.feeds, stitch_three_frames, should_stream, output_path, width, height, rtmp_url)
+            stitch(
+                self.feeds, stitch_three_frames,
+                should_stream, output_path,
+                width, height, rtmp_url)
         else:
-            stitch(self.feeds, stitch_four_frames, should_stream, output_path, width, height, rtmp_url)
+            stitch(
+                self.feeds, stitch_four_frames,
+                should_stream, output_path,
+                width, height, rtmp_url)
 
     def kill(self):
+        """
+        Cleans up all open feeds
+        """
         for feed in self.feeds:
             feed.close()
         cv2.destroyAllWindows()
@@ -66,14 +80,13 @@ def stitch(feeds, stitcher_func, should_stream, output_path, width, height, rtmp
             codec = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
         else:
             codec = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
-        writer = cv2.VideoWriter(output_path, codec, 30.0, (width, height));
-        
+        writer = cv2.VideoWriter(output_path, codec, 30.0, (width, height))
 
     if should_stream:
         proc = subprocess.Popen([
             'ffmpeg', '-y', '-f', 'rawvideo',
-            '-s', dimensions, '-pix_fmt', 'bgr24', '-i','pipe:0','-vcodec',
-            'libx264','-pix_fmt','yuv422p','-r','28','-an', '-f','flv',
+            '-s', dimensions, '-pix_fmt', 'bgr24', '-i', 'pipe:0', '-vcodec',
+            'libx264', '-pix_fmt', 'yuv422p', '-r', '28', '-an', '-f', 'flv',
             rtmp_url], stdin=subprocess.PIPE)
 
     if all([feed.is_valid() for feed in feeds]):

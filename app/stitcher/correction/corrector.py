@@ -8,9 +8,7 @@ def correct_distortion(image):
     """
     This function corrects the distortion of a radially-distorted
     input image based on pre-determined, hard-coded distortion correction parameters.
-    """
 
-    """
     These are calibration parameters derived
     from the radial distortion correction calibration.
     For a new set of parameters, run the calibration in the calibrate folder

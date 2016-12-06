@@ -8,7 +8,6 @@ import numpy as np
 from app.util.feed import VideoFeed
 from app.util.textformatter import TextFormatter
 
-
 def main():
     """
     Runs an example of checking the main color of a video feed.
@@ -19,22 +18,23 @@ def main():
             frame = video.get_next(True, False)
             average_frame_color = get_average_color(frame)
             zero_array = np.array([0, 0, 0])
+
             if np.array_equal(average_frame_color, zero_array):
                 TextFormatter.print_error("Invalid frame.")
             else:
                 # TextFormatter.print_info(get_average_color(frame))
                 TextFormatter.print_info("Valid frame.")
-            title = "Video Feed"
+
+            title = "Flex Video Feed"
             cv2.imshow(title, frame)
             key = cv2.waitKey(1) & 0xFF
             if key == ord("q"):
                 break
-        TextFormatter.print_info("Cleaning up the camera feed.")
+
+        TextFormatter.print_info("Cleaning up video feed.")
         video.close()
         cv2.destroyAllWindows()
         cv2.waitKey(1)
-
-
 
 def get_average_color(frame):
     """ Returns the average color of the provided frame. """

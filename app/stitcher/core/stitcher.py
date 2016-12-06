@@ -8,9 +8,6 @@ import numpy as np
 import imutils
 import cv2
 
-from app.util.textformatter import TextFormatter
-
-
 class Stitcher(object):
     """ Creates a single stitched frame from two frames """
 
@@ -47,6 +44,12 @@ class Stitcher(object):
         Resets the homography of the stitcher to None for stitcher reuse.
         """
         self.homography = None
+
+    def double_stitch(self, img1, img2, img3): # pylint: disable=unused-argument, no-self-use
+        """
+        TODO: Not implemented
+        """
+        raise Exception('Not implemented')
 
 def compute_matches(frame1, frame2):
     """
@@ -121,7 +124,7 @@ def warp_images(img1, img2, homography):
     homography_translation = np.array([[1, 0, translation_dist[0]],
                                        [0, 1, translation_dist[1]], [0, 0, 1]])
 
-    output_img = cv2.warpPerspective(img2, homography_translation.dot(homography),
+    output_img = cv2.warpPerspective(img2, homography_translation.dot(homography), # pylint: disable=no-member
                                      (x_max-x_min, y_max-y_min))
     output_img[translation_dist[1]:rows1+translation_dist[1],
                translation_dist[0]:cols1+translation_dist[0]] = img1

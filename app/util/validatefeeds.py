@@ -40,7 +40,7 @@ def show_camera_feed(feed_index):
     """
     camera_feed = CameraFeed(feed_index)
     # Show the uncorrected feed.
-    camera_feed.show(False)
+    camera_feed.show()
 
 if __name__ == "__main__":
     view_valid_camera_feeds()

@@ -99,7 +99,6 @@ def example_double_stitch():
     stitcher = Stitcher()
     stitcher.double_stitch(img1, img2, img3)
 
-
 def correct_single_frame(frame):
     """
     Function to correct distortion on a single frame/image.
@@ -121,7 +120,7 @@ def correct_single_camera(feed_index=0):
     Function to show corrected distortion for a camera feed.
     """
     camera_feed = CameraFeed(feed_index)
-    camera_feed.show(True)
+    camera_feed.show()
 
 def correct_single_video(video_path="app/storage/uncorrected.mp4"):
     """

@@ -1,1 +1,0 @@
-""" Module responsible for detecting when a frame and a feed are invalid. """

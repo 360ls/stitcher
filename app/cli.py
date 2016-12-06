@@ -134,7 +134,7 @@ def parse_args():
     parser.add_argument('--option', action='store',
                         type=int,
                         dest='option_num',
-                        help='Option number for selected stitching and streaming option.')
+                        help='Selected stitching and streaming option.')
     return parser.parse_args()
 
 def exit_python():

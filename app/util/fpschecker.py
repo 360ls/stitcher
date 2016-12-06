@@ -3,9 +3,10 @@ Module responsible for checking the effectiveness and accuracy of enforced fps.
 """
 
 from __future__ import absolute_import, division, print_function
-import time
-from textformatter import TextFormatter
 
+import time
+
+from app.util.textformatter import TextFormatter
 
 def main():
     """

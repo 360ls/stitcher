@@ -3,7 +3,6 @@ Module for defining wrappers to OpenCV incoming feeds.
 """
 from __future__ import absolute_import, division, print_function
 from abc import ABCMeta, abstractmethod
-import time
 import sys
 import imutils
 import cv2
@@ -41,6 +40,13 @@ class Feed(object):
     def close(self):
         """
         Closes feed object.
+        """
+        pass
+
+    @abstractmethod
+    def show_corrected(self):
+        """
+        Show corrected feed.
         """
         pass
 
@@ -139,6 +145,9 @@ class CameraFeed(Feed):
         """
         self.camera_feed.release()
 
+    def show_corrected(self):
+        raise Exception('Not implemented!')
+
 class VideoFeed(Feed):
     """ Wrapper class for video feed. """
     def __init__(self, path, width=640, height=480):
@@ -209,3 +218,6 @@ class VideoFeed(Feed):
         Closes the VideoFeed.
         """
         self.video_feed.release()
+
+    def show_corrected(self):
+        raise Exception('Not implemented!')
