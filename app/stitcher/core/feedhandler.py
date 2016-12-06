@@ -5,12 +5,11 @@ from __future__ import absolute_import, division, print_function
 
 from abc import ABCMeta, abstractmethod
 import subprocess
+import sys
 import cv2
 import imutils
-import sys
 
-from app.util.textformatter import TextFormatter
-from .stitcher import Stitcher
+from app.stitcher.core.stitcher import Stitcher
 
 class FeedHandler(object):
     """
@@ -24,7 +23,6 @@ class FeedHandler(object):
         Takes in a list of feeds and stitches them into one outgoing stream.
         """
         pass
-
 
 class MultiFeedHandler(FeedHandler):
     """
@@ -66,7 +64,7 @@ def stitch(feeds, stitcher_func, should_stream, output_path, width, height, rtmp
             codec = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
         else:
             codec = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
-        writer = cv2.VideoWriter(output_path, codec, 30.0, (width, height))
+        writer = cv2.VideoWriter(output_path, codec, 20.0, (width, height))
 
     if should_stream:
         proc = subprocess.Popen([

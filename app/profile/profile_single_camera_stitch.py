@@ -28,7 +28,7 @@ def stitch_handler():
     camera_feed = CameraFeed(config['camera-index'], config['width'], config['height'])
 
     handler = MultiFeedHandler([camera_feed])
-    handler.stitch_feeds()
+    handler.stitch_feeds(config['should-stream'], config['output-path'], config['width'], config['height'], config['rtmp_url'])
 
 
 if __name__ == "__main__":
