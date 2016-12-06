@@ -5,98 +5,81 @@ Module for correcting and stitching frames and feeds. Used as a driver from the 
 from __future__ import absolute_import, division, print_function
 
 import argparse
-import cv2
 import signal
 
-from app.util.feed import CameraFeed, VideoFeed
-from app.util.configure import get_configuration
+from app.util.feed import CameraFeed
 
 from .core.feedhandler import MultiFeedHandler
-
-feedhandler = None
 
 def main():
     """
     Responsible for handling stitch call from the command line.
     """
-    handle_arguments()
+    opts = parse_args()
 
-def handle_arguments():
-    """
-    Handles command line arguments and drive corresponding stitching tasks.
-    """
-    parsed_args = parse_args()
+    should_preview = opts.just_preview
+    width = opts.width
+    height = opts.height
+    index = opts.camera_index
+    left_index = opts.left_index
+    right_index = opts.right_index
+    dest = opts.output_path
+    url = opts.rtmp_url
 
-    config_profile = parsed_args.config_profile
+    handler = get_feedhandler(should_preview, width, height, index, left_index, right_index)
 
-    width = parsed_args.width
-    height = parsed_args.height
-    just_preview = parsed_args.just_preview
-
-    output_path = parsed_args.output_path
-
-    should_stream = parsed_args.should_stream
-    rtmp_url = parsed_args.rtmp_url
-
-    should_stitch = parsed_args.should_stitch
-
-    signal.signal(signal.SIGINT, electron_handler)
-    signal.signal(signal.SIGTERM, electron_handler)
-
-    """
-    If a configuration profile is detected, we handle stitching based on that profile.
-    Otherwise, we handle stitching based on user-input arguments from the command line.
-    """
-
-    if config_profile:
-        config = get_configuration(config_profile)
-        width = config['width']
-        height = config['height']
-        if config['right-index'] and config['should-stitch']:
-            left_feed = CameraFeed(config['left-index'], width, height)
-            right_feed = CameraFeed(config['right-index'], width, height)
-
-            # Creates a handler for left and right feeds
-            global feedhandler
-            feedhandler = MultiFeedHandler([left_feed, right_feed])
-        else:
-            feed = CameraFeed(config['camera-index'], width, height)
-
-            # Creates a handler for single feed
-            global feedhandler
-            feedhandler = MultiFeedHandler([feed])
-
-        if config['just-preview']:
-            feedhandler.stitch_feeds(False, None, width, height)
-        else:
-            # Stream will be saved to output_path, also streaming if should_stream is True
-            feedhandler.stitch_feeds(config['should-stream'], config['output-path'], width, height, config['rtmp_url'])
+    if should_preview:
+        preview(handler, width, height)
     else:
+        stream_and_record(handler, width, height, dest, url)
 
-        if parsed_args.right_index is not None and should_stitch:
-            left_feed = CameraFeed(parsed_args.left_index, width, height)
-            right_feed = CameraFeed(parsed_args.right_index, width, height)
+    def interrupt_handler(signum, frame): # pylint: disable=unused-argument
+        """
+        Interrupt handler to clean up feeds
+        """
+        # When everything is done, release the capture and close all windows.
+        handler.kill()
 
-            # Creates a handler for left and right feeds
-            global feedhandler
-            feedhandler = MultiFeedHandler([left_feed, right_feed])
-        else:
-            feed = CameraFeed(parsed_args.camera_index, width, height)
+    # Register interrupt handlers
+    signal.signal(signal.SIGINT, interrupt_handler)
+    signal.signal(signal.SIGTERM, interrupt_handler)
 
-            # Creates a handler for single feed
-            global feedhandler
-            feedhandler = MultiFeedHandler([feed])
+def preview(handler, width, height):
+    """
+    Preview camera stream
+    """
+    handler.stitch_feeds(False, None, width, height)
 
-        if just_preview:
-            feedhandler.stitch_feeds(False, None, width, height)
-        else:
-            # Stream will be saved to output_path, also streaming if should_stream is True
-            feedhandler.stitch_feeds(should_stream, output_path, width, height, rtmp_url)
+def stream_and_record(handler, width, height, dest, url):
+    """
+    Stream the camera feed and save it to a file
+    """
+    handler.stitch_feeds(True, dest, width, height, url)
 
-def electron_handler(signum, frame):
-    # When everything is done, release the capture and close all windows.
-    if feedhandler:
-        feedhandler.kill()
+def get_feedhandler(should_preview, width, height, preview_index, left_index, right_index): # pylint: disable=too-many-arguments
+    """
+    Get appropriate feed handler
+    """
+    if should_preview:
+        handler = get_single_handler(width, height, preview_index)
+    else:
+        handler = get_multi_handler(width, height, left_index, right_index)
+
+    return handler
+
+def get_single_handler(width, height, index):
+    """
+    Returns a handler for single stream
+    """
+    return MultiFeedHandler([CameraFeed(index, width, height)])
+
+def get_multi_handler(width, height, left_index, right_index):
+    """
+    Returns a handler for multiple streams
+    """
+    left_feed = CameraFeed(left_index, width, height)
+    right_feed = CameraFeed(right_index, width, height)
+    return MultiFeedHandler([left_feed, right_feed])
 
 def parse_args():
     """
@@ -137,8 +120,7 @@ def parse_args():
                         type=int,
                         dest='right_index',
                         help='Right camera index for stitching.')
-    parser.add_argument('--stitch', action='store_true',
-                        dest='should_stitch',
+    parser.add_argument('--stitch', action='store_true', dest='should_stitch',
                         help='Indicates whether stitching should occur.')
     parser.add_argument('--profile', action='store', dest="config_profile",
                         help='File path of configuration profile to use.')
