@@ -7,3 +7,6 @@ install: "make install"
 # command to run tests
 script: 
   - make lint
+
+notifications:
+  slack: 360ls:7L865GMYEQ3zVwgCSqckWKHI
