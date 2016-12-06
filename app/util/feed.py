@@ -73,7 +73,7 @@ class CameraFeed(Feed):
                 TextFormatter.color_text(str(self.feed_index), "magenta"),
                 TextFormatter.get_check())
             print(msg)
-            self.camera_feed.release()
+            self.close()
             self.camera_feed = cv2.VideoCapture(self.feed_index)
             return True
         else:
@@ -102,21 +102,9 @@ class CameraFeed(Feed):
         Gets the next frame in the CameraFeed. If resize is True, resizes frame.
         If correct is True, corrects distortion.
         """
-        start_time = time.time()
         frame = self.camera_feed.read()[1]
         frame = correct_distortion(frame)
         frame = imutils.resize(frame, width=self.width)
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-        time_left = self.frame_duration - elapsed_time
-
-        """
-        This takes into account experimentally determined average time.time()
-        fps residual of 0.072906 for 30 fps.
-        """
-        time_left_adjusted = time_left - 0.072906
-        if time_left_adjusted > 0:
-            time.sleep(time_left_adjusted)
         return frame
 
     def ramp(self, num_frames=30):
@@ -127,18 +115,6 @@ class CameraFeed(Feed):
         except NameError:
             for _ in range(num_frames):
                 self.get_next()
-
-    def set_fps(self, fps):
-        """
-        Sets the desired fps for the CameraFeed
-        """
-        self.fps = fps
-
-    def get_fps(self):
-        """
-        Gets the fps of the CameraFeed.
-        """
-        return self.camera_feed.get(5)
 
     def show(self):
         """
@@ -184,7 +160,7 @@ class VideoFeed(Feed):
                 TextFormatter.get_check())
             # print(msg)
             sys.stderr.write(msg)
-            self.video_feed.release()
+            self.close()
             self.video_feed = cv2.VideoCapture(self.path)
             return True
         else:
