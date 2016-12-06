@@ -26,7 +26,7 @@ cli:
 clean:
 	find . -name '*.pyc' -delete ;
 
-lint-py:
+lint:
 	pylint app --rcfile=config/.pylintrc
 
 test:
