@@ -13,7 +13,7 @@ RUN_PACKAGE = $(PY) $(OPTS)
 
 all: clean install run
 
-.PHONY: all
+.PHONY: all app
 
 install:
 	pip install -r requirements.txt
@@ -43,3 +43,6 @@ test-travis:
 
 tree:
 	$(RUN_PACKAGE) $(UTILITY_DIR).listfiles
+
+app:
+	bash app.sh

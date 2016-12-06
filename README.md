@@ -1,5 +1,5 @@
-# stitch-flex
-Demonstrates flexible stitching for an incoming array of cameras.
+# 360ls-stitcher
+Realtime Panoramic 360 stitcher for a 4 camera array.
 
 [![Build Status](https://travis-ci.org/360ls/stitch-flex.svg?branch=master)](https://travis-ci.org/360ls/stitch-flex)
 
@@ -18,15 +18,6 @@ This will install package dependencies via npm (node.js) and pip (python), inclu
 ```bash
 $ make run
 ```
-to simply run the app
-
-OR
-
-```bash
-$ make
-```
-
-to clean the package, do a fresh (but not brand new) install of dependencies, and then run the app.
 
 ### To run the cli:
 ```bash
@@ -42,93 +33,16 @@ $ make camera-setup
 
 ## Development
 
-### To lint the application:
+### Linting
 
 ```bash
-$ make lint-py
+$ make lint
 ```
 
-### To run tests against the application:
+### Running utility functions
 
 ```bash
-make test
-```
-
-You can also install packages in a text editor like Sublime Text 3 to show linting in real-time. This can be done for both eslint (JS) and pylint (Python)
-
-## Package Structure
-```bash
-stitch-flex
-    .gitignore
-    .travis.yml
-    conftest.py
-    LICENSE
-    Makefile
-    package.json
-    README.md
-    app/
-        __init__.py
-        __init__.pyc
-        cli.py
-        electronapp.py
-        stitcher/
-            __init__.py
-            stitch.py
-            __pycache__/
-            core/
-                __init__.py
-                feedhandler.py
-                stitcher.py
-            correction/
-                __init__.py corrector.py
-            flex/
-                __init__.py
-                detector.py
-                flexor.py
-        storage/
-   
-            uncorrected.mp4
-            uncorrected.png
-            uncorrected_checker.jpg
-            calibration_inputs/
-            flex/
-            stitch_tester/
-            syncedvideos/
-       
-                cam1/
-                    unused/
-                cam2/
-                    unused/
-                cam3/
-                cam4/
-                    unused/
-        test/
-            nocv/
-                __init__.py
-                test_inputscanner.py
-                __pycache__/
-            opencv/
-                __init__.py
-                test_feed.py
-                __pycache__/
-        util/
-            __init__.py
-            __init__.pyc
-            calibrate.py
-            capture.py
-            feed.py
-            fpschecker.py
-            inputscanner.py
-            listfiles.py
-            textformatter.py
-            validatefeeds.py
-    config/
-        .pylintrc
-        requirements.txt
-    out/
-        captured_frames/
-        captured_videos/
-    output/
+$ make app
 ```
 
 ## Future Target Functionality
