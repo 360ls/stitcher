@@ -13,25 +13,24 @@ $ make install
 
 This will install package dependencies via npm (node.js) and pip (python), including the yarn package manager dependency.
 
-### Then, to run the app, either:
+### Running
 
 ```bash
 $ make run
 ```
 
-### To run the cli:
+### Running the CLI
 ```bash
 $ make cli
 ```
 
-## Demoing
-
-### To set up the camera streams
-```bash
-$ make camera-setup
-```
-
 ## Development
+
+### Running utility functions
+
+```bash
+$ make util
+```
 
 ### Linting
 
@@ -39,11 +38,6 @@ $ make camera-setup
 $ make lint
 ```
 
-### Running utility functions
-
-```bash
-$ make app
-```
 
 ## Future Target Functionality
 1. The ability to add different car configurations for adaptive stitching
