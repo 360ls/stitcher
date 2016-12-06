@@ -17,14 +17,25 @@ def main():
     """
     opts = parse_args()
 
-    should_preview = opts.just_preview
-    width = opts.width
-    height = opts.height
-    index = opts.camera_index
-    left_index = opts.left_index
-    right_index = opts.right_index
-    dest = opts.output_path
-    url = opts.rtmp_url
+    if opts.use_config:
+        config = opts.config_profile
+        should_preview = config['just_preview']
+        width = config['width']
+        height = config['height']
+        index = config['camera_index']
+        left_index = config['left_index']
+        right_index = config['right_index']
+        dest = config['output_path']
+        url = config['rtmp_url']
+    else:
+        should_preview = opts.just_preview
+        width = opts.width
+        height = opts.height
+        index = opts.camera_index
+        left_index = opts.left_index
+        right_index = opts.right_index
+        dest = opts.output_path
+        url = opts.rtmp_url
 
     handler = get_feedhandler(should_preview, width, height, index, left_index, right_index)
 
@@ -127,6 +138,9 @@ def parse_args():
     parser.add_argument('--url', action='store', type=str, dest='rtmp_url',
                         default="rtmp://54.227.214.22:1935/live/myStream",
                         help='RTMP url to stream to.')
+    parser.add_argument('--default', action='store_true',
+                        default=False, dest='use_config',
+                        help='Use configuration values.')
 
     return parser.parse_args()
 

@@ -1,4 +1,3 @@
-# Directory Variables for Relative Paths
 PACKAGE_DIR = app
 CONFIGURATION_DIR = config
 SNAPPER_DIR = $(PACKAGE_DIR).snapper
