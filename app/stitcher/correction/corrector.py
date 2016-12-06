@@ -39,9 +39,6 @@ def correct_distortion(image):
     height, width = image.shape[:2]
 
     # Correct the radial distortion
-    new_camera, _ = cv2.getOptimalNewCameraMatrix(camera_matrix,
-                                                  distortion_coefficients,
-                                                  (width, height), 0)
-    corrected_image = cv2.undistort(image, camera_matrix, distortion_coefficients, None, new_camera)
+    corrected_image = cv2.undistort(image, camera_matrix, distortion_coefficients)
 
     return corrected_image

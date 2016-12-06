@@ -5,6 +5,12 @@ name: Two Video Stitch
 left-video-path: /Users/lukefernandez/Projects/stitch-flex/app/storage/synced_videos/cam1/1.mp4
 right-video-path: /Users/lukefernandez/Projects/stitch-flex/app/storage/synced_videos/cam2/1.mp4
 
+# Handling of preview, recording, and streaming.
+just-preview: False
+should-stream: True
+output-path: out.avi
+rtmp_url: rtmp://54.227.214.22:1935/live/myStream
+
 # Default values for width, height, etc.
 width: 640
 height: 480 

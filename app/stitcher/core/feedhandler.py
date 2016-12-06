@@ -60,14 +60,13 @@ def stitch(feeds, stitcher_func, should_stream, output_path, width, height, rtmp
     combined_stitcher = Stitcher()
     dimensions = str(width) + 'x' + str(height)
 
-    if output_path is not None:
+    if output_path:
         # Creates video writer for saving of videos.
         if imutils.is_cv3():
             codec = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
         else:
             codec = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
-        writer = cv2.VideoWriter(output_path, codec, 30.0, (width, height));
-        
+        writer = cv2.VideoWriter(output_path, codec, 30.0, (width, height))
 
     if should_stream:
         proc = subprocess.Popen([
@@ -76,31 +75,28 @@ def stitch(feeds, stitcher_func, should_stream, output_path, width, height, rtmp
             'libx264','-pix_fmt','yuv422p','-r','28','-an', '-f','flv',
             rtmp_url], stdin=subprocess.PIPE)
 
-    if all([feed.is_valid() for feed in feeds]):
-        while all([feed.has_next() for feed in feeds]):
-            frames = [feed.get_next() for feed in feeds]
-            stitched_frame = stitcher_func(frames,
-                                           [left_stitcher, right_stitcher, combined_stitcher])
-            resized_st_frame = cv2.resize(stitched_frame, (width, height))
+    while all([feed.has_next() for feed in feeds]):
+        frames = [feed.get_next() for feed in feeds]
+        stitched_frame = stitcher_func(frames,
+                                       [left_stitcher, right_stitcher, combined_stitcher])
+        resized_st_frame = cv2.resize(stitched_frame, (width, height))
 
-            if should_stream:
-                proc.stdin.write(resized_st_frame.tostring())
+        if should_stream:
+            proc.stdin.write(resized_st_frame.tostring())
 
-            if output_path is not None:
-                writer.write(resized_st_frame)
+        if output_path is not None:
+            writer.write(resized_st_frame)
 
-            cv2.imshow("Result", resized_st_frame)
-            key = cv2.waitKey(1) & 0xFF
+        cv2.imshow("Result", resized_st_frame)
+        key = cv2.waitKey(1) & 0xFF
 
-            if key == ord("q"):
-                break
+        if key == ord("q"):
+            break
 
-        # TextFormatter.print_status("[INFO] cleaning up...")
-
-        for feed in feeds:
-            feed.close()
-        cv2.destroyAllWindows()
-        cv2.waitKey(1)
+    for feed in feeds:
+        feed.close()
+    cv2.destroyAllWindows()
+    cv2.waitKey(1)
 
 def identity(frame):
     """
