@@ -1,0 +1,10 @@
+# Configuration metadata
+name: Two Video Stitch
+
+# Values for left and right video feed paths
+left-video-path: /Users/lukefernandez/Projects/stitch-flex/app/storage/synced_videos/cam1/1.mp4
+right-video-path: /Users/lukefernandez/Projects/stitch-flex/app/storage/synced_videos/cam2/1.mp4
+
+# Default values for width, height, etc.
+width: 640
+height: 480 

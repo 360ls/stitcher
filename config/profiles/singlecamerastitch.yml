@@ -1,0 +1,9 @@
+# Configuration metadata
+name: Single Camera Stitch
+
+# Value for camera index.
+camera-index: 0
+
+# Default values for width, height, etc.
+width: 640
+height: 480 
