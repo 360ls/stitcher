@@ -1,0 +1,14 @@
+# Configuration metadata
+name: Single Camera Stitch
+
+# Value for camera index.
+camera-index: 0
+
+just-preview: False
+should-stream: True
+output-path: out.avi
+rtmp_url: rtmp://54.227.214.22:1935/live/myStream
+
+# Default values for width, height, etc.
+width: 640
+height: 480 
