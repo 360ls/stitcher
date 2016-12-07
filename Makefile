@@ -44,5 +44,5 @@ test-travis:
 tree:
 	$(RUN_PACKAGE) $(UTILITY_DIR).listfiles
 
-util:
-	bash app.sh
+utils:
+	bash cli.sh
