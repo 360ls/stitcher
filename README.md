@@ -1,7 +1,7 @@
 # 360ls-stitcher
 Realtime Panoramic 360 stitcher for a 4 camera array.
 
-[![Build Status](https://travis-ci.org/360ls/stitch-flex.svg?branch=master)](https://travis-ci.org/360ls/stitch-flex)
+[![Build Status](https://travis-ci.org/360ls/stitcher.svg?branch=master)](https://travis-ci.org/360ls/stitcher)
 
 ## Production
 
