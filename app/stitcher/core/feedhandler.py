@@ -2,16 +2,14 @@
 Module for handling feeds for stitching and streaming.
 """
 from __future__ import absolute_import, division, print_function
-
 from abc import ABCMeta, abstractmethod
+
 import sys
 import subprocess
-import sys
 import cv2
 import imutils
 
 from .stitcher import Stitcher
-from app.stitcher.core.stitcher import Stitcher
 
 class FeedHandler(object): # pylint: disable=too-few-public-methods
     """

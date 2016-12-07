@@ -33,9 +33,6 @@ def correct_distortion(image):
                               [0, 876.71824265, 556.37145899], [0, 0, 1]])
     distortion_coefficients = np.array([-2.57614020e-01, 8.77086999e-02, 0, 0, 0])
 
-    # Read in the image for correction
-    height, width = image.shape[:2]
-
     # Correct the radial distortion
     corrected_image = cv2.undistort(image, camera_matrix, distortion_coefficients)
 
