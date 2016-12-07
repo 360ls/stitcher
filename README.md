@@ -1,17 +1,15 @@
 # 360ls-stitcher
 Realtime Panoramic 360 stitcher for a 4 camera array.
 
-[![Build Status](https://travis-ci.org/360ls/stitch-flex.svg?branch=master)](https://travis-ci.org/360ls/stitch-flex)
+[![Build Status](https://travis-ci.org/360ls/stitcher.svg?branch=master)](https://travis-ci.org/360ls/stitcher)
 
 ## Production
 
-### To install the package:
+### Installing dependencies
 
 ```bash
 $ make install
 ```
-
-This will install package dependencies via npm (node.js) and pip (python), including the yarn package manager dependency.
 
 ### Running
 
@@ -29,7 +27,7 @@ $ make cli
 ### Running utility functions
 
 ```bash
-$ make util
+$ make utils
 ```
 
 ### Linting

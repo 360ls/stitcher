@@ -6,6 +6,7 @@ STITCHER_DIR=app.stitcher
 UTILITY_DIR=app.util
 FLEX_DIR=app.stitcher.flex
 SNAPPER_DIR=app.snapper
+PROFILE_DIR=app.profile
 
 OPT_MSG="0) Quit\n\
 1) Run stitcher\n\
@@ -13,7 +14,8 @@ OPT_MSG="0) Quit\n\
 3) Flex\n\
 4) See valid camera feeds\n\
 5) Capture feeds\n\
-6) Snap"
+6) Snap\n\
+7) Profile stitcher"
 
 RUN_PACKAGE="${PY} ${PY_OPTS}"
 
@@ -45,6 +47,9 @@ function read_opt() {
         ;;
       6)
         snap
+        ;;
+      7)
+        profile
         ;;
       *)
         echo "Invalid option!"
@@ -106,13 +111,11 @@ function capture() {
   echo -e "${MSG}"
   read -p "Choose option: " OPT
 
-  if [ "${OPT}" = 0 ]
-  then
-    read_opt
-  fi
-
   ARG=""
   case "${OPT}" in
+    0)
+      read_opt
+      ;;
     1)
       ;;
     2)
@@ -142,6 +145,36 @@ function capture() {
 
 function snap() {
   cmd="${RUN_PACKAGE} ${SNAPPER_DIR}.snapstreams --output out"
+  eval "${cmd}"
+  read_opt
+}
+
+function profile() {
+  echo ""
+  MSG="Profile options:\n\
+0) Return to main\n\
+1) Profile single stitch\n\
+2) Profile two stitch"
+  echo -e "${MSG}"
+  read -p "Choose option: " OPT
+
+  ARG=""
+  case "${OPT}" in
+    0)
+      read_opt
+      ;;
+    1)
+      ARG="--single"
+      ;;
+    2)
+      ARG="--double"
+      ;;
+    *)
+      echo "Invalid option!"
+      ;;
+  esac
+
+  cmd="${RUN_PACKAGE} ${PROFILE_DIR}.profile ${ARG}"
   eval "${cmd}"
   read_opt
 }
