@@ -59,3 +59,6 @@ def parse_args():
     parser.add_argument('--double', dest='profile_double_stitch',
                         action='store_true', default=False)
     return parser.parse_args()
+
+if __name__ == "__main__":
+    main()
