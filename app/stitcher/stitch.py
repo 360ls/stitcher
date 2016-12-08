@@ -59,7 +59,7 @@ def preview(handler, width, height):
     """
     Preview camera stream
     """
-    handler.stitch_feeds(False, None, width, height)
+    handler.stitch_feeds(False, None, width, height, None)
 
 def stream_and_record(handler, width, height, dest, url):
     """
